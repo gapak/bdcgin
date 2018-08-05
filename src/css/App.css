@@ -1,0 +1,56 @@
+.App {
+  text-align: center;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto Condensed', sans-serif;
+  color: #e9f4ff;
+  background: url('/background.png') no-repeat center top #0b0b1b;
+  overflow: auto;
+}
+
+.panel {
+  background-color: transparent;
+  border: 1px solid white;
+}
+
+button {
+  background-color: transparent;
+}
+
+
+#tooltip > .tooltip-inner {
+  width: 300px;
+  min-height: 180px;
+  background-color: #EFEEEE;
+  color: black;
+  border: 1px solid #BDBDBD;
+
+}
+
+#tooltip > .tooltip-arrow{
+  display: none;
+}
+
+button {
+  border-radius: 3.5px;
+}
+
+{
+  design_est: #ffcf9a;
+  program_est: #ffc6f1;
+  management_est: #b5f7ff;
+  design_done: #ffb380;
+  program_done: #ff99ee;
+  management_done: #85f2ec;
+  design_bug: #a47353;
+  program_bug: #aa68a1;
+  management_bug: #498783;
+}
+
+.content_container {
+  overflow-y: scroll;
+  height: 100%;
+}
