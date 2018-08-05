@@ -167,48 +167,49 @@ class App extends Component {
 
         const player_subcomponent =
             <div className="flex-element panel">
-                <h5>Player</h5>
-                <div> HP: {state.player.hp}/{state.player.max_hp} </div>
-                <div> SP: {state.player.sp}/{state.player.max_sp} </div>
-                <div> MP: {state.player.mp}/{state.player.max_mp} </div>
-                <div> Weapon: {state.player.weapon.name} </div>
-                <div> LVL: {state.player.level} ({state.player.expr}/{42 * state.player.level}) </div>
-                <div> STR: {state.player.stats.str} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.str++; state.player.bonus_points--; return checkPlayerStats(state); } }} /> </div>
-                <div> DEX: {state.player.stats.dex} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.dex++; state.player.bonus_points--; return checkPlayerStats(state); } }} /> </div>
-                <div> INT: {state.player.stats.int} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.int++; state.player.bonus_points--; return checkPlayerStats(state); } }} /> </div>
-                <div> Delay: {state.player.action_timer} </div>
+                <div className="small">Player</div>
+                <div className="small"> with {state.player.weapon.name} </div>
+                <div className="small"> LVL: {state.player.level} ({state.player.expr}/{100 * state.player.level}) </div>
+                <div className="small"> HP: {state.player.hp}/{state.player.max_hp} </div>
+                <div className="small"> SP: {state.player.sp}/{state.player.max_sp} </div>
+                <div className="small"> MP: {state.player.mp}/{state.player.max_mp} </div>
+                <div className="small"> STR: {state.player.stats.str} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.str++; state.player.bonus_points--; return checkPlayerStats(state); } }} /> </div>
+                <div className="small"> DEX: {state.player.stats.dex} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.dex++; state.player.bonus_points--; return checkPlayerStats(state); } }} /> </div>
+                <div className="small"> INT: {state.player.stats.int} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.int++; state.player.bonus_points--; return checkPlayerStats(state); } }} /> </div>
+                <div className="small"> Delay: {state.player.action_timer} </div>
             </div>;
 
         const weapon_subcomponent =
             <div className="flex-element panel">
-                <h5>{state.player.weapon.name}</h5>
-                <h6>Damage: {state.player.weapon.min_dmg} - {state.player.weapon.max_dmg}</h6>
-                <h6>Accuracy: {state.player.weapon.accuracy}</h6>
-                <h6>Range: {state.player.weapon.range}</h6>
-                <h6>Speed: {state.player.weapon.speed}</h6>
-                <h6>Cost: {state.player.weapon.cost}</h6>
+                <div className="small">{state.player.weapon.name}</div>
+                <div className="small">Damage: {state.player.weapon.min_dmg} - {state.player.weapon.max_dmg}</div>
+                <div className="small">Accuracy: {state.player.weapon.accuracy}</div>
+                <div className="small">Range: {state.player.weapon.range}</div>
+                <div className="small">Speed: {state.player.weapon.speed}</div>
+                <div className="small">Cost: {state.player.weapon.cost}</div>
             </div>;
 
         const money_subcomponent =
             <div className="flex-element panel">
-                <h5>Player</h5>
+                <h6>Player</h6>
                 <h5>{state.player.name}</h5>
                 <h6>Money: {state.player.money}</h6>
                 <h6>Win: {state.wins}</h6>
+                <h6>Loose: {state.looses}</h6>
             </div>;
 
         const target_subcomponent =
             <div className="flex-element panel">
-                <h5>{state.target.name}</h5>
-                <div> HP: {state.target.hp}/{state.target.max_hp} </div>
-                <div> SP: {state.target.sp}/{state.target.max_sp} </div>
-                <div> MP: {state.target.mp}/{state.target.max_mp} </div>
-                <div> Weapon: {state.target.weapon.name} </div>
-                <div> LVL: {state.target.level} </div>
-                <div> STR: {state.target.stats.str} </div>
-                <div> DEX: {state.target.stats.dex} </div>
-                <div> INT: {state.target.stats.int} </div>
-                <div> Delay: {state.target.action_timer} </div>
+                <div className="small">{state.target.name}</div>
+                <div className="small"> with {state.target.weapon.name} </div>
+                <div className="small"> LVL: {state.target.level} ({Math.floor((41 + state.target.level) * state.target.level / state.player.level)} expr) </div>
+                <div className="small"> HP: {state.target.hp}/{state.target.max_hp} </div>
+                <div className="small"> SP: {state.target.sp}/{state.target.max_sp} </div>
+                <div className="small"> MP: {state.target.mp}/{state.target.max_mp} </div>
+                <div className="small"> STR: {state.target.stats.str} </div>
+                <div className="small"> DEX: {state.target.stats.dex} </div>
+                <div className="small"> INT: {state.target.stats.int} </div>
+                <div className="small"> Delay: {state.target.action_timer} </div>
             </div>;
 
         const battle_ground_subcomponent =
@@ -246,7 +247,6 @@ class App extends Component {
 
         const arena_subcomponent =
             <div>
-                <h4>Arena</h4>
                 <div className="flex-container-row">
                     {player_subcomponent}
                     {target_subcomponent}
@@ -263,7 +263,7 @@ class App extends Component {
                     }
                     {state.chat.length > 0 ?
                         <div className="flex-element panel">
-                            <h4>chat</h4>
+                            <h5>chat</h5>
                             {chat_subcomponent}
                         </div> : ''}
                     </div>
@@ -271,7 +271,6 @@ class App extends Component {
 
         const character_subcomponent =
             <div>
-                <h3>Character</h3>
                 <div className="flex-container-row">
                     {player_subcomponent}
                     {weapon_subcomponent}
@@ -280,66 +279,58 @@ class App extends Component {
 
         const inventory_subcomponent =
             <div>
-                <h3>Inventory</h3>
-
                 <div className="flex-container-row">
                     {money_subcomponent}
                     {weapon_subcomponent}
                 </div>
 
-                <div className="flex-container-row">
-                    <div className="flex-element">Name</div>
-                    <div className="flex-element">Damage</div>
-                    <div className="flex-element">Accuracy</div>
-                    <div className="flex-element">Speed</div>
-                    <div className="flex-element">Equip</div>
-                    <div className="flex-element">Sell</div>
-                </div>
-                <div className="flex-container-column">
-                    {_.map(state.inventory, (item, key) =>
-                        <div className="flex-element flex-container-row" key={key}>
-                            <div className="flex-element">{item.name}</div>
-                            <div className="flex-element">{item.min_dmg} - {item.max_dmg}</div>
-                            <div className="flex-element">{item.accuracy}</div>
-                            <div className="flex-element">{item.speed}</div>
-                            <div className="flex-element">
-                                <GinButton item={{name: "equip", isLocked: (state) => state.in_fight,
-                                    onClick: (state) => {
-                                        state.inventory[key] = state.player.weapon;
-                                        state.player.weapon = item;
-                                        return state; } }} />
+                { state.inventory.length > 0 ?
+                <div className="panel">
+                    <div className="flex-container-row">
+                        <div className="flex-element">Name</div>
+                        <div className="flex-element">Damage</div>
+                        <div className="flex-element">Accuracy</div>
+                        <div className="flex-element">Speed</div>
+                        <div className="flex-element">Equip</div>
+                        <div className="flex-element">Sell</div>
+                    </div>
+                    <div className="flex-container-column">
+                        {_.map(state.inventory, (item, key) =>
+                            <div className="flex-element flex-container-row" key={key}>
+                                <div className="flex-element">{item.name}</div>
+                                <div className="flex-element">{item.min_dmg} - {item.max_dmg}</div>
+                                <div className="flex-element">{item.accuracy}</div>
+                                <div className="flex-element">{item.speed}</div>
+                                <div className="flex-element">
+                                    <GinButton item={{name: "equip", isLocked: (state) => state.in_fight,
+                                        onClick: (state) => {
+                                            state.inventory[key] = state.player.weapon;
+                                            state.player.weapon = item;
+                                            return state; } }} />
+                                </div>
+                                <div className="flex-element">
+                                    <GinButton item={{name: "sell $"+item.cost, isLocked: (state) => state.in_fight,
+                                        onClick: (state) => {
+                                            state.player.money += item.cost;
+                                            state.inventory.splice(key, 1);
+                                            return state; } }} />
+                                </div>
                             </div>
-                            <div className="flex-element">
-                                <GinButton item={{name: "sell $"+item.cost, isLocked: (state) => state.in_fight,
-                                    onClick: (state) => {
-                                        state.player.money += item.cost;
-                                        state.inventory.splice(key, 1);
-                                        return state; } }} />
-                            </div>
-                        </div>
-                    )}
-                </div>
+                        )}
+                    </div>
+                </div> : ""}
             </div>;
 
         const options_subcomponent =
-            <div className="flex-container-column">
-                <h3>Options</h3>
-                <a onClick={this.newGame} title='Hard Reset For Developers'>New game</a>
-                <div>
-                    <div className="flex-element flex-container-column">
-                        <div className="flex-element">
-                            <h4>Round: {this.state.tick} Turn: {this.state.frame} </h4>
-                        </div>
-                        {time_panel}
-                    </div>
+            <div className="flex-container-column panel">
+                <div className="flex-element">
+                    <button onClick = {this.newGame}>New game</button>
                 </div>
-
-                <div>
-                    { _.map(this.state.messages, (message, key) =>
-                        <div key={key} style={{background: message.background}} className="flex-element">
-                            {message.text}
-                        </div>
-                    )}
+                <div className="flex-element flex-container-column">
+                    <div className="flex-element">
+                        <h4>Round: {this.state.tick} Turn: {this.state.frame} </h4>
+                    </div>
+                    {time_panel}
                 </div>
             </div>;
 

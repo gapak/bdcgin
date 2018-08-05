@@ -9,6 +9,8 @@ export const default_state = {
 
     tab: 'arena',
     in_fight: false,
+    wins: 0,
+    looses: 0,
 
     chat: [],
     inventory: [],
@@ -45,7 +47,6 @@ export const default_state = {
     tick: 0,
     game_paused: true,
     game_end: false,
-    wins: 0,
     game_end_score: 0
 };
 

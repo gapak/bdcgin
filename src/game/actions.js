@@ -7,45 +7,40 @@ export const actions = {
         isDisabled: (state) => (state.player.action_timer) || state.battleground.player === 0,
         onClick: (state) => {
             state.player.action_timer += 10;
-            state.battleground.player = Math.max(0, state.battleground.player - state.player.stats.dex);
-            let sp = _.random(1, state.player.stats.dex);
-            state.player.sp = Math.min(state.player.max_sp, state.player.sp + sp);
-            state.chat.unshift({text: "Go < " + sp});
+            state.battleground.player = Math.max(0, state.battleground.player - 1);
+            state.chat.unshift({text: "You Go < "});
             return state;
         }},
     move_right: {name: "Go >", cost: {}, isLocked: false,
         isDisabled: (state) => (state.player.action_timer) || state.battleground.player === state.battleground.target - 1,
         onClick: (state) => {
             state.player.action_timer += 10;
-            state.battleground.player = Math.min(state.battleground.target - 1, state.battleground.player + state.player.stats.dex);
-            let sp = _.random(1, state.player.stats.dex);
-            state.player.sp = Math.min(state.player.max_sp, state.player.sp + sp);
-            state.chat.unshift({text: "Go > " + sp});
+            state.battleground.player = Math.min(state.battleground.target - 1, state.battleground.player + 1);
+            state.chat.unshift({text: "You Go > "});
             return state;
         }},
     run_left: {name: "Run <", cost: {'player.sp': 1}, isLocked: false,
         isDisabled: (state) => (state.player.action_timer) || state.battleground.player === 0,
         onClick: (state) => {
             state.player.action_timer += 20;
-            state.battleground.player = Math.max(0, state.battleground.player - 9 - state.player.stats.dex);
-            state.chat.unshift({text: "Run < "});
+            state.battleground.player = Math.max(0, state.battleground.player - 4 - state.player.stats.dex);
+            state.chat.unshift({text: "You Run < "});
             return state;
         }},
     run_right: {name: "Run >", cost: {'player.sp': 1}, isLocked: false,
-        isDisabled: (state) => (state.player.action_timer) || state.battleground.player >= state.battleground.target - 10,
+        isDisabled: (state) => (state.player.action_timer) || state.battleground.player >= (state.battleground.target - 4 + state.player.stats.dex),
         onClick: (state) => {
             state.player.action_timer += 20;
-            state.battleground.player = Math.min(state.battleground.target - 1, state.battleground.player + 9 + state.player.stats.dex);
-            state.chat.unshift({text: "Run > "});
+            state.battleground.player = Math.min(state.battleground.target - 1, state.battleground.player + 4 +  state.player.stats.dex);
+            state.chat.unshift({text: "You Run > "});
             return state;
         }},
-    roll: {name: "Roll", cost: {}, isLocked: false,
-        isDisabled: (state) => (state.player.action_timer) || state.player.sp >= state.player.max_sp,
+    roll: {name: "Roll", cost: {'player.sp': 1}, isLocked: false,
+        isDisabled: (state) => (state.player.action_timer) || state.battleground.player === 0,
         onClick: (state) => {
-            state.player.action_timer += 10;
-            let sp = _.random(1, state.player.stats.dex);
-            state.player.sp += sp;
-            state.chat.unshift({text: "Roll " + sp});
+            state.player.action_timer += 5;
+            state.battleground.player = Math.max(0, state.battleground.player - 1);
+            state.chat.unshift({text: "You Roll"});
             return state;
         }},
     hit:  {name: "Hit!", cost: {'player.sp': 1}, isLocked: false,
@@ -54,25 +49,25 @@ export const actions = {
             state.player.action_timer += state.player.weapon.speed;
             let dmg = _.random(state.player.weapon.min_dmg, state.player.weapon.max_dmg) + _.random(0, state.player.stats.str);
             state.target.hp -= dmg;
-            state.chat.unshift({text: "Hit! " + dmg});
+            state.chat.unshift({text: "You Hit! " + dmg});
             return state;
         }},
     heal: {name: "Heal", cost: {'player.mp': 1}, isLocked: false,
         isDisabled: (state) => (state.player.action_timer) || state.player.hp >= state.player.max_hp,
         onClick: (state) => {
-            state.player.action_timer += 40;
-            let hp = _.random(1, state.player.stats.int);
+            state.player.action_timer += 30;
+            let hp = Math.min(state.player.max_hp - state.player.hp, state.player.level * _.random(1, state.player.stats.int));
             state.player.hp += hp;
-            state.chat.unshift({text: "Heal " + hp});
+            state.chat.unshift({text: "You Heal " + hp});
             return state;
         }},
     fire: {name: "Fire", cost: {'player.mp': 1}, isLocked: false,
-        isDisabled: (state) => (state.player.action_timer) || state.player.hp >= state.player.max_hp,
+        isDisabled: (state) => (state.player.action_timer),
         onClick: (state) => {
-            state.player.action_timer += 40;
-            let dmg = state.player.level * _.random(1, state.player.stats.str);
-            state.target.hp -= dmg;
-            state.chat.unshift({text: "Fire " + dmg});
+            state.player.action_timer += 30;
+            let fire = state.player.level * _.random(1, state.player.stats.int);
+            state.target.hp -= fire;
+            state.chat.unshift({text: "You Fire " + fire});
             return state;
         }},
 

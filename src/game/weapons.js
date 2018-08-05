@@ -8,7 +8,7 @@ const weapons_bodies = {
     axe:    {name: "Axe",      min_dmg: 5, max_dmg: 11,accuracy: 2, range: 2, speed: 18},
     hammer: {name: "Hammer",   min_dmg: 6, max_dmg: 9, accuracy: 1, range: 1, speed: 16},
     bow:    {name: "Bow",      min_dmg: 1, max_dmg: 6, accuracy: 4, range: 18, speed: 20},
-    cross:  {name: "Crossbow", min_dmg: 3, max_dmg: 7, accuracy: 3, range: 12, speed: 22},
+    cross:  {name: "Arbalest", min_dmg: 3, max_dmg: 7, accuracy: 3, range: 12, speed: 22},
 };
 
 const weapons_quality = {
@@ -25,13 +25,10 @@ const weapons_mods = {
     max_dmg: {name: "Sharped",    min_dmg: 0, max_dmg: 3, accuracy: 0, range: 0, speed: 0},
     all_dmg: {name: "Powerful",   min_dmg: 1, max_dmg: 2, accuracy: 0, range: 0, speed: 0},
     accuracy: {name: "Accurate",  min_dmg: 0, max_dmg: 0, accuracy: 3, range: 0, speed: 0},
-    range:    {name: "Long",      min_dmg: 0, max_dmg: 0, accuracy: 0, range: 3, speed: 0},
-    speed:    {name: "Fast",      min_dmg: 0, max_dmg: 0, accuracy: 0, range: 0, speed: -3},
+    range:    {name: "Longed",    min_dmg: 0, max_dmg: 0, accuracy: 0, range: 3, speed: 0},
+    speed:    {name: "Lighted",   min_dmg: 0, max_dmg: 0, accuracy: 0, range: 0, speed: -3},
     application: {name: "Handle", min_dmg: 0, max_dmg: 0, accuracy: 1, range: 1, speed: -1},
 };
-
-
-
 
 
 export const genWeapon = (level = 1) => {
@@ -42,7 +39,7 @@ export const genWeapon = (level = 1) => {
     let mod = _.sample(weapons_mods);
 
     let new_weapon = {
-        name: quality.name + ' ' + mod.name + ' ' + body.name,
+        name: mod.name + ' ' + quality.name + ' ' + body.name,
         min_dmg: quality.min_dmg + mod.min_dmg + body.min_dmg + level,
         max_dmg: quality.max_dmg + mod.max_dmg + body.max_dmg + level,
         accuracy: quality.accuracy + mod.accuracy + body.accuracy + level,
