@@ -7,8 +7,9 @@ import './css/App.css';
 
 import {game_name} from './game/app_config';
 import {getDefaultState} from './game/default_state';
-import {checkPlayerStats} from './game/game_math';
+import {checkPlayerStats, getAttackChance} from './game/game_math';
 import {actions} from './game/actions';
+import {consumables} from './game/consumables';
 
 //import {GinButton} from './core/GinButton';
 import {frame} from './core/frame';
@@ -269,12 +270,31 @@ class App extends Component {
                     </div>
             </div>;
 
+        const analysis_subcomponent =
+            <div className="panel">
+                <div>Player vs {state.target.name}:</div>
+                <div>Hit:   {getAttackChance(state.player, state.target).toFixed(2)}%</div>
+                <div>Dodge: {100 - getAttackChance(state.target, state.player).toFixed(2)}%</div>
+            </div>;
+
         const character_subcomponent =
             <div>
                 <div className="flex-container-row">
                     {player_subcomponent}
                     {weapon_subcomponent}
                 </div>
+                <div>
+                    {analysis_subcomponent}
+                </div>
+            </div>;
+
+        const belt_subcomponent =
+            <div className="flex-container-row panel">
+                {_.map(state.belt, (item, key) =>
+                    <div className="flex-element panel" key={key}>
+                        {consumables[item].name}
+                    </div>
+                )}
             </div>;
 
         const inventory_subcomponent =
@@ -283,6 +303,8 @@ class App extends Component {
                     {money_subcomponent}
                     {weapon_subcomponent}
                 </div>
+
+                {belt_subcomponent}
 
                 { state.inventory.length > 0 ?
                 <div className="panel">
@@ -337,7 +359,7 @@ class App extends Component {
 
         return (
             <div className="App">
-                <div className="fat content_container" role="main">
+                <div className="fat content_container small" role="main">
                     {this.state.tab === 'start' ?
                         <div>START</div>
                         : ''}

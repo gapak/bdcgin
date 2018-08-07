@@ -1,5 +1,6 @@
 
 import _ from 'lodash';
+import {getAttackChance} from './game_math';
 
 
 export const actions = {
@@ -47,9 +48,16 @@ export const actions = {
         isDisabled: (state) => (state.player.action_timer) || (state.player.weapon.range < (state.battleground.target - state.battleground.player)),
         onClick: (state) => {
             state.player.action_timer += state.player.weapon.speed;
-            let dmg = _.random(state.player.weapon.min_dmg, state.player.weapon.max_dmg) + _.random(0, state.player.stats.str);
-            state.target.hp -= dmg;
-            state.chat.unshift({text: "You Hit! " + dmg});
+            let chance = getAttackChance(state.player, state.target);
+            if (_.random(0, 100) > chance) {
+                let dmg = _.random(state.player.weapon.min_dmg, state.player.weapon.max_dmg) + _.random(0, state.player.stats.str);
+                state.target.hp -= dmg;
+                state.chat.unshift({text: "You Hit! Damage: " + dmg});
+            }
+            else {
+                state.chat.unshift({text: "You Miss! Hit chance: " + chance + '%'});
+            }
+
             return state;
         }},
     heal: {name: "Heal", cost: {'player.mp': 1}, isLocked: false,

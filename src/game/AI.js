@@ -1,6 +1,6 @@
 
 import _ from 'lodash';
-
+import {getAttackChance} from './game_math';
 
 export const AI = {
     enemy_turn: {
@@ -51,7 +51,17 @@ export const AI = {
                             }
                         }
                         else {
-                            return 'move_right';
+                            if (My.mp > 0) {
+                                if (My.hp > My.max_hp/3) {
+                                    return 'fire';
+                                }
+                                else {
+                                    return 'heal';
+                                }
+                            }
+                            else {
+                                return 'move_right';
+                            }
                         }
                     }
                     if (My.sp > 0) {
@@ -96,9 +106,17 @@ export const AI = {
                 case 'hit':
                     state.target.action_timer += state.target.weapon.speed;
                     state.target.sp -= 1;
-                    let dmg = _.random(state.target.weapon.min_dmg, state.target.weapon.max_dmg) + _.random(0, state.target.stats.str);
-                    state.player.hp -= dmg;
-                    state.chat.unshift({text: "Enemy Hit! " + dmg});
+
+                    let chance = getAttackChance(state.target, state.player);
+                    if (_.random(0, 100) > chance) {
+                        let dmg = _.random(state.target.weapon.min_dmg, state.target.weapon.max_dmg) + _.random(0, state.target.stats.str);
+                        state.player.hp -= dmg;
+                        state.chat.unshift({text: "Enemy Hit! Damage: " + dmg});
+                    }
+                    else {
+                        //state.chat.unshift({text: "Enemy Miss! Attack: ("+attack+"/"+def+")="+ratio});
+                        state.chat.unshift({text: "You Dodge! Dodge chance: " + 100 - chance + '%'});
+                    }
                     break;
                 case 'heal':
                     state.target.action_timer += 30;

@@ -16,3 +16,13 @@ export const checkPlayerStats = (state) => {
 
     return state;
 };
+
+export const getAttackChance = (source, target) => {
+    let attack = 10 + source.weapon.accuracy + source.stats.int;
+    let def = 10 + target.level + target.stats.dex;
+    let ratio = (attack / def);
+    console.log(attack, def, ratio, 50 * ratio);
+    return 50 * ratio;
+};
+
+

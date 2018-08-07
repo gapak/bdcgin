@@ -71,8 +71,8 @@ export const rules = {
 
     rest: {onTick: (state) => {
         state.player.hp = _.random(state.player.hp, 1000) > 800 && state.player.hp < state.player.max_hp ? state.player.hp + 1 : state.player.hp;
-        state.player.sp = _.random(state.player.sp, 100) > 80 && state.player.sp < state.player.max_sp ? state.player.sp + 1 : state.player.sp;
-        state.player.mp = _.random(state.player.mp, 50) > 40 && state.player.mp < state.player.max_mp ? state.player.mp + 1 : state.player.mp;
+        state.player.sp = _.random(state.player.sp, 100) > 75 && state.player.sp < state.player.max_sp ? state.player.sp + 1 : state.player.sp;
+        state.player.mp = _.random(state.player.mp, 50) > 45 && state.player.mp < state.player.max_mp ? state.player.mp + 1 : state.player.mp;
         return state;
     }},
 

@@ -3,12 +3,17 @@ import _ from 'lodash';
 
 
 const weapons_bodies = {
-    sword:  {name: "Sword",    min_dmg: 2, max_dmg: 5, accuracy: 5, range: 3, speed: 17},
-    spear:  {name: "Spear",    min_dmg: 1, max_dmg: 3, accuracy: 6, range: 6, speed: 14},
-    axe:    {name: "Axe",      min_dmg: 3, max_dmg: 7, accuracy: 2, range: 2, speed: 18},
-    hammer: {name: "Hammer",   min_dmg: 4, max_dmg: 6, accuracy: 1, range: 1, speed: 16},
-    bow:    {name: "Bow",      min_dmg: 1, max_dmg: 3, accuracy: 4, range: 24, speed: 20},
-    cross:  {name: "Arbalest", min_dmg: 2, max_dmg: 4, accuracy: 3, range: 16, speed: 22},
+    sword:  {name: "Sword",    min_dmg: 2, max_dmg: 5, accuracy: 5, range: 3, speed: 22},
+    saber:  {name: "Saber",    min_dmg: 1, max_dmg: 6, accuracy: 4, range: 2, speed: 20},
+    machete:{name: "Machete",  min_dmg: 1, max_dmg: 4, accuracy: 3, range: 1, speed: 14},
+    rapier: {name: "Rapier",   min_dmg: 1, max_dmg: 4, accuracy: 6, range: 3, speed: 17},
+    claymore:{name:"Claymore", min_dmg: 3, max_dmg: 6, accuracy: 5, range: 4, speed: 27},
+    spear:  {name: "Spear",    min_dmg: 1, max_dmg: 3, accuracy: 6, range: 6, speed: 20},
+    trident:{name: "Trident",  min_dmg: 2, max_dmg: 6, accuracy: 5, range: 6, speed: 27},
+    axe:    {name: "Axe",      min_dmg: 3, max_dmg: 7, accuracy: 2, range: 2, speed: 24},
+    hammer: {name: "Hammer",   min_dmg: 4, max_dmg: 6, accuracy: 1, range: 1, speed: 22},
+    bow:    {name: "Bow",      min_dmg: 1, max_dmg: 3, accuracy: 4, range: 24, speed: 36},
+    cross:  {name: "Arbalest", min_dmg: 2, max_dmg: 4, accuracy: 5, range: 20, speed: 37},
 };
 
 const weapons_quality = {
