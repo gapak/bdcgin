@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import {genTarget} from './targets';
 import {genWeapon} from './weapons';
+import {genArmor} from './armors';
 import {checkPlayerStats} from './game_math';
 
 export const default_state = {
@@ -14,7 +15,8 @@ export const default_state = {
 
     chat: [],
     inventory: [],
-    belt: ['heal1', 'heal2', 'heal2', 'heal1', 'stamina2', 'manna3'],
+    //belt: [],
+    belt: ['heal', 'stamina', 'manna'],
 
     player: {
         money: 100,
@@ -30,10 +32,15 @@ export const default_state = {
         stats: {
             str: 1,
             dex: 1,
+            con: 1,
+            wiz: 1,
             int: 1
         },
         weapon: genWeapon(1),
-        action_timer: 0
+        armor: genArmor(1),
+        action_timer: 0,
+        action: null, // до конца action
+        effects: {}, // до конца боя
     },
 
     target: {},

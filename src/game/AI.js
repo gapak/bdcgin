@@ -1,6 +1,6 @@
 
 import _ from 'lodash';
-import {getAttackChance} from './game_math';
+import {getAttackChance, getActionDelay, isTargetInRange, getRangeBetween} from './game_math';
 
 export const AI = {
     enemy_turn: {
@@ -24,13 +24,13 @@ export const AI = {
                         return 'move_right';
                     }
                 }
-                if (My.weapon.range < (state.battleground.target - state.battleground.player)) {
+                if (isTargetInRange(state, My.weapon.range)) {
                     if ((state.battleground.target - state.battleground.player) > 15 && My.sp > My.max_sp/3) {
                         return 'run_left';
                     }
                     else {
                         if (My.mp > My.max_mp/3) {
-                            return 'fire';
+                            return 'blast';
                         }
                         else {
                             return 'move_left';
@@ -38,7 +38,7 @@ export const AI = {
                     }
                 }
                 else {
-                    if (state.battleground.target < 100 && My.weapon.range > ((state.battleground.target - state.battleground.player) + 10)) {
+                    if (state.battleground.target < 100 && isTargetInRange(state, My.weapon.range - 10)) {
                         if (My.sp > 1) {
                             if (My.hp < My.max_hp/3) {
                                 return 'roll';
@@ -53,7 +53,7 @@ export const AI = {
                         else {
                             if (My.mp > 0) {
                                 if (My.hp > My.max_hp/3) {
-                                    return 'fire';
+                                    return 'blast';
                                 }
                                 else {
                                     return 'heal';
@@ -68,7 +68,7 @@ export const AI = {
                         return 'hit';
                     }
                     if (My.mp > 0) {
-                        return 'fire';
+                        return 'blast';
                     }
                 }
                 return false;
@@ -76,41 +76,42 @@ export const AI = {
 
             switch (action) {
                 case 'move_left':
-                    state.target.action_timer += 10;
+                    state.target.action_timer += getActionDelay(10, state.target);
                     state.battleground.target = Math.max(state.battleground.player + 1, state.battleground.target - 1);
                     state.chat.unshift({text: "Enemy Go < "});
                     break;
                 case 'move_right':
-                    state.target.action_timer += 10;
+                    state.target.action_timer += getActionDelay(10, state.target);
                     state.battleground.target = Math.min(100, state.battleground.target + 1);
                     state.chat.unshift({text: "Enemy Go > "});
                     break;
                 case 'run_left':
-                    state.target.action_timer += 20;
+                    state.target.action_timer += getActionDelay(20, state.target);
                     state.target.sp -= 1;
                     state.battleground.target = Math.max(state.battleground.player + 1, state.battleground.target - 4 - state.target.stats.dex);
                     state.chat.unshift({text: "Enemy Run < "});
                     break;
                 case 'run_right':
-                    state.target.action_timer += 20;
+                    state.target.action_timer += getActionDelay(20, state.target);
                     state.target.sp -= 1;
                     state.battleground.target = Math.min(100, state.battleground.target + state.target.stats.dex);
                     state.chat.unshift({text: "Enemy Run > "});
                     break;
                 case 'roll':
-                    state.target.action_timer += 5;
+                    state.target.action_timer += getActionDelay(5, state.target);
                     state.target.sp -= 1;
                     state.battleground.target = Math.min(100, state.battleground.target + 1);
                     state.chat.unshift({text: "Enemy Roll"});
                     break;
                 case 'hit':
-                    state.target.action_timer += state.target.weapon.speed;
+                    state.target.action_timer += getActionDelay(state.target.weapon.speed, state.target);
                     state.target.sp -= 1;
 
                     let chance = getAttackChance(state.target, state.player);
                     if (_.random(0, 100) > chance) {
                         let dmg = _.random(state.target.weapon.min_dmg, state.target.weapon.max_dmg) + _.random(0, state.target.stats.str);
                         state.player.hp -= dmg;
+                        state.player.action_timer += Math.max(0, state.target.weapon.stunning - (state.player.armor.stability + state.player.stats.con));
                         state.chat.unshift({text: "Enemy Hit! Damage: " + dmg});
                     }
                     else {
@@ -119,18 +120,18 @@ export const AI = {
                     }
                     break;
                 case 'heal':
-                    state.target.action_timer += 30;
+                    state.target.action_timer += getActionDelay(30, state.target);
                     state.target.mp -= 1;
-                    let hp = Math.min(state.target.max_hp - state.target.hp, state.target.level * _.random(1, state.target.stats.int));
+                    let hp = Math.min(state.target.max_hp - state.target.hp, 3 + (state.target.level * _.random(1, state.target.stats.int)));
                     state.target.hp += hp;
                     state.chat.unshift({text: "Enemy Heal " + hp});
                     break;
-                case 'fire':
-                    state.target.action_timer += 30;
+                case 'blast':
+                    state.target.action_timer += getActionDelay(30, state.target);
                     state.target.mp -= 1;
                     let fire = state.target.level * _.random(1, state.target.stats.int);
                     state.player.hp -= fire;
-                    state.chat.unshift({text: "Enemy Fire " + fire});
+                    state.chat.unshift({text: "Enemy Blast " + fire});
                     break;
                 case false:
                     console.log('idle');
