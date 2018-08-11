@@ -3,7 +3,7 @@ import _ from 'lodash';
 import {genTarget} from './targets';
 import {genWeapon} from './weapons';
 import {genArmor} from './armors';
-import {checkPlayerStats} from './game_math';
+import {checkStats} from './game_math';
 
 export const default_state = {
 
@@ -15,14 +15,14 @@ export const default_state = {
 
     chat: [],
     inventory: [],
-    //belt: [],
-    belt: ['heal', 'stamina', 'manna'],
+    belt: [],
+    //belt: ['heal', 'stamina', 'manna'],
 
     player: {
         money: 100,
         level: 1,
         expr: 0,
-        bonus_points: 0,
+        bonus_points: 5,
         hp: 100,
         max_hp: 100,
         sp: 10,
@@ -40,7 +40,7 @@ export const default_state = {
         armor: genArmor(1),
         action_timer: 0,
         action: null, // до конца action
-        effects: {}, // до конца боя
+        effects: {buff: 0, rage: 0}, // до конца боя
     },
 
     target: {},
@@ -62,7 +62,8 @@ export const default_state = {
 
 export const getDefaultState = () => {
     let state = _.cloneDeep(default_state);
-    state = checkPlayerStats(state);
+    state = checkStats(state, 'player');
     state.target = genTarget(1);
+    state = checkStats(state, 'target');
     return state;
 };

@@ -1,12 +1,13 @@
 
 import _ from 'lodash';
 import {genTarget} from './targets';
-import {checkPlayerStats} from './game_math';
+import {checkStats} from './game_math';
 import {AI} from './AI';
 
 
 const endBattleCleaner = (state) => {
     state.target = genTarget(_.random(1, state.player.level));
+    state = checkStats(state, 'target');
     state.in_fight = false;
     state.battleground = {player: 0, target: 100};
     state.player.action = null;
@@ -95,7 +96,7 @@ export const rules = {
                 state.player.expr -= (100 * state.player.level);
                 state.player.bonus_points += 1;
                 state.player.level += 1;
-                state = checkPlayerStats(state);
+                state = checkStats(state, 'player');
             }
             return state;
         }
@@ -103,13 +104,18 @@ export const rules = {
 
     rest: {
         onTick: (state) => {
+            if (!state.in_fight) {
+                if (state.player.hp < state.player.max_hp) state.player.hp++;
+                if (state.player.sp < state.player.max_sp) state.player.sp++;
+                if (state.player.mp < state.player.max_mp) state.player.mp++;
+            }
             //state.player.hp = _.random(state.player.hp, 1000) > 900 && state.player.hp < state.player.max_hp ? state.player.hp + 1 : state.player.hp;
             state.player.sp = _.random(state.player.sp, 100) > 85 && state.player.sp < state.player.max_sp ? state.player.sp + 1 : state.player.sp;
-            state.player.mp = _.random(state.player.mp, 50) > 45 && state.player.mp < state.player.max_mp ? state.player.mp + 1 : state.player.mp;
+            state.player.mp = _.random(state.player.mp, 50) > 47 && state.player.mp < state.player.max_mp ? state.player.mp + 1 : state.player.mp;
 
             //state.target.hp = _.random(state.target.hp, 1000) > 900 && state.target.hp < state.target.max_hp ? state.target.hp + 1 : state.target.hp;
             state.target.sp = _.random(state.target.sp, 100) > 85 && state.target.sp < state.target.max_sp ? state.target.sp + 1 : state.target.sp;
-            state.target.mp = _.random(state.target.mp, 50) > 45 && state.target.mp < state.target.max_mp ? state.target.mp + 1 : state.target.mp;
+            state.target.mp = _.random(state.target.mp, 50) > 47 && state.target.mp < state.target.max_mp ? state.target.mp + 1 : state.target.mp;
             return state;
         }
     },

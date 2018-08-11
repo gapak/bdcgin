@@ -7,7 +7,7 @@ import './css/App.css';
 
 import {game_name} from './game/app_config';
 import {getDefaultState} from './game/default_state';
-import {checkPlayerStats, getAttackChance} from './game/game_math';
+import {checkStats, getAttackChance} from './game/game_math';
 import {actions} from './game/actions';
 import {consumables} from './game/consumables';
 
@@ -39,7 +39,7 @@ class App extends Component {
         console.log('App '+game_name+' componentDidMount');
         var app_state = JSON.parse(localStorage.getItem(game_name+"_app_state"));
         this.setState(app_state ? app_state : getDefaultState());
-        //this.playGame();
+        this.playGame();
     }
 
     playGame(speed_multiplier = false) {
@@ -137,7 +137,7 @@ class App extends Component {
         const ConsumableGinButton = (props) => <GinButton item={{
             name: props.item.name,
             isDisabled: () => !props.item.consumableIf(state),
-            onClick: () => { state.belt.splice(props.key, 1); return props.item.onConsume(state); } }} />;
+            onClick: () => { state.belt.splice(props.index, 1); return props.item.onConsume(state); } }} />;
 
         const time_panel =
             <div className="flex-element">
@@ -166,7 +166,7 @@ class App extends Component {
         const chat_subcomponent =
             <div className="flex-element">
                 {_.map(state.chat, (item, key) =>
-                    <div key={key}>
+                    <div className="small" key={key}>
                         {item.text}
                     </div>
                 )}
@@ -182,12 +182,12 @@ class App extends Component {
                 <div> HP: {state.player.hp}/{state.player.max_hp} </div>
                 <div> SP: {state.player.sp}/{state.player.max_sp} </div>
                 <div> MP: {state.player.mp}/{state.player.max_mp} </div>
-                {state.in_fight !== true ? <div> STR: {state.player.stats.str} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.str++; state.player.bonus_points--; return checkPlayerStats(state); } }} /> </div> : ''}
-                {state.in_fight !== true ? <div> DEX: {state.player.stats.dex} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.dex++; state.player.bonus_points--; return checkPlayerStats(state); } }} /> </div> : ''}
-                {state.in_fight !== true ? <div> CON: {state.player.stats.con} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.con++; state.player.bonus_points--; return checkPlayerStats(state); } }} /> </div> : ''}
-                {state.in_fight !== true ? <div> WIZ: {state.player.stats.wiz} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.wiz++; state.player.bonus_points--; return checkPlayerStats(state); } }} /> </div> : ''}
-                {state.in_fight !== true ? <div> INT: {state.player.stats.int} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.int++; state.player.bonus_points--; return checkPlayerStats(state); } }} /> </div> : ''}
-                <div> Action: {state.player.action} {state.player.action_timer} </div>
+                {state.in_fight !== true ? <div> STR: {state.player.stats.str} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.str++; state.player.bonus_points--; return checkStats(state, 'player'); } }} /> </div> : ''}
+                {state.in_fight !== true ? <div> DEX: {state.player.stats.dex} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.dex++; state.player.bonus_points--; return checkStats(state, 'player'); } }} /> </div> : ''}
+                {state.in_fight !== true ? <div> CON: {state.player.stats.con} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.con++; state.player.bonus_points--; return checkStats(state, 'player'); } }} /> </div> : ''}
+                {state.in_fight !== true ? <div> WIZ: {state.player.stats.wiz} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.wiz++; state.player.bonus_points--; return checkStats(state, 'player'); } }} /> </div> : ''}
+                {state.in_fight !== true ? <div> INT: {state.player.stats.int} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.int++; state.player.bonus_points--; return checkStats(state, 'player'); } }} /> </div> : ''}
+                <div> Action: {state.player.action ? actions[state.player.action].name : ''} {state.player.action_timer} </div>
             </div>;
 
         const weapon_subcomponent =
@@ -233,7 +233,7 @@ class App extends Component {
                 {state.in_fight !== true ? <div> CON: {state.target.stats.con} </div> : ''}
                 {state.in_fight !== true ? <div> WIZ: {state.target.stats.wiz} </div> : ''}
                 {state.in_fight !== true ? <div> INT: {state.target.stats.int} </div> : ''}
-                <div> Action: {state.target.action} {state.target.action_timer} </div>
+                <div> Action: {state.target.action ? actions[state.target.action].name : ''} {state.target.action_timer} </div>
             </div>;
 
         const battle_ground_subcomponent =
@@ -259,15 +259,28 @@ class App extends Component {
                     <h4>actions</h4>
                     <div className="flex-container-row">
                         <div className="flex-element"> <GinButton item={actions.hit}/> </div>
+                        <div className="flex-element"> <GinButton item={actions.push}/> </div>
+                        <div className="flex-element"> <GinButton item={actions.sprint}/> </div>
                     </div>
                     <div className="flex-container-row">
                         <div className="flex-element"> <GinButton item={actions.roll}/> </div>
+                        <div className="flex-element"> <GinButton item={actions.parry}/> </div>
+                        <div className="flex-element"> <GinButton item={actions.jump}/> </div>
+                    </div>
+                    <div className="flex-container-row">
+                        <div className="flex-element"> <GinButton item={actions.block}/> </div>
+                        <div className="flex-element"> <GinButton item={actions.buff}/> </div>
+                        <div className="flex-element"> <GinButton item={actions.rage}/> </div>
                     </div>
                     <div className="flex-container-row">
                         <div className="flex-element"> <GinButton item={actions.heal}/> </div>
+                        <div className="flex-element"> <GinButton item={actions.freeze}/> </div>
+                        <div className="flex-element"> <GinButton item={actions.sword}/> </div>
                     </div>
                     <div className="flex-container-row">
                         <div className="flex-element"> <GinButton item={actions.blast}/> </div>
+                        <div className="flex-element"> <GinButton item={actions.fire}/> </div>
+                        <div className="flex-element"> <GinButton item={actions.blink}/> </div>
                     </div>
                 </div>
             </div>;
@@ -278,7 +291,7 @@ class App extends Component {
                 <div className="flex-container-row">
                     {_.map(state.belt, (item, key) =>
                         <div className="flex-element panel slim" key={key}>
-                            <ConsumableGinButton item={consumables[item]} key={key} />
+                            <ConsumableGinButton item={consumables[item]} index={key} />
                         </div>
                     )}
                     {state.belt.length < 6 && state.tab !== 'shop' && state.in_fight !== true ? <GinButton item={{name: 'Buy More', onClick: (state) => { state.tab = 'shop'; return state;} }}/> : ''}
@@ -297,11 +310,10 @@ class App extends Component {
                 {state.in_fight === true ? mowement_subcomponent : ''}
 
                 <div className="flex-container-row">
-                    {state.chat.length > 0 ?
-                        <div className="flex-element panel">
-                            <h5>chat</h5>
-                            {chat_subcomponent}
-                        </div> : ''}
+                    <div className="flex-element panel">
+                        <h5>chat</h5>
+                        {chat_subcomponent}
+                    </div>
                     {state.in_fight === true ? actions_subcomponent :
                         <div className="flex-element">
                             <GinButton item={{name: "Start Fight!", isLocked: (state) => state.in_fight,

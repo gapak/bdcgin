@@ -3,17 +3,23 @@ import _ from 'lodash';
 
 
 const weapons_bodies = {
-    sword:  {name: "Sword",    min_dmg: 2, max_dmg: 5, stunning: 5, accuracy: 5, range: 3, speed: 27},
-    saber:  {name: "Saber",    min_dmg: 1, max_dmg: 6, stunning: 4, accuracy: 4, range: 2, speed: 24},
-    machete:{name: "Machete",  min_dmg: 1, max_dmg: 4, stunning: 4, accuracy: 3, range: 1, speed: 18},
-    rapier: {name: "Rapier",   min_dmg: 1, max_dmg: 4, stunning: 3, accuracy: 6, range: 3, speed: 20},
-    claymore:{name:"Claymore", min_dmg: 3, max_dmg: 6, stunning: 9, accuracy: 5, range: 4, speed: 36},
-    spear:  {name: "Spear",    min_dmg: 1, max_dmg: 3, stunning: 2, accuracy: 6, range: 6, speed: 22},
-    trident:{name: "Trident",  min_dmg: 2, max_dmg: 6, stunning: 3, accuracy: 5, range: 6, speed: 30},
-    axe:    {name: "Axe",      min_dmg: 3, max_dmg: 7, stunning: 8, accuracy: 2, range: 2, speed: 32},
-    hammer: {name: "Hammer",   min_dmg: 4, max_dmg: 6, stunning: 10, accuracy: 1, range: 1, speed: 32},
-    bow:    {name: "Bow",      min_dmg: 1, max_dmg: 3, stunning: 1, accuracy: 4, range: 24, speed: 37},
-    cross:  {name: "Arbalest", min_dmg: 2, max_dmg: 4, stunning: 2, accuracy: 5, range: 20, speed: 39},
+    sword:  {name: "Sword",    min_dmg: 2, max_dmg: 5, bonus_stat: 'str', stunning: 5, accuracy: 5, range: 3, speed: 27},
+    saber:  {name: "Saber",    min_dmg: 1, max_dmg: 6, bonus_stat: 'str', stunning: 4, accuracy: 4, range: 2, speed: 24},
+    machete:{name: "Machete",  min_dmg: 1, max_dmg: 4, bonus_stat: 'str', stunning: 4, accuracy: 3, range: 1, speed: 18},
+    rapier: {name: "Rapier",   min_dmg: 1, max_dmg: 4, bonus_stat: 'dex', stunning: 3, accuracy: 6, range: 3, speed: 20},
+    claymore:{name:"Claymore", min_dmg: 3, max_dmg: 6, bonus_stat: 'str', stunning: 9, accuracy: 5, range: 4, speed: 36},
+    spear:  {name: "Spear",    min_dmg: 1, max_dmg: 3, bonus_stat: 'str', stunning: 2, accuracy: 6, range: 6, speed: 22},
+    trident:{name: "Trident",  min_dmg: 2, max_dmg: 6, bonus_stat: 'str', stunning: 3, accuracy: 5, range: 6, speed: 30},
+    axe:    {name: "Axe",      min_dmg: 3, max_dmg: 7, bonus_stat: 'str', stunning: 8, accuracy: 2, range: 2, speed: 32},
+    hammer: {name: "Hammer",   min_dmg: 4, max_dmg: 6, bonus_stat: 'str', stunning: 10, accuracy: 1, range: 1, speed: 32},
+
+    bow:    {name: "Bow",      min_dmg: 1, max_dmg: 3, bonus_stat: 'dex', stunning: 1, accuracy: 4, range: 24, speed: 37},
+    cross:  {name: "Arbalest", min_dmg: 2, max_dmg: 4, bonus_stat: 'dex', stunning: 2, accuracy: 5, range: 20, speed: 39},
+
+    wiz1:   {name: "Book",     min_dmg: 1, max_dmg: 3, bonus_stat: 'wiz', stunning: 6, accuracy: 6, range: 25, speed: 45},
+    wiz2:   {name: "Tome",     min_dmg: 2, max_dmg: 4, bonus_stat: 'wiz', stunning: 8, accuracy: 5, range: 30, speed: 55},
+    mage1:  {name: "Stick",    min_dmg: 3, max_dmg: 5, bonus_stat: 'int', stunning: 1, accuracy: 7, range: 40, speed: 64},
+    mage2:  {name: "Staff",    min_dmg: 4, max_dmg: 8, bonus_stat: 'int', stunning: 2, accuracy: 8, range: 35, speed: 69},
 };
 
 const weapons_quality = {
@@ -39,14 +45,14 @@ const weapons_mods = {
 
 export const genWeapon = (level = 1) => {
     let body = _.sample(weapons_bodies);
-    let q = Math.floor(Math.min(_.random(1, 6), _.random(1, Math.sqrt(level))));
-    let quality = weapons_quality[q];
+    let quality = weapons_quality[Math.floor(_.random(1, Math.sqrt(level)))];
     let mod = (level === 1) ? weapons_mods.flat : _.sample(weapons_mods);
 
     let new_weapon = {
         name: mod.name + ' ' + quality.name + ' ' + body.name,
         min_dmg: quality.min_dmg + mod.min_dmg + body.min_dmg + level,
         max_dmg: quality.max_dmg + mod.max_dmg + body.max_dmg + level,
+        bonus_stat: body.bonus_stat,
         stunning: quality.stunning + mod.stunning + body.stunning + level,
         accuracy: quality.accuracy + mod.accuracy + body.accuracy + level,
         range: quality.range + mod.range + body.range,

@@ -1,28 +1,70 @@
 
-export const checkPlayerStats = (state) => {
-    let level = state.player.level;
+import _ from 'lodash';
 
-    let hp = level * (14 + state.player.stats.con);
-    state.player.hp = Math.min(hp, state.player.hp);
-    state.player.max_hp = hp;
 
-    let sp = level * (9 + state.player.stats.str);
-    state.player.sp = Math.min(sp, state.player.sp);
-    state.player.max_sp = sp;
+export const checkStats = (state, unit_key) => {
+    let level = state[unit_key].level;
 
-    let mp = level * (2 + state.player.stats.wiz);
-    state.player.mp = Math.min(mp, state.player.mp);
-    state.player.max_mp = mp;
+    //let hp = level * (13 + (state[unit_key].stats.con * 2));
+    let hp = ((level + (state[unit_key].stats.con * 2)) * 3) + 21;
+    state[unit_key].hp = Math.min(hp, state[unit_key].hp);
+    state[unit_key].max_hp = hp;
+
+    //let sp = level * (8 + state[unit_key].stats.str + state[unit_key].stats.dex);
+    let sp = ((level + (state[unit_key].stats.str + state[unit_key].stats.dex)) * 2) + 4;
+    state[unit_key].sp = Math.min(sp, state[unit_key].sp);
+    state[unit_key].max_sp = sp;
+
+    //let mp = level * (3 + state[unit_key].stats.wiz + state[unit_key].stats.int);
+    let mp = ((level + (state[unit_key].stats.wiz + state[unit_key].stats.int)) * 1) + 2;
+    state[unit_key].mp = Math.min(mp, state[unit_key].mp);
+    state[unit_key].max_mp = mp;
 
     return state;
 };
 
 export const getAttackChance = (source, target) => {
-    let attack = 10 + source.weapon.accuracy + source.stats.int;
-    let def = 10 + target.level + target.stats.dex;
+    let attack = 5 + source.weapon.accuracy + source.stats.int;
+    let def = 5 + target.level + target.stats.dex;
     let ratio = (attack / def);
     //console.log(attack, def, ratio, 50 * ratio);
     return 50 * ratio;
+};
+
+export const attack = (state, params) => {
+    state[params.attacker].action_timer += getActionDelay(state[params.attacker].weapon.speed, state[params.attacker]);
+    if (state.target.action === 'roll') {
+        state[params.defender].chat.unshift({text: params.defender + " Roll against attack"});
+        return state;
+    }
+    if (state.target.action === 'block') {
+        state[params.defender].chat.unshift({text: params.defender + " Block against attack"});
+        return state;
+    }
+    if (state.target.action === 'parry') {
+        state = attack(state,
+            {
+                attacker: params.defender,
+                defender: params.attacker,
+                onHit: (state, dmg) => {  state.chat.unshift({text: params.defender + " Counter Hit! Damage: " + dmg}); return state; },
+                onMiss: (state, chance) => { state.chat.unshift({text: params.defender + " Counter Miss! Hit chance: " + chance.toFixed(0) + '%'}); return state; },
+            });
+        return state;
+    }
+
+    let chance = getAttackChance(state[params.attacker], state[params.defender]);
+    if (_.random(0, 100) < chance) {
+        console.log();
+        let dmg = _.random(state[params.attacker].weapon.min_dmg, state[params.attacker].weapon.max_dmg) + _.random(0, state[params.attacker].stats[state[params.attacker].weapon.bonus_stat] + state[params.attacker].effects.rage);
+        let def = _.random(0, state[params.defender].armor.absorption + state[params.defender].effects.buff);
+        state[params.defender].hp -= Math.max(1, dmg - def);
+        state[params.defender].action_timer += Math.max(0, state[params.attacker].weapon.stunning - (state[params.defender].armor.stability + state[params.defender].stats.con));
+        state = params.onHit(state, dmg);
+    }
+    else {
+        state = params.onMiss(state, chance);
+    }
+    return state;
 };
 
 export const getActionDelay = (base, unit) => {
@@ -34,7 +76,31 @@ export const getRangeBetween = (state) => {
 };
 
 export const isTargetInRange = (state, range) => {
-    return range < getRangeBetween(state);
+    //console.log('isTargetInRange', range, getRangeBetween(state), range >= getRangeBetween(state));
+    return range >= getRangeBetween(state);
+};
+
+export const blink = (state, long) => {
+    console.log('blink attempt ', long);
+
+    let old_point = state.battleground.player;
+    let new_point = null;
+    let target_point = state.battleground.target;
+
+    let min = Math.max(0, old_point - long);
+    let max = Math.min(100, old_point + long);
+
+    do {
+        new_point = _.random(min, max);
+        console.log('point generation attempt', new_point);
+    }
+    while(new_point === old_point || new_point === target_point);
+
+    state.battleground.player = new_point;
+
+    console.log(old_point, min, max, new_point);
+
+    return state;
 };
 
 

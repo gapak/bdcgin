@@ -43,8 +43,7 @@ const armors_mods = {
 
 export const genArmor = (level = 1) => {
     let body = (level === 1) ? armors_bodies.novice : _.sample(armors_bodies);
-    let q = Math.floor(Math.min(_.random(1, 6), _.random(1, Math.sqrt(level))));
-    let quality = armors_quality[q];
+    let quality = armors_quality[Math.floor(_.random(1, Math.sqrt(level)))];
     let mod = (level === 1) ? armors_mods.flat : _.sample(armors_mods);
 
     let new_armor = {
