@@ -64,7 +64,7 @@ export const rules = {
         onFrame: (state) => {
             if (state.target.hp < 1) {
                 state.wins++;
-                let expr = Math.floor((41 + state.target.level) * state.target.level / state.player.level);
+                let expr = Math.floor((50 + (50 * state.target.level)) * state.target.level / state.player.level);
                 state.player.expr += expr;
                 state.inventory.push(state.target.weapon);
                 let weapon_name = state.target.weapon.name;
@@ -115,13 +115,13 @@ export const rules = {
                 if (state.player.sp < state.player.max_sp) state.player.sp++;
                 if (state.player.mp < state.player.max_mp) state.player.mp++;
             }
-            //state.player.hp = _.random(state.player.hp, 1000) > 900 && state.player.hp < state.player.max_hp ? state.player.hp + 1 : state.player.hp;
-            state.player.sp = _.random(state.player.sp, 100) > 85 && state.player.sp < state.player.max_sp ? state.player.sp + 1 : state.player.sp;
-            state.player.mp = _.random(state.player.mp, 50) > 47 && state.player.mp < state.player.max_mp ? state.player.mp + 1 : state.player.mp;
+            state.player.hp = _.random(state.player.hp, 1000) > 950 && state.player.hp < state.player.max_hp ? state.player.hp + 1 : state.player.hp;
+            state.player.sp = _.random(state.player.sp, 200) > 180 && state.player.sp < state.player.max_sp ? state.player.sp + 1 : state.player.sp;
+            state.player.mp = _.random(state.player.mp, 100) > 99 && state.player.mp < state.player.max_mp ? state.player.mp + 1 : state.player.mp;
 
-            //state.target.hp = _.random(state.target.hp, 1000) > 900 && state.target.hp < state.target.max_hp ? state.target.hp + 1 : state.target.hp;
-            state.target.sp = _.random(state.target.sp, 100) > 85 && state.target.sp < state.target.max_sp ? state.target.sp + 1 : state.target.sp;
-            state.target.mp = _.random(state.target.mp, 50) > 47 && state.target.mp < state.target.max_mp ? state.target.mp + 1 : state.target.mp;
+            state.target.hp = _.random(state.target.hp, 1000) > 950 && state.target.hp < state.target.max_hp ? state.target.hp + 1 : state.target.hp;
+            state.target.sp = _.random(state.target.sp, 200) > 180 && state.target.sp < state.target.max_sp ? state.target.sp + 1 : state.target.sp;
+            state.target.mp = _.random(state.target.mp, 100) > 99 && state.target.mp < state.target.max_mp ? state.target.mp + 1 : state.target.mp;
             return state;
         }
     },

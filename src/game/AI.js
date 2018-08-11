@@ -1,6 +1,7 @@
 
 import _ from 'lodash';
 import {getActionDelay, isTargetInRange, attack} from './game_math';
+import {actions} from './actions';
 
 export const AI = {
     enemy_turn: {
@@ -88,6 +89,9 @@ export const AI = {
                     state.chat.unshift({text: "Enemy Roll"});
                     break;
                 case 'hit':
+                    state.target.sp -= 1;
+                    state = actions.hit.onAction(state, 'target', 'player');
+                    /*
                     state.target.action = 'hit';
                     state.target.sp -= 1;
                     state = attack(state,
@@ -97,22 +101,31 @@ export const AI = {
                             onHit: (state, dmg) => {  state.chat.unshift({text: "Enemy Hit! Damage: " + dmg}); return state; },
                             onMiss: (state, chance) => { state.chat.unshift({text: "You Dodge! Dodge chance: " + (100 - chance).toFixed(0) + '%'}); return state; },
                         });
+                     */
                     break;
                 case 'heal':
+                    state.target.mp -= 1;
+                    state = actions.heal.onAction(state, 'target', 'player');
+                    /*
                     state.target.action = 'heal';
                     state.target.action_timer += getActionDelay(30, state.target);
                     state.target.mp -= 1;
                     let hp = Math.min(state.target.max_hp - state.target.hp, 3 + (state.target.level * _.random(1, state.target.stats.int)));
                     state.target.hp += hp;
                     state.chat.unshift({text: "Enemy Heal " + hp});
+                     */
                     break;
                 case 'blast':
+                    state.target.mp -= 1;
+                    state = actions.blast.onAction(state, 'target', 'player');
+                    /*
                     state.target.action = 'blast';
                     state.target.action_timer += getActionDelay(30, state.target);
                     state.target.mp -= 1;
                     let fire = state.target.level * _.random(1, state.target.stats.int);
                     state.player.hp -= fire;
                     state.chat.unshift({text: "Enemy Blast " + fire});
+                    */
                     break;
                 case false:
                     console.log('idle');
