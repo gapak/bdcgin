@@ -6,17 +6,17 @@ export const checkStats = (state, unit_key) => {
     let level = state[unit_key].level;
 
     //let hp = level * (13 + (state[unit_key].stats.con * 2));
-    let hp = ((level + (state[unit_key].stats.con * 2)) * 3) + 21;
+    let hp = ((level + (state[unit_key].stats.con * 2)) * 5) + 35;
     state[unit_key].hp = Math.min(hp, state[unit_key].hp);
     state[unit_key].max_hp = hp;
 
     //let sp = level * (8 + state[unit_key].stats.str + state[unit_key].stats.dex);
-    let sp = ((level + (state[unit_key].stats.str + state[unit_key].stats.dex)) * 2) + 4;
+    let sp = ((level + (state[unit_key].stats.str + state[unit_key].stats.dex)) * 4) + 8;
     state[unit_key].sp = Math.min(sp, state[unit_key].sp);
     state[unit_key].max_sp = sp;
 
     //let mp = level * (3 + state[unit_key].stats.wiz + state[unit_key].stats.int);
-    let mp = ((level + (state[unit_key].stats.wiz + state[unit_key].stats.int)) * 1) + 2;
+    let mp = ((level + (state[unit_key].stats.wiz + state[unit_key].stats.int)) * 2) + 4;
     state[unit_key].mp = Math.min(mp, state[unit_key].mp);
     state[unit_key].max_mp = mp;
 

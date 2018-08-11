@@ -67,7 +67,7 @@ export const genTarget = (level = 1) => {
         armor: genArmor(level),
         action_timer: 0,
         action: null, // до конца action
-        effects: {buff: 0, rage: 0}, // до конца боя
+        effects: {buff: 0, rage: 0, fire: 0}, // до конца боя
     };
 
     _.times(level - 1, () => { target.stats[_.sample(_.keys(target.stats))]++; } );
@@ -78,6 +78,7 @@ export const genTarget = (level = 1) => {
     target.stats.wiz = Math.max(1, quality.stats.wiz + mod.stats.wiz + body.stats.wiz);
     target.stats.int = Math.max(1, quality.stats.int + mod.stats.int + body.stats.int);
 
+    /*
     let hp = level * Math.max(1, 14 + target.stats.con + quality.hp + mod.hp + body.hp);
     target.hp = hp;
     target.max_hp = hp;
@@ -89,8 +90,7 @@ export const genTarget = (level = 1) => {
     let mp = level * Math.max(1, 2 + target.stats.wiz + quality.mp + mod.mp + body.mp);
     target.mp = mp;
     target.max_mp = mp;
-
-
+    */
 
     console.log('Gen Target: ', level, body, quality, mod, target);
 

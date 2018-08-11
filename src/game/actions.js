@@ -175,7 +175,7 @@ export const actions = {
         onClick: (state) => {
             state.player.action = 'blast';
             state.player.action_timer += getActionDelay(25, state.player);
-            let fire = state.player.level + _.random(1, state.player.stats.int);
+            let fire = 1 + state.player.level + _.random(1, state.player.stats.int);
             state.target.hp -= fire;
             state.chat.unshift({text: "You Blast " + fire});
             return state;
@@ -187,6 +187,7 @@ export const actions = {
             state.player.action_timer += getActionDelay(30, state.player);
             let fire = state.player.level * _.random(1, state.player.stats.int);
             state.target.hp -= fire;
+            state.target.effects.fire++;
             state.chat.unshift({text: "You Fire " + fire});
             return state;
         }},

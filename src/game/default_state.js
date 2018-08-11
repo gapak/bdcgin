@@ -23,8 +23,8 @@ export const default_state = {
         level: 1,
         expr: 0,
         bonus_points: 5,
-        hp: 100,
-        max_hp: 100,
+        hp: 10,
+        max_hp: 10,
         sp: 10,
         max_sp: 10,
         mp: 10,
@@ -40,7 +40,7 @@ export const default_state = {
         armor: genArmor(1),
         action_timer: 0,
         action: null, // до конца action
-        effects: {buff: 0, rage: 0}, // до конца боя
+        effects: {buff: 0, rage: 0, fire: 0}, // до конца боя
     },
 
     target: {},

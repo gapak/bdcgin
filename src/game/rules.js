@@ -40,6 +40,12 @@ export const rules = {
         }
     },
 
+    effects_in_battle: { onTick: (state) => {
+        for (let ip = 0; ip < state.player.effects.fire; ip++) { if (_.random(1, 60)) { state.player.hp--; state.chat.unshift({text: "You Burns"});} }
+        for (let it = 0; it < state.target.effects.fire; it++) { if (_.random(1, 60)) { state.target.hp--; state.chat.unshift({text: "Enemy Burns"});} }
+        return state;
+    }},
+
     loose_battle: {
         onFrame: (state) => {
             if (state.player.hp < 1) {
