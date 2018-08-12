@@ -25,7 +25,7 @@ export const checkStats = (state, unit_key) => {
 
 export const getAttackChance = (source, target) => {
     let attack = 5 + source.weapon.accuracy + source.stats.int;
-    let def = 5 + target.level + target.stats.dex;
+    let def = 10 + target.stats.dex;
     let ratio = (attack / def);
     //console.log(attack, def, ratio, 50 * ratio);
     return 50 * ratio;
@@ -70,7 +70,7 @@ export const attack = (state, params) => {
 };
 
 export const getActionDelay = (base, unit) => {
-    return Math.max(1, base + unit.armor.weight - unit.stats.dex);
+    return Math.max(1, base + unit.armor.weight - unit.stats.dex + unit.effects.freeze);
 };
 
 export const getRangeBetween = (state) => {

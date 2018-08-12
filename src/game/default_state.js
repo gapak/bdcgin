@@ -22,7 +22,7 @@ export const default_state = {
         money: 100,
         level: 1,
         expr: 0,
-        bonus_points: 0,
+        bonus_points: 2,
         hp: 10,
         max_hp: 10,
         sp: 10,
@@ -40,7 +40,7 @@ export const default_state = {
         armor: genArmor(1),
         action_timer: 0,
         action: null, // до конца action
-        effects: {buff: 0, rage: 0, fire: 0}, // до конца боя
+        effects: {buff: 0, rage: 0, fire: 0, freeze: 0}, // до конца боя
     },
 
     target: {},

@@ -16,7 +16,7 @@ export const consumables = {
         consumableIf: (state) => state.player.hp < state.player.max_hp && !state.player.action_timer,
         onConsume: (state) => {
             state.player.action_timer += 10;
-            state.player.hp = Math.min(state.player.hp + 10, state.player.max_hp);
+            state.player.hp = Math.min(state.player.hp + 20, state.player.max_hp);
             return state;
     }},
     stamina: { name: 'SP Pot', cost: {'player.money': 10}, text: '2',
@@ -25,7 +25,7 @@ export const consumables = {
         consumableIf: (state) => state.player.sp < state.player.max_sp && !state.player.action_timer,
         onConsume: (state) => {
             state.player.action_timer += 10;
-            state.player.sp = Math.min(state.player.sp + 5, state.player.max_sp);
+            state.player.sp = Math.min(state.player.sp + 10, state.player.max_sp);
             return state;
     }},
     manna: { name: 'MP Pot', cost: {'player.money': 10}, text: '3',
@@ -34,7 +34,7 @@ export const consumables = {
         consumableIf: (state) => state.player.mp < state.player.max_mp && !state.player.action_timer,
         onConsume: (state) => {
             state.player.action_timer += 10;
-            state.player.mp = Math.min(state.player.mp + 3, state.player.max_mp);
+            state.player.mp = Math.min(state.player.mp + 5, state.player.max_mp);
             return state;
     }},
 
@@ -42,15 +42,15 @@ export const consumables = {
         isDisabled: (state) => state.belt.length >= 6,
         onClick: (state) => buy(state, 'blink'),
         consumableIf: (state) => !state.player.action_timer,
-        onConsume: (state) => blink(state, 33)
+        onConsume: (state) => blink(state, 42)
     },
     wave: { name: 'Wave Scroll', cost: {'player.money': 10}, text: '',
         isDisabled: (state) => state.belt.length >= 6,
         onClick: (state) => buy(state, 'wave'),
         consumableIf: (state) => !state.player.action_timer && isTargetInRange(state, 42),
         onConsume: (state) => {
-            state.battleground.target = Math.min(100, state.battleground.target + 5);
-            state.target.action_timer += 10 + _.random(1, 10);
+            state.battleground.target = Math.min(100, state.battleground.target + 10);
+            state.target.action_timer += 20 + _.random(1, 20);
             return state;
         }},
     fire: { name: 'Fire Scroll', cost: {'player.money': 10}, text: '',
@@ -68,7 +68,7 @@ export const consumables = {
         onClick: (state) => buy(state, 'dart'),
         consumableIf: (state) => !state.player.action_timer && isTargetInRange(state, 15),
         onConsume: (state) => {
-            let soul_weapon = {name: "Dart Spear",    min_dmg: 6, max_dmg: 12, bonus_stat: 'str', stunning: 10, accuracy: 5, range: 15, speed: 33};
+            let soul_weapon = {name: "Dart Spear",    min_dmg: 6, max_dmg: 12, bonus_stat: 'str', stunning: 15, accuracy: 9, range: 15, speed: 33};
             let tpm_weapon = state.player.weapon;
             state.player.weapon = soul_weapon;
             state = attack(state, {
@@ -85,8 +85,8 @@ export const consumables = {
         onClick: (state) => buy(state, 'bomb'),
         consumableIf: (state) => !state.player.action_timer && isTargetInRange(state, 20),
         onConsume: (state) => {
-            state.target.hp -= _.random(1, 10);
-            state.target.action_timer += 10 + _.random(1, 10);
+            state.target.hp -= _.random(1, 10) + _.random(1, getRangeBetween(state));
+            state.target.action_timer += 20 + _.random(1, 20);
             state.player.hp -= _.random(1, getRangeBetween(state));
             state.player.action_timer += 10 + _.random(1, getRangeBetween(state));
             return state;
@@ -96,8 +96,8 @@ export const consumables = {
         onClick: (state) => buy(state, 'web'),
         consumableIf: (state) => !state.player.action_timer && isTargetInRange(state, 25),
         onConsume: (state) => {
-            state.player.action_timer += 10;
-            state.target.action_timer += 50;
+            state.player.action_timer += 20;
+            state.target.action_timer += 80;
             return state;
         }},
 };

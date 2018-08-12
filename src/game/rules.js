@@ -6,12 +6,12 @@ import {AI} from './AI';
 
 
 const endBattleCleaner = (state) => {
-    state.target = genTarget(_.random(state.player.level, (2 * state.player.level) - 1));
+    state.target = genTarget(_.random(Math.ceil(state.player.level/2), (2 * state.player.level) - 1));
     state = checkStats(state, 'target');
     state.in_fight = false;
     state.battleground = {player: 0, target: 100};
     state.player.action = null;
-    state.player.effects = {};
+    state.player.effects = {buff: 0, rage: 0, fire: 0, freeze: 0};
     return state;
 };
 

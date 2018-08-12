@@ -381,8 +381,8 @@ class App extends Component {
                             <div className="flex-element flex-container-row" key={key}>
                                 <div className="flex-element">{item.name}</div>
                                 <div className="flex-element">{item.min_dmg} - {item.max_dmg}</div>
-                                <div className="flex-element">{item.range}</div>
                                 <div className="flex-element">{item.accuracy}</div>
+                                <div className="flex-element">{item.range}</div>
                                 <div className="flex-element">{item.speed}</div>
                                 <div className="flex-element">
                                     <GinButton item={{name: "equip", isLocked: (state) => state.in_fight,

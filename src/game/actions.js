@@ -141,7 +141,8 @@ export const actions = {
             state[attacker].action_timer += getActionDelay(30, state[attacker]);
             let fire = state[attacker].level + _.random(1, state[attacker].stats.wiz);
             state[defender].hp -= fire;
-            state[defender].action_timer -= fire;
+            state[defender].action_timer -= fire * state[attacker].stats.wiz;
+            state[defender].effects.freeze++;
             state.chat.unshift({text: attacker + "  Freeze " + fire});
             return state;
         }},
@@ -150,11 +151,7 @@ export const actions = {
         onAction: (state, attacker, defender) => {
             state[attacker].action = 'sword';
 
-            let soul_weapon = genWeapon(state[attacker].stats.wiz);
-            soul_weapon.name = 'Soul ' + soul_weapon.name;
-            soul_weapon.range = 5;
-            soul_weapon.max_dmg += state[attacker].stats.wiz;
-            soul_weapon.bonus_stat += 'wiz';
+            let soul_weapon = {name: "Soul Weapon",    min_dmg: 5 + state[attacker].stats.wiz, max_dmg: 10 + (2 * state[attacker].stats.wiz), bonus_stat: 'wiz', stunning: 25, accuracy: 15, range: 5, speed: 50};
 
             let tpm_weapon = state[attacker].weapon;
             state[attacker].weapon = soul_weapon;

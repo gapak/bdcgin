@@ -48,10 +48,10 @@ export const genArmor = (level = 1) => {
 
     let new_armor = {
         name: mod.name + ' ' + quality.name + ' ' + body.name,
-        weight: quality.weight + mod.weight + body.weight + level,
-        absorption: quality.absorption + mod.absorption + body.absorption + level,
-        resistance: quality.resistance + mod.resistance + body.resistance + level,
-        stability: quality.stability + mod.stability + body.stability + level,
+        weight: quality.weight + mod.weight + body.weight,// + level,
+        absorption: quality.absorption + mod.absorption + body.absorption,// + level,
+        resistance: quality.resistance + mod.resistance + body.resistance,// + level,
+        stability: quality.stability + mod.stability + body.stability,// + level,
         val1: quality.val1 + mod.val1 + body.val1,
         val2: quality.val2 + mod.val2 + body.val2,
         level: level,
@@ -70,7 +70,7 @@ export const genArmor = (level = 1) => {
         }
     });
 
-    new_armor.cost = Math.floor(Math.sqrt(((new_armor.weight + new_armor.val1 + new_armor.val2) * level * (new_armor.absorption + new_armor.resistance + new_armor.stability) * 100) / (new_armor.weight * level)));
+    new_armor.cost = Math.floor(Math.sqrt(((new_armor.weight + new_armor.val1 + new_armor.val2) * level * (new_armor.absorption + new_armor.resistance + new_armor.stability) * 100) / (new_armor.weight)));
 
     console.log('Gen Armor: ', level, body, quality, mod, new_armor);
 
