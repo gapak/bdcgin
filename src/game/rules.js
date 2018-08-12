@@ -6,7 +6,7 @@ import {AI} from './AI';
 
 
 const endBattleCleaner = (state) => {
-    state.target = genTarget(_.random(1, state.player.level));
+    state.target = genTarget(_.random(state.player.level, (2 * state.player.level) - 1));
     state = checkStats(state, 'target');
     state.in_fight = false;
     state.battleground = {player: 0, target: 100};
@@ -98,7 +98,7 @@ export const rules = {
 
     levelUp: {
         onTick: (state) => {
-            if (state.player.expr > (100 * state.player.level)) {
+            if (state.player.expr >= (100 * state.player.level)) {
                 state.player.expr -= (100 * state.player.level);
                 state.player.bonus_points += 1;
                 state.player.level += 1;

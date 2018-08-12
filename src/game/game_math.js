@@ -33,6 +33,7 @@ export const getAttackChance = (source, target) => {
 
 export const attack = (state, params) => {
     state[params.attacker].action_timer += getActionDelay(state[params.attacker].weapon.speed, state[params.attacker]);
+
     if (state.target.action === 'roll') {
         state[params.defender].chat.unshift({text: params.defender + " Roll against attack"});
         return state;
@@ -55,9 +56,10 @@ export const attack = (state, params) => {
     let chance = getAttackChance(state[params.attacker], state[params.defender]);
     if (_.random(0, 100) < chance) {
         console.log();
-        let dmg = _.random(state[params.attacker].weapon.min_dmg, state[params.attacker].weapon.max_dmg) + _.random(0, state[params.attacker].stats[state[params.attacker].weapon.bonus_stat] + state[params.attacker].effects.rage);
+        let atk = _.random(state[params.attacker].weapon.min_dmg, state[params.attacker].weapon.max_dmg) + _.random(0, state[params.attacker].stats[state[params.attacker].weapon.bonus_stat] + state[params.attacker].effects.rage);
         let def = _.random(0, state[params.defender].armor.absorption + state[params.defender].effects.buff);
-        state[params.defender].hp -= Math.max(1, dmg - def);
+        let dmg = Math.max(1, atk - def);
+        state[params.defender].hp -= dmg;
         state[params.defender].action_timer += Math.max(0, state[params.attacker].weapon.stunning - (state[params.defender].armor.stability + state[params.defender].stats.con));
         state = params.onHit(state, dmg);
     }

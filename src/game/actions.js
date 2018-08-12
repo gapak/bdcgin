@@ -50,8 +50,8 @@ export const actions = {
             state[attacker].action = 'hit';
             state = attack(state,
                 {
-                    attacker: 'player',
-                    defender: 'target',
+                    attacker: attacker,
+                    defender: defender,
                     onHit: (state, dmg) => {  state.chat.unshift({text: attacker + "  Hit! Damage: " + dmg}); return state; },
                     onMiss: (state, chance) => { state.chat.unshift({text: attacker + "  Miss! Hit chance: " + chance.toFixed(0) + '%'}); return state; },
                 });

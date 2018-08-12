@@ -1,6 +1,6 @@
 
 import _ from 'lodash';
-import {getActionDelay, isTargetInRange, attack} from './game_math';
+import {getActionDelay, isTargetInRange} from './game_math';
 import {actions} from './actions';
 
 export const AI = {
