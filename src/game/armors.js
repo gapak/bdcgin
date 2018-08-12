@@ -18,12 +18,12 @@ const armors_bodies = {
 };
 
 const armors_quality = {
-    1: {name: "Old",      weight: 0,  absorption: 0, resistance: 0, stability: 0, val0: 0, val1: 0},
-    2: {name: "Rusty",    weight: 0,  absorption: 1, resistance: 1, stability: 1, val0: 1, val1: 1},
-    3: {name: "Standard", weight: -0, absorption: 2, resistance: 2, stability: 2, val0: 2, val1: 2},
-    4: {name: "Grete",    weight: -0, absorption: 3, resistance: 3, stability: 3, val0: 3, val1: 3},
-    5: {name: "Shiny",    weight: -1, absorption: 4, resistance: 4, stability: 4, val0: 4, val1: 4},
-    6: {name: "Godlike",  weight: -1, absorption: 5, resistance: 5, stability: 5, val0: 5, val1: 5},
+    1: {name: "Old",      weight: 0,  absorption: 0, resistance: 0, stability: 0, val1: 0, val2: 0},
+    2: {name: "Rusty",    weight: 0,  absorption: 1, resistance: 1, stability: 1, val1: 1, val2: 1},
+    3: {name: "Standard", weight: -0, absorption: 2, resistance: 2, stability: 2, val1: 2, val2: 2},
+    4: {name: "Grete",    weight: -0, absorption: 3, resistance: 3, stability: 3, val1: 3, val2: 3},
+    5: {name: "Shiny",    weight: -1, absorption: 4, resistance: 4, stability: 4, val1: 4, val2: 4},
+    6: {name: "Godlike",  weight: -1, absorption: 5, resistance: 5, stability: 5, val1: 5, val2: 5},
 };
 
 const armors_mods = {
@@ -32,8 +32,8 @@ const armors_mods = {
     absorption: {name: "Soft",    weight: 1, absorption: 3, resistance: -1, stability: -1, val1: 0, val2: 0},
     resistance: {name: "Resist",  weight: 1, absorption: -1, resistance: 3, stability: -1, val1: 0, val2: 0},
     stability: {name: "Stable",   weight: 1, absorption: -1, resistance: -1, stability: 3, val1: 0, val2: 0},
-    val1:    {name: "qwe",        weight: 0, absorption: 0, resistance: 1, stability: 0, val1: 3, val2: 0},
-    val2:    {name: "asd",        weight: 0, absorption: 0, resistance: 1, stability: 0, val1: 0, val2: 3},
+    //val1:    {name: "qwe",        weight: 0, absorption: 0, resistance: 1, stability: 0, val1: 3, val2: 0},
+    //val2:    {name: "asd",        weight: 0, absorption: 0, resistance: 1, stability: 0, val1: 0, val2: 3},
     fast: {name: "Fast",          weight: -4, absorption: -2, resistance: -2, stability: 0, val1: 0, val2: 0},
     forty: {name: "Forty",        weight: 4, absorption: 2, resistance: 2, stability: 0, val1: 0, val2: 0},
     deft: {name: "Deft",          weight: -2, absorption: -2, resistance: -2, stability: 2, val1: 0, val2: 0},

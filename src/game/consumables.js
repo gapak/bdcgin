@@ -1,7 +1,7 @@
 
 import _ from 'lodash';
 
-import {isTargetInRange, getRangeBetween, blink} from './game_math';
+import {isTargetInRange, getRangeBetween, blink, attack} from './game_math';
 
 const buy = (state, item_key) => {
     state.belt.push(item_key);
@@ -59,6 +59,7 @@ export const consumables = {
         consumableIf: (state) => !state.player.action_timer && isTargetInRange(state, 13),
         onConsume: (state) => {
             state.target.hp -= _.random(1, 3) + _.random(1, 3)  + _.random(1, 3);
+            state.target.effects.fire += 5;
             return state;
         }},
 
@@ -67,8 +68,16 @@ export const consumables = {
         onClick: (state) => buy(state, 'dart'),
         consumableIf: (state) => !state.player.action_timer && isTargetInRange(state, 15),
         onConsume: (state) => {
-            state.player.action_timer += 10;
-            state.target.hp -= 5; // Переделать на механику удара
+            let soul_weapon = {name: "Dart Spear",    min_dmg: 6, max_dmg: 12, bonus_stat: 'str', stunning: 10, accuracy: 5, range: 15, speed: 33};
+            let tpm_weapon = state.player.weapon;
+            state.player.weapon = soul_weapon;
+            state = attack(state, {
+                attacker: 'player',
+                defender: 'target',
+                onHit: (state, dmg) => {  state.chat.unshift({text: "player " + soul_weapon.name + " Hit! Damage: " + dmg}); return state; },
+                onMiss: (state, chance) => { state.chat.unshift({text: "player  Miss! Hit chance: " + chance.toFixed(0) + '%'}); return state; },
+            });
+            state.player.weapon = tpm_weapon;
             return state;
         }},
     bomb: { name: 'Fire Bomb', cost: {'player.money': 10}, text: '',

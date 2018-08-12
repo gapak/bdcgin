@@ -41,8 +41,8 @@ export const rules = {
     },
 
     effects_in_battle: { onTick: (state) => {
-        for (let ip = 0; ip < state.player.effects.fire; ip++) { if (_.random(1, 60)) { state.player.hp--; state.chat.unshift({text: "You Burns"});} }
-        for (let it = 0; it < state.target.effects.fire; it++) { if (_.random(1, 60)) { state.target.hp--; state.chat.unshift({text: "Enemy Burns"});} }
+        for (let ip = 0; ip < state.player.effects.fire; ip++) { if (_.random(1, 60) === 1) { state.player.hp--; state.chat.unshift({text: "You Burns"});} }
+        for (let it = 0; it < state.target.effects.fire; it++) { if (_.random(1, 60) === 1) { state.target.hp--; state.chat.unshift({text: "Enemy Burns"});} }
         return state;
     }},
 
@@ -51,7 +51,7 @@ export const rules = {
             if (state.player.hp < 1) {
                 state.looses++;
                 state.player.hp = 1;
-                let expr = Math.floor((12 + state.target.level) * state.target.level / state.player.level);
+                let expr = Math.floor((25 * state.target.level) * state.target.level / state.player.level);
                 state.player.expr += expr;
                 state = endBattleCleaner(state);
                 state.chat.unshift({text: "You loose. +" + expr + 'expr.'});
@@ -66,7 +66,8 @@ export const rules = {
                 state.wins++;
                 let expr = Math.floor((50 + (50 * state.target.level)) * state.target.level / state.player.level);
                 state.player.expr += expr;
-                state.inventory.push(state.target.weapon);
+                state.inventory.armors.push(state.target.armor);
+                state.inventory.weapons.push(state.target.weapon);
                 let weapon_name = state.target.weapon.name;
                 state = endBattleCleaner(state);
                 state.chat.unshift({text: "You win. +" + expr + 'expr and ' + weapon_name + '.'});

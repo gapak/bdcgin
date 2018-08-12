@@ -35,11 +35,11 @@ export const attack = (state, params) => {
     state[params.attacker].action_timer += getActionDelay(state[params.attacker].weapon.speed, state[params.attacker]);
 
     if (state.target.action === 'roll') {
-        state[params.defender].chat.unshift({text: params.defender + " Roll against attack"});
+        state.chat.unshift({text: params.defender + " Roll against attack"});
         return state;
     }
     if (state.target.action === 'block') {
-        state[params.defender].chat.unshift({text: params.defender + " Block against attack"});
+        state.chat.unshift({text: params.defender + " Block against attack"});
         return state;
     }
     if (state.target.action === 'parry') {

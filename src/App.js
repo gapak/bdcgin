@@ -158,12 +158,13 @@ class App extends Component {
                     <span className={classNames('glyphicon', (this.state.game_paused ? 'glyphicon-play' : 'glyphicon-pause'))} style={{width: 28, height: 28}}> </span>
                 </span>
             <span>
-                {[1, 4, 16, 64].map((speed, index) => {
+                {[1, 2, 4, 8].map((speed, index) => {
+                    let btn_text = {0: 'x1', 1: 'x2',  2: 'x4',  3: 'x8'}[index];
                     return <span key={index}>
                         {this.state.game_speed_multiplier === speed
-                            ? <button className="" style={{width: 42, height: 28}}><u>{{0: 'x1', 1: 'x4',  2: 'x16',  3: 'x64'}[index]}</u></button>
+                            ? <button className="" style={{width: 42, height: 28}}><u>{btn_text}</u></button>
                             : <button className="" style={{width: 42, height: 28}} onClick={() => {
-                            this.setGameSpeed(speed); }}>{{0: 'x1', 1: 'x4',  2: 'x16',  3: 'x64'}[index]}
+                            this.setGameSpeed(speed); }}>{btn_text}
                         </button>}
                     </span>
                 })}
@@ -195,12 +196,14 @@ class App extends Component {
                 {state.in_fight !== true ? <div> WIZ: {state.player.stats.wiz} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.wiz++; state.player.bonus_points--; return checkStats(state, 'player'); } }} /> </div> : ''}
                 {state.in_fight !== true ? <div> INT: {state.player.stats.int} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.int++; state.player.bonus_points--; return checkStats(state, 'player'); } }} /> </div> : ''}
                 <div> Action: {state.player.action ? actions[state.player.action].name : ''} {state.player.action_timer} </div>
+                {_.sum(_.values(state.player.effects)) > 0 ? <div>{_.map(state.player.effects, (val, key) => val > 0 ? <span key={key}>{key}: {val}</span> : '' )}</div> : ''}
             </div>;
 
         const weapon_subcomponent =
             <div className="flex-element panel">
                 <div>{state.player.weapon.name}</div>
                 <div>Damage: {state.player.weapon.min_dmg} - {state.player.weapon.max_dmg}</div>
+                <div>Skill: {state.player.weapon.bonus_stat}</div>
                 <div>Stunning: {state.player.weapon.stunning}</div>
                 <div>Accuracy: {state.player.weapon.accuracy}</div>
                 <div>Range: {state.player.weapon.range}</div>
@@ -241,6 +244,7 @@ class App extends Component {
                 {state.in_fight !== true ? <div> WIZ: {state.target.stats.wiz} </div> : ''}
                 {state.in_fight !== true ? <div> INT: {state.target.stats.int} </div> : ''}
                 <div> Action: {state.target.action ? actions[state.target.action].name : ''} {state.target.action_timer} </div>
+                {_.sum(_.values(state.target.effects)) > 0 ? <div>{_.map(state.target.effects, (val, key) => val > 0 ? <span key={key}>{key}: {val}</span> : '' )}</div> : ''}
             </div>;
 
         const battle_ground_subcomponent =
@@ -334,12 +338,15 @@ class App extends Component {
             <div className="panel">
                 <div>Player vs {state.target.name}:</div>
                 <div>Hit:   {getAttackChance(state.player, state.target).toFixed(2)}%</div>
-                <div>Dodge: {100 - getAttackChance(state.target, state.player).toFixed(2)}%</div>
+                <div>Dodge: {(100 - getAttackChance(state.target, state.player)).toFixed(2)}%</div>
             </div>;
 
         const character_subcomponent =
             <div>
-                {player_subcomponent}
+                <div className="flex-container-row">
+                    {player_subcomponent}
+                    {money_subcomponent}
+                </div>
                 <div className="flex-container-row">
                     {weapon_subcomponent}
                     {armor_subcomponent}
@@ -352,33 +359,35 @@ class App extends Component {
         const inventory_subcomponent =
             <div>
                 <div className="flex-container-row">
-                    {money_subcomponent}
                     {weapon_subcomponent}
+                    {armor_subcomponent}
                 </div>
 
                 {belt_subcomponent}
 
-                { state.inventory.length > 0 ?
+                { state.inventory.weapons.length > 0 ?
                 <div className="panel">
                     <div className="flex-container-row">
                         <div className="flex-element">Name</div>
                         <div className="flex-element">Damage</div>
                         <div className="flex-element">Accuracy</div>
+                        <div className="flex-element">Range</div>
                         <div className="flex-element">Speed</div>
                         <div className="flex-element">Equip</div>
                         <div className="flex-element">Sell</div>
                     </div>
                     <div className="flex-container-column">
-                        {_.map(state.inventory, (item, key) =>
+                        {_.map(state.inventory.weapons, (item, key) =>
                             <div className="flex-element flex-container-row" key={key}>
                                 <div className="flex-element">{item.name}</div>
                                 <div className="flex-element">{item.min_dmg} - {item.max_dmg}</div>
+                                <div className="flex-element">{item.range}</div>
                                 <div className="flex-element">{item.accuracy}</div>
                                 <div className="flex-element">{item.speed}</div>
                                 <div className="flex-element">
                                     <GinButton item={{name: "equip", isLocked: (state) => state.in_fight,
                                         onClick: (state) => {
-                                            state.inventory[key] = state.player.weapon;
+                                            state.inventory.weapons[key] = state.player.weapon;
                                             state.player.weapon = item;
                                             return state; } }} />
                                 </div>
@@ -386,7 +395,45 @@ class App extends Component {
                                     <GinButton item={{name: "sell $"+item.cost, isLocked: (state) => state.in_fight,
                                         onClick: (state) => {
                                             state.player.money += item.cost;
-                                            state.inventory.splice(key, 1);
+                                            state.inventory.weapons.splice(key, 1);
+                                            return state; } }} />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div> : ""}
+
+                { state.inventory.armors.length > 0 ?
+                <div className="panel">
+                    <div className="flex-container-row">
+                        <div className="flex-element">Name</div>
+                        <div className="flex-element">Absorption</div>
+                        <div className="flex-element">Resistance</div>
+                        <div className="flex-element">Stability</div>
+                        <div className="flex-element">Weight</div>
+                        <div className="flex-element">Equip</div>
+                        <div className="flex-element">Sell</div>
+                    </div>
+                    <div className="flex-container-column">
+                        {_.map(state.inventory.armors, (item, key) =>
+                            <div className="flex-element flex-container-row" key={key}>
+                                <div className="flex-element">{item.name}</div>
+                                <div className="flex-element">{item.absorption}</div>
+                                <div className="flex-element">{item.resistance}</div>
+                                <div className="flex-element">{item.stability}</div>
+                                <div className="flex-element">{item.weight}</div>
+                                <div className="flex-element">
+                                    <GinButton item={{name: "equip", isLocked: (state) => state.in_fight,
+                                        onClick: (state) => {
+                                            state.inventory.armors[key] = state.player.armor;
+                                            state.player.armor = item;
+                                            return state; } }} />
+                                </div>
+                                <div className="flex-element">
+                                    <GinButton item={{name: "sell $"+item.cost, isLocked: (state) => state.in_fight,
+                                        onClick: (state) => {
+                                            state.player.money += item.cost;
+                                            state.inventory.armors.splice(key, 1);
                                             return state; } }} />
                                 </div>
                             </div>
@@ -462,7 +509,6 @@ class App extends Component {
                     {this.state.tab === 'character' ?
                         <div>{character_subcomponent}</div>
                         : ''}
-
 
                     {this.state.tab === 'inventory' ?
                         <div> {inventory_subcomponent}</div>

@@ -28,10 +28,6 @@ export const AI = {
                     return 'hit';
                 }
 
-                if (My.mp > 0 && isTargetInRange(state, 50)) {
-                    return 'blast';
-                }
-
                 if (My.sp === 0) {
                     if (state.battleground.target === 100) {
                         return false;
@@ -41,11 +37,15 @@ export const AI = {
                     }
                 }
 
+                if (My.mp > My.max_mp/2 && isTargetInRange(state, 50) && _.random(0, 1)) {
+                    return 'blast';
+                }
+
                 if (My.sp > My.max_sp/2) {
                     return 'run_left';
                 }
                 else {
-                    if (My.mp > My.max_mp/2) {
+                    if (My.mp > My.max_mp/3) {
                         return 'blast';
                     }
                     else {

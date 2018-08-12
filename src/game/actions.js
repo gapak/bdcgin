@@ -129,7 +129,7 @@ export const actions = {
         onAction: (state, attacker, defender) => {
             state[attacker].action = 'heal';
             state[attacker].action_timer += getActionDelay(30, state[attacker]);
-            let hp = Math.min(state[attacker].max_hp - state[attacker].hp, 3 + (2 * state[attacker].level * _.random(1, state[attacker].stats.wiz)));
+            let hp = Math.min(state[attacker].max_hp - state[attacker].hp, _.random(state[attacker].stats.wiz, 3 + (2 * state[attacker].level * _.random(1, state[attacker].stats.wiz))));
             state[attacker].hp += hp;
             state.chat.unshift({text: attacker + "  Heal " + hp});
             return state;
