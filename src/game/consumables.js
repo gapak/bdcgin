@@ -50,7 +50,8 @@ export const consumables = {
         consumableIf: (state) => !state.player.action_timer && isTargetInRange(state, 42),
         onConsume: (state) => {
             state.battleground.target = Math.min(100, state.battleground.target + 10);
-            state.target.action_timer += 20 + _.random(1, 20);
+            state.target.action_timer += 30 + _.random(1, 50);
+            state.player.action_timer += 10;
             return state;
         }},
     fire: { name: 'Fire Scroll', cost: {'player.money': 10}, text: '',
@@ -60,6 +61,7 @@ export const consumables = {
         onConsume: (state) => {
             state.target.hp -= _.random(1, 3) + _.random(1, 3)  + _.random(1, 3);
             state.target.effects.fire += 5;
+            state.player.action_timer += 10;
             return state;
         }},
 
@@ -83,12 +85,12 @@ export const consumables = {
     bomb: { name: 'Fire Bomb', cost: {'player.money': 10}, text: '',
         isDisabled: (state) => state.belt.length >= 6,
         onClick: (state) => buy(state, 'bomb'),
-        consumableIf: (state) => !state.player.action_timer && isTargetInRange(state, 20),
+        consumableIf: (state) => !state.player.action_timer && isTargetInRange(state, 10),
         onConsume: (state) => {
             state.target.hp -= _.random(1, 10) + _.random(1, getRangeBetween(state));
             state.target.action_timer += 20 + _.random(1, 20);
-            state.player.hp -= _.random(1, getRangeBetween(state));
-            state.player.action_timer += 10 + _.random(1, getRangeBetween(state));
+            state.player.hp -= _.random(1, 11 - getRangeBetween(state));
+            state.player.action_timer += 20 + _.random(1, getRangeBetween(state));
             return state;
         }},
     web: { name: 'Web Net', cost: {'player.money': 10}, text: '',

@@ -17,11 +17,11 @@ const weapons_bodies = {
     claymore:{name:"Claymore", min_dmg: 3, max_dmg: 6, bonus_stat: 'str', stunning: 36, accuracy: 5, range: 4, speed: 45},
     spear:  {name: "Spear",    min_dmg: 1, max_dmg: 3, bonus_stat: 'str', stunning: 8,  accuracy: 6, range: 6, speed: 24},
     trident:{name: "Trident",  min_dmg: 2, max_dmg: 6, bonus_stat: 'str', stunning: 12, accuracy: 5, range: 6, speed: 33},
-    axe:    {name: "Axe",      min_dmg: 3, max_dmg: 7, bonus_stat: 'str', stunning: 32, accuracy: 2, range: 2, speed: 40},
-    hammer: {name: "Hammer",   min_dmg: 4, max_dmg: 6, bonus_stat: 'str', stunning: 40, accuracy: 1, range: 1, speed: 42},
+    axe:    {name: "Axe",      min_dmg: 3, max_dmg: 9, bonus_stat: 'str', stunning: 32, accuracy: 2, range: 2, speed: 44},
+    hammer: {name: "Hammer",   min_dmg: 4, max_dmg: 8, bonus_stat: 'str', stunning: 40, accuracy: 1, range: 1, speed: 46},
 
     bow:    {name: "Bow",      min_dmg: 1, max_dmg: 3, bonus_stat: 'dex', stunning: 4,  accuracy: 4, range: 24, speed: 38},
-    cross:  {name: "Arbalest", min_dmg: 2, max_dmg: 4, bonus_stat: 'dex', stunning: 8,  accuracy: 5, range: 28, speed: 49},
+    cross:  {name: "Arbalest", min_dmg: 2, max_dmg: 5, bonus_stat: 'dex', stunning: 12, accuracy: 5, range: 28, speed: 53},
 
     wiz1:   {name: "Book",     min_dmg: 1, max_dmg: 3, bonus_stat: 'wiz', stunning: 24, accuracy: 6, range: 25, speed: 51},
     wiz2:   {name: "Tome",     min_dmg: 2, max_dmg: 4, bonus_stat: 'wiz', stunning: 32, accuracy: 5, range: 30, speed: 63},
@@ -51,7 +51,7 @@ const weapons_mods = {
 
 
 export const genWeapon = (level = 1) => {
-    let body = _.sample(weapons_bodies);
+    let body = _.cloneDeep(_.sample(weapons_bodies));
     let quality = weapons_quality[Math.floor(_.random(1, Math.sqrt(level)))];
     let mod = (level === 1) ? weapons_mods.flat : _.sample(weapons_mods);
 

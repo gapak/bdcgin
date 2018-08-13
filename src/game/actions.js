@@ -61,9 +61,18 @@ export const actions = {
         onAction: (state, attacker, defender) => {
             state[attacker].action = 'push';
             state[attacker].action_timer += 20;
-            state[defender].hp -= 5; // Переделать на механику удара собственным оружием
-            state.battleground[defender] = Math.min(100, state.battleground[defender] + state[attacker].stats.str);
-            state[defender].action_timer += _.random(1, 10 + state[attacker].stats.str);
+
+            state = attack(state,
+                {
+                    attacker: attacker,
+                    defender: defender,
+                    onHit: (state, dmg) => {
+                        state.chat.unshift({text: attacker + " Push! Damage: " + dmg});
+                        state.battleground[defender] = Math.min(100, state.battleground[defender] + state[attacker].stats.str);
+                        state[defender].action_timer += _.random(1, 10 + state[attacker].stats.str);
+                        return state; },
+                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + " Push Miss! Hit chance: " + chance.toFixed(0) + '%'}); return state; },
+                });
             return state;
         }},
     sprint: {name: "Sprint", cost: {'player.sp': 3}, isHidden: (state, attacker, defender) => state[attacker].stats.str < 3,
