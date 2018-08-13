@@ -11,6 +11,7 @@ const endBattleCleaner = (state) => {
     state.in_fight = false;
     state.battleground = {player: 0, target: 100};
     state.player.action = null;
+    state.player.action_timer = 0;
     state.player.effects = {buff: 0, rage: 0, fire: 0, freeze: 0};
     return state;
 };
