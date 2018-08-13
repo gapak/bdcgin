@@ -1,7 +1,6 @@
 
 import _ from 'lodash';
 import {getActionDelay, isTargetInRange, blink, attack} from './game_math';
-import {genWeapon} from './weapons';
 
 
 export const actions = {

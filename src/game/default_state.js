@@ -22,7 +22,7 @@ export const default_state = {
         money: 100,
         level: 1,
         expr: 0,
-        bonus_points: 2,
+        bonus_points: 0,
         hp: 10,
         max_hp: 10,
         sp: 10,
