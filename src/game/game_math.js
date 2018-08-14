@@ -31,6 +31,77 @@ export const getAttackChance = (source, target) => {
     return 50 * ratio;
 };
 
+
+/***
+ *
+ * Damage types:
+ *     crushing
+ *     cutting
+ *     pierce
+ *
+ *     poison
+ *
+ *     fire
+ *     cold
+ *     light
+ *     dark
+ *
+ *
+ *
+ *
+ * @param state
+ * @param params
+ */
+
+
+// TODO
+export const damageDeal = (state, params) => { // damage = 0, type = 'magic') => {
+
+
+
+    let atk = _.random(state[params.attacker].weapon.min_dmg, state[params.attacker].weapon.max_dmg) + _.random(0, state[params.attacker].stats[state[params.attacker].weapon.bonus_stat] + state[params.attacker].effects.rage);
+    let def = _.random(0, state[params.defender].armor.absorption + state[params.defender].effects.buff);
+    let dmg = Math.max(1, atk - def);
+
+};
+
+// TODO
+export const applyDamageToTarget = (state, params, damage, type) => { // damage = 0, type = 'magic') => {
+
+    switch (type) {
+        case 'crushing':
+            break;
+        case 'cutting':
+            break;
+        case 'pierce':
+            break;
+        case 'poison':
+            break;
+        case 'fire':
+            break;
+        case 'cold':
+            break;
+        case 'light':
+            break;
+        case 'dark':
+            break;
+        default:
+            console.log('Unknown damage type!');
+    }
+
+
+
+    let atk = _.random(state[params.attacker].weapon.min_dmg, state[params.attacker].weapon.max_dmg) + _.random(0, state[params.attacker].stats[state[params.attacker].weapon.bonus_stat] + state[params.attacker].effects.rage);
+    let def = _.random(0, state[params.defender].armor.absorption + state[params.defender].effects.buff);
+    let dmg = Math.max(1, atk - def);
+
+};
+
+
+
+
+
+
 export const attack = (state, params) => {
     state[params.attacker].action_timer += getActionDelay(state[params.attacker].weapon.speed, state[params.attacker]);
 
@@ -59,6 +130,8 @@ export const attack = (state, params) => {
         let atk = _.random(state[params.attacker].weapon.min_dmg, state[params.attacker].weapon.max_dmg) + _.random(0, state[params.attacker].stats[state[params.attacker].weapon.bonus_stat] + state[params.attacker].effects.rage);
         let def = _.random(0, state[params.defender].armor.absorption + state[params.defender].effects.buff);
         let dmg = Math.max(1, atk - def);
+
+
         state[params.defender].hp -= dmg;
         state[params.defender].action_timer += Math.max(0, state[params.attacker].weapon.stunning - (state[params.defender].armor.stability + state[params.defender].stats.con));
         state = params.onHit(state, dmg);
