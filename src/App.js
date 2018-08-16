@@ -7,7 +7,7 @@ import './css/App.css';
 
 import {game_name} from './game/app_config';
 import {getDefaultState} from './game/default_state';
-import {checkUnitStats, getAttackChance} from './game/game_math';
+import {checkUnitStats, getAttackProb} from './game/game_math';
 import {actions} from './game/actions';
 import {consumables} from './game/consumables';
 import {armors_bodies} from './game/armors';
@@ -321,7 +321,7 @@ class App extends Component {
                         <div className="flex-element filament"> <ActionGinButton item={actions.fire}/> </div>
                         <div className="flex-element filament"> <ActionGinButton item={actions.blink}/> </div>
                         <div className="flex-element filament"> <ActionGinButton item={actions.firestorm}/> </div>
-                        <div className="flex-element filament"> <ActionGinButton item={actions.name}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.banish}/> </div>
                     </div>
                 </div>
             </div>;
@@ -367,8 +367,8 @@ class App extends Component {
         const analysis_subcomponent =
             <div className="panel">
                 <div>Player vs {state.target.name}:</div>
-                <div>Hit:   {getAttackChance(state.player, state.target).toFixed(2)}%</div>
-                <div>Dodge: {(100 - getAttackChance(state.target, state.player)).toFixed(2)}%</div>
+                <div>Hit:   {getAttackProb(state.player, state.target).toFixed(2)}%</div>
+                <div>Dodge: {(100 - getAttackProb(state.target, state.player)).toFixed(2)}%</div>
             </div>;
 
         const character_subcomponent =

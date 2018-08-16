@@ -23,7 +23,7 @@ export const checkUnitStats = (unit) => {
     return unit;
 };
 
-export const getAttackChance = (source, target) => {
+export const getAttackProb = (source, target) => {
     let attack = 10 + source.weapon.accuracy + source.stats.int;
     let def = 10 + target.stats.dex;
     let ratio = (attack / def);
@@ -104,7 +104,7 @@ export const attack = (state, params) => {
                 attacker: params.defender,
                 defender: params.attacker,
                 onHit: (state, dmg) => {  state.chat.unshift({text: params.defender + " Counter Hit! Damage: " + dmg}); return state; },
-                onMiss: (state, chance) => { state.chat.unshift({text: params.defender + " Counter Miss! Chance: " + chance.toFixed(0) + '%'}); return state; },
+                onMiss: (state, Prob) => { state.chat.unshift({text: params.defender + " Counter Miss! Prob: " + Prob.toFixed(0) + '%'}); return state; },
             });
         return state;
     }
@@ -114,8 +114,8 @@ export const attack = (state, params) => {
         return state;
     }
 
-    let chance = getAttackChance(state[params.attacker], state[params.defender]);
-    if (_.random(0, 100) < chance) {
+    let Prob = getAttackProb(state[params.attacker], state[params.defender]);
+    if (_.random(0, 100) < Prob) {
         console.log();
         let atk = _.random(state[params.attacker].weapon.min_dmg, state[params.attacker].weapon.max_dmg) + _.random(0, state[params.attacker].stats[state[params.attacker].weapon.bonus_stat]);
         let dmg = hit(state, params.attacker, params.defender, atk, state[params.attacker].weapon.dmg_type);
@@ -129,7 +129,7 @@ export const attack = (state, params) => {
         state = params.onHit(state, dmg);
     }
     else {
-        state = params.onMiss(state, chance);
+        state = params.onMiss(state, Prob);
     }
     return state;
 };

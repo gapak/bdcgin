@@ -99,7 +99,7 @@ export const AI = {
                             attacker: 'target',
                             defender: 'player',
                             onHit: (state, dmg) => {  state.chat.unshift({text: "Enemy Hit! Damage: " + dmg}); return state; },
-                            onMiss: (state, chance) => { state.chat.unshift({text: "You Dodge! Dodge chance: " + (100 - chance).toFixed(0) + '%'}); return state; },
+                            onMiss: (state, Prob) => { state.chat.unshift({text: "You Dodge! Dodge Prob: " + (100 - Prob).toFixed(0) + '%'}); return state; },
                         });
                      */
                     break;

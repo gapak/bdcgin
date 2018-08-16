@@ -34,7 +34,8 @@ export const default_unit = {
 };
 
 
-export const genUnit = () => {
+export const genUnit = (level) => {
     let unit = _.cloneDeep(default_unit);
+    unit.level = level;
     return checkUnitStats(unit);
 };

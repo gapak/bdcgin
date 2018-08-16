@@ -90,7 +90,7 @@ export const consumables = {
                 attacker: 'player',
                 defender: 'target',
                 onHit: (state, dmg) => {  state.chat.unshift({text: "player " + soul_weapon.name + " Hit! Damage: " + dmg}); return state; },
-                onMiss: (state, chance) => { state.chat.unshift({text: "player  Miss! Chance: " + chance.toFixed(0) + '%'}); return state; },
+                onMiss: (state, Prob) => { state.chat.unshift({text: "player  Miss! Prob: " + Prob.toFixed(0) + '%'}); return state; },
             });
             state.player.weapon = tpm_weapon;
             state.chat.unshift({text: "Consume " + consumables.dart.name});

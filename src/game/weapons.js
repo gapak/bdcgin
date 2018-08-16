@@ -47,11 +47,13 @@ export var weapons_bodies = {
     trident:{name: "Trident",  min_dmg: 2, max_dmg: 6, dmg_type: 'pierce', bonus_stat: 'str', stunning: 12, accuracy: 5, range: 6, speed: 33},
     halberd:{name: "Halberd",  min_dmg: 3, max_dmg: 8, dmg_type: 'cutting', bonus_stat: 'str', stunning: 24, accuracy: 4, range: 6, speed: 44},
 
+    whip:   {name: "Whip",     min_dmg: 1, max_dmg: 2, dmg_type: 'crushing', bonus_stat: 'str', stunning: 16, accuracy: 3, range: 10, speed: 27},
+
     staff:  {name: "Staff",    min_dmg: 1, max_dmg: 4, dmg_type: 'crushing', bonus_stat: 'str', stunning: 20, accuracy: 3, range: 3, speed: 26},
     mace:   {name: "Mace",     min_dmg: 2, max_dmg: 6, dmg_type: 'crushing', bonus_stat: 'str', stunning: 30, accuracy: 2, range: 2, speed: 35},
     hammer: {name: "Hammer",   min_dmg: 4, max_dmg: 8, dmg_type: 'crushing', bonus_stat: 'str', stunning: 40, accuracy: 1, range: 2, speed: 47},
-    club:   {name: "Сlub",     min_dmg: 6, max_dmg: 10,dmg_type: 'crushing', bonus_stat: 'str', stunning: 60, accuracy: 1, range: 3, speed: 65},
-    Crasher:{name: "Crasher",  min_dmg: 8, max_dmg: 12,dmg_type: 'crushing', bonus_stat: 'str', stunning: 60, accuracy: 3, range: 5, speed: 78},
+    club:   {name: "Сlub",     min_dmg: 6, max_dmg: 10,dmg_type: 'crushing', bonus_stat: 'str', stunning: 60, accuracy: 1, range: 3, speed: 66},
+    crasher:{name: "Crasher",  min_dmg: 8, max_dmg: 12,dmg_type: 'crushing', bonus_stat: 'str', stunning: 60, accuracy: 3, range: 5, speed: 78},
 
     sling:    {name: "Sling",  min_dmg: 1, max_dmg: 3, dmg_type: 'crushing', bonus_stat: 'dex', stunning: 16,  accuracy: 3, range: 16, speed: 35},
     bow:    {name: "Bow",      min_dmg: 1, max_dmg: 4, dmg_type: 'pierce', bonus_stat: 'dex', stunning: 4,  accuracy: 4, range: 24, speed: 40},
@@ -66,7 +68,7 @@ export var weapons_bodies = {
 /*
 _.each(weapons_bodies, (weapon, key) => {
     let speed = weapon.min_dmg * 2 + weapon.max_dmg * 2 + weapon.stunning / 2 + weapon.accuracy + weapon.range;
-    //console.log(weapons_bodies[key].speed === speed, weapon.name, weapons_bodies[key].speed, speed);
+    console.log(weapons_bodies[key].speed === speed, weapon.name, weapons_bodies[key].speed, speed);
 } );
 */
 

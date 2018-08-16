@@ -66,20 +66,6 @@ export const genTarget = (level = 1) => {
 
     _.times(level - 1, () => { target.stats[_.sample(_.keys(target.stats))]++; } );
 
-    /*
-    let hp = level * Math.max(1, 14 + target.stats.con + quality.hp + mod.hp + body.hp);
-    target.hp = hp;
-    target.max_hp = hp;
-
-    let sp = level * Math.max(1, 9 + target.stats.str + quality.sp + mod.sp + body.sp);
-    target.sp = sp;
-    target.max_sp = sp;
-
-    let mp = level * Math.max(1, 2 + target.stats.wiz + quality.mp + mod.mp + body.mp);
-    target.mp = mp;
-    target.max_mp = mp;
-    */
-
     target = checkUnitStats(target);
 
     //console.log('New Target: ', level, body, quality, mod, target);
