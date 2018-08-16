@@ -1,7 +1,7 @@
 
 import _ from 'lodash';
 
-import {getActionDelay, isTargetInRange, blink, attack} from './game_math';
+import {getActionDelay, isTargetInRange, blink, attack, hit} from './game_math';
 import {effects_0} from './unit';
 
 
@@ -300,7 +300,8 @@ export const actions = {
             state[attacker].action = 'freeze';
             state[attacker].effects.fire = Math.max(0, state[attacker].effects.fire - 1);
             state[attacker].action_timer += getActionDelay(30, state[attacker]);
-            let fire = state[attacker].level + _.random(1, state[attacker].stats.wiz);
+            let atk = state[attacker].level + _.random(1, state[attacker].stats.wiz);
+            let fire = hit(state, attacker, defender, atk, 'cold');
             state[defender].hp -= fire;
             state[defender].action_timer += fire * state[attacker].stats.wiz;
             state[defender].effects.freeze += state[attacker].stats.wiz;
@@ -372,7 +373,8 @@ export const actions = {
         onAction: (state, attacker, defender) => {
             state[attacker].action = 'blast';
             state[attacker].action_timer += getActionDelay(25, state[attacker]);
-            let fire = 1 + state[attacker].level + _.random(1, state[attacker].stats.int);
+            let atk = 1 + state[attacker].level + _.random(1, state[attacker].stats.int);
+            let fire = hit(state, attacker, defender, atk, 'dark');
             state[defender].hp -= fire;
             state.chat.unshift({text: attacker + "  Blast " + fire});
             return state;
@@ -385,7 +387,8 @@ export const actions = {
             state[attacker].action = 'fire';
             state[attacker].effects.freeze = Math.max(0, state[attacker].effects.freeze - 1);
             state[attacker].action_timer += getActionDelay(30, state[attacker]);
-            let fire = state[attacker].level * _.random(1, state[attacker].stats.int);
+            let atk = state[attacker].level * _.random(1, state[attacker].stats.int);
+            let fire = hit(state, attacker, defender, atk, 'fire');
             state[defender].hp -= fire;
             state[defender].effects.fire++;
             state.chat.unshift({text: attacker + "  Fire " + fire});

@@ -183,6 +183,24 @@ class App extends Component {
             </div>;
 
 
+        const levelUp = (stat) => {
+            return state.in_fight !== true
+                ?
+                <div>
+                    {_.toUpper(stat)}: {state.player.stats[stat]}
+                    <GinButton item={{
+                        name: "+1",
+                        isLocked: (state) => !state.player.bonus_points || state.player.stats[stat] >= 5,
+                        onClick: (state) => {
+                            state.player.stats[stat]++;
+                            state.player.bonus_points--;
+                            state.player = checkUnitStats(state.player);
+                            return state;
+                        } }} /> </div>
+                : ''
+        };
+
+
         const player_subcomponent =
             <div className="flex-element panel filament">
                 <div>Player</div>
@@ -192,11 +210,11 @@ class App extends Component {
                 <div> HP: {state.player.hp}/{state.player.max_hp} </div>
                 <div> SP: {state.player.sp}/{state.player.max_sp} </div>
                 <div> MP: {state.player.mp}/{state.player.max_mp} </div>
-                {state.in_fight !== true ? <div> STR: {state.player.stats.str} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.str++; state.player.bonus_points--; state.player = checkUnitStats(state.player); return state; } }} /> </div> : ''}
-                {state.in_fight !== true ? <div> DEX: {state.player.stats.dex} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.dex++; state.player.bonus_points--; state.player = checkUnitStats(state.player); return state; } }} /> </div> : ''}
-                {state.in_fight !== true ? <div> CON: {state.player.stats.con} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.con++; state.player.bonus_points--; state.player = checkUnitStats(state.player); return state; } }} /> </div> : ''}
-                {state.in_fight !== true ? <div> WIZ: {state.player.stats.wiz} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.wiz++; state.player.bonus_points--; state.player = checkUnitStats(state.player); return state; } }} /> </div> : ''}
-                {state.in_fight !== true ? <div> INT: {state.player.stats.int} <GinButton item={{name: "+1", isLocked: (state) => !state.player.bonus_points, onClick: (state) => { state.player.stats.int++; state.player.bonus_points--; state.player = checkUnitStats(state.player); return state; } }} /> </div> : ''}
+                {levelUp('str')}
+                {levelUp('dex')}
+                {levelUp('con')}
+                {levelUp('wiz')}
+                {levelUp('int')}
                 <div> Action: {state.player.action ? actions[state.player.action].name : ''} {state.player.action_timer} </div>
                 {_.sum(_.values(state.player.effects)) > 0 ? <div>{_.map(state.player.effects, (val, key) => val > 0 ? <span key={key}>{key}: {val}</span> : '' )}</div> : ''}
             </div>;
@@ -205,6 +223,7 @@ class App extends Component {
             <div className="flex-element panel">
                 <div>{state.player.weapon.name}</div>
                 <div>Damage: {state.player.weapon.min_dmg} - {state.player.weapon.max_dmg}</div>
+                <div>Type: {state.player.weapon.dmg_type}</div>
                 <div>Skill: {state.player.weapon.bonus_stat}</div>
                 <div>Stunning: {state.player.weapon.stunning}</div>
                 <div>Accuracy: {state.player.weapon.accuracy}</div>
@@ -495,6 +514,32 @@ class App extends Component {
                 </div>
                 <div>
                     <h2>Wiki</h2>
+                    <div className="panel slim container">
+                        From this Arena there are two ways out: victory over all or death. Improve your skills, select equipment and use consumables to defeat your opponents!
+                    </div>
+                    <div className="panel slim container">
+                        <h3 className="slim">Stats</h3>
+                        <div className="row">
+                            <div className="col-xs-2">STR</div>
+                            <div className="col-xs-10">Adds SP and to attack of many melee weapons</div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-2">DEX</div>
+                            <div className="col-xs-10">Adds SP and accelerates action speed</div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-2">CON</div>
+                            <div className="col-xs-10">Adds HP and stun resistance</div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-2">WIZ</div>
+                            <div className="col-xs-10">Adds MP and magic resistance</div>
+                        </div>
+                        <div className="row">
+                            <div className="col-xs-2">INT</div>
+                            <div className="col-xs-10">Adds MP and attack accuracy</div>
+                        </div>
+                    </div>
                     <div className="panel slim">
                         <h3 className="slim">Weapons</h3>
                         <div className="slim flex-container-row">

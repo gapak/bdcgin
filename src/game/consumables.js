@@ -1,7 +1,7 @@
 
 import _ from 'lodash';
 
-import {isTargetInRange, getRangeBetween, blink, attack} from './game_math';
+import {isTargetInRange, getRangeBetween, blink, attack, hit} from './game_math';
 
 const buy = (state, item_key) => {
     state.belt.push(item_key);
@@ -18,6 +18,7 @@ export const consumables = {
             state.player.action_timer += 10;
             state.player.effects.poison = Math.max(0, state.player.effects.poison - 20);
             state.player.hp = Math.min(state.player.hp + 20, state.player.max_hp);
+            state.chat.unshift({text: "Consume " + consumables.heal.name});
             return state;
     }},
     stamina: { name: 'SP Pot', cost: {'player.money': 10}, text: 'Restore SP and warm ice',
@@ -28,6 +29,7 @@ export const consumables = {
             state.player.action_timer += 10;
             state.player.effects.freeze = Math.max(0, state.player.effects.freeze - 10);
             state.player.sp = Math.min(state.player.sp + 10, state.player.max_sp);
+            state.chat.unshift({text: "Consume " + consumables.stamina.name});
             return state;
     }},
     manna: { name: 'MP Pot', cost: {'player.money': 10}, text: 'Restore MP and extinguish fire',
@@ -38,6 +40,7 @@ export const consumables = {
             state.player.action_timer += 10;
             state.player.effects.fire = Math.max(0, state.player.effects.fire - 5);
             state.player.mp = Math.min(state.player.mp + 5, state.player.max_mp);
+            state.chat.unshift({text: "Consume " + consumables.manna.name});
             return state;
     }},
 
@@ -45,8 +48,10 @@ export const consumables = {
         isDisabled: (state) => state.belt.length >= 6,
         onClick: (state) => buy(state, 'blink'),
         consumableIf: (state) => !state.player.action_timer,
-        onConsume: (state) => blink(state, 42)
-    },
+        onConsume: (state) => {
+            state.chat.unshift({text: "Consume " + consumables.blink.name});
+            return blink(state, 42);
+        }},
     wave: { name: 'Wave Scroll', cost: {'player.money': 10}, text: 'Pushes, stuns and freezes the target',
         isDisabled: (state) => state.belt.length >= 6,
         onClick: (state) => buy(state, 'wave'),
@@ -56,6 +61,7 @@ export const consumables = {
             state.target.action_timer += 30;
             state.target.effects.freeze += 10;
             state.player.action_timer += 10;
+            state.chat.unshift({text: "Consume " + consumables.wave.name});
             return state;
         }},
     fire: { name: 'Fire Scroll', cost: {'player.money': 10}, text: 'Damage and ignite target',
@@ -63,9 +69,12 @@ export const consumables = {
         onClick: (state) => buy(state, 'fire'),
         consumableIf: (state) => !state.player.action_timer && isTargetInRange(state, 13),
         onConsume: (state) => {
-            state.target.hp -= _.random(1, 3) + _.random(1, 3)  + _.random(1, 3);
+            let atk = _.random(3, 9 * state.player.stats.wiz) + _.random(1, 3)  + _.random(1, 3);
+            let fire = hit(state, 'player', 'target', atk, 'fire');
+            state.target.hp -= fire;
             state.target.effects.fire += 5;
             state.player.action_timer += 10;
+            state.chat.unshift({text: "Consume " + consumables.fire.name});
             return state;
         }},
 
@@ -84,6 +93,7 @@ export const consumables = {
                 onMiss: (state, chance) => { state.chat.unshift({text: "player  Miss! Hit chance: " + chance.toFixed(0) + '%'}); return state; },
             });
             state.player.weapon = tpm_weapon;
+            state.chat.unshift({text: "Consume " + consumables.dart.name});
             return state;
         }},
     bomb: { name: 'Poison Bomb', cost: {'player.money': 10}, text: 'Poisons the target and those standing nearby',
@@ -94,6 +104,7 @@ export const consumables = {
             state.target.effects.poison += 25;// -= _.random(1, 10) + _.random(1, getRangeBetween(state));
             state.player.effects.poison += 20 - getRangeBetween(state);//_.random(1, 19 - getRangeBetween(state));
             state.player.action_timer += 20;
+            state.chat.unshift({text: "Consume " + consumables.bomb.name});
             return state;
         }},
     web: { name: 'Web Net', cost: {'player.money': 10}, text: 'Entangles the target and makes it inactive for a long time',
@@ -103,6 +114,7 @@ export const consumables = {
         onConsume: (state) => {
             state.player.action_timer += 20;
             state.target.action_timer += 100;
+            state.chat.unshift({text: "Consume " + consumables.web.name});
             return state;
         }},
 };

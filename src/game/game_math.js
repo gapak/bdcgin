@@ -6,17 +6,17 @@ export const checkUnitStats = (unit) => {
     let level = unit.level;
 
     //let hp = level * (13 + (unit.stats.con * 2));
-    let hp = ((level + (unit.stats.con * 2)) * 5) + 35;
+    let hp = ((level + (unit.stats.con)) * 8) + 16;
     unit.max_hp = hp;
     unit.hp = Math.min(hp, unit.max_hp);
 
     //let sp = level * (8 + unit.stats.str + unit.stats.dex);
-    let sp = ((level + (unit.stats.str + unit.stats.dex)) * 4) + 8;
+    let sp = ((level + (unit.stats.str + unit.stats.dex)) * 4) + 4;
     unit.max_sp = sp;
     unit.sp = Math.min(sp, unit.max_sp);
 
     //let mp = level * (3 + unit.stats.wiz + unit.stats.int);
-    let mp = ((level + (unit.stats.wiz + unit.stats.int)) * 2) + 4;
+    let mp = ((level + (unit.stats.wiz + unit.stats.int)) * 3) + 3;
     unit.max_mp = mp;
     unit.mp = Math.min(mp, unit.max_mp);
 
@@ -46,7 +46,7 @@ export const hit = (state, attacker, defender, dmg, dmg_type) => {
 
     const magical = (dmg) => {
         let atk = dmg - state[attacker].effects.fright;
-        let def = _.random(0, state[defender].armor.resistance);
+        let def = _.random(0, state[defender].armor.resistance + state[defender].stats.wiz);
         return Math.max(1, atk - def);
     };
 
@@ -77,6 +77,7 @@ export const hit = (state, attacker, defender, dmg, dmg_type) => {
             break;
         default:
             console.log('Unknown damage type: ' + dmg_type);
+            console.log(attacker, defender, dmg, dmg_type);
     }
 
     return dmg;

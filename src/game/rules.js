@@ -148,7 +148,7 @@ export const rules = {
                 state.player.expr -= (100 * state.player.level);
                 state.player.bonus_points += 1;
                 state.player.level += 1;
-                state = checkUnitStats(state, 'player');
+                state.player = checkUnitStats(state.player);
             }
             return state;
         }

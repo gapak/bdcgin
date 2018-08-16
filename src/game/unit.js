@@ -11,7 +11,7 @@ export const default_unit = {
     money: 0,
     level: 1,
     expr: 0,
-    bonus_points: 20,
+    bonus_points: 0,
     hp: 1,
     max_hp: 1,
     sp: 1,

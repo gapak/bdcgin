@@ -104,6 +104,7 @@ export const genWeapon = (level = 1) => {
         name: mod.name + ' ' + quality.name + ' ' + body.name,
         min_dmg: quality.min_dmg + mod.min_dmg + body.min_dmg,// + level,
         max_dmg: quality.max_dmg + mod.max_dmg + body.max_dmg,// + level,
+        dmg_type:  body.dmg_type,
         bonus_stat:  body.bonus_stat,
         stunning: quality.stunning + mod.stunning + body.stunning,// + level,
         accuracy: quality.accuracy + mod.accuracy + body.accuracy,// + level,
