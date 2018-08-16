@@ -128,7 +128,7 @@ class App extends Component {
             return (item.isLocked && item.isLocked(this.state))
                 ? ''
                 :
-                <button
+                <button style={{padding: '4px 4px'}}
                     className={(item.isDisabled && item.isDisabled(this.state)) ? 'disabled' : (item.cost ? isEnough(this.state, item.cost) ? '' : 'disabled' : '')}
                     onClick={() => { this.onClickWrapper(item); }}>
                     {item.name}
@@ -269,41 +269,40 @@ class App extends Component {
         const actions_subcomponent =
             <div className="flex-element filament">
                 <div className="panel">
-                    <h4>actions</h4>
                     <div className="flex-container-row">
-                        <div className="flex-element"> <ActionGinButton item={actions.hit}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.push}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.sprint}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.roar}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.double}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.hit}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.push}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.sprint}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.roar}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.double}/> </div>
                     </div>
                     <div className="flex-container-row">
-                        <div className="flex-element"> <ActionGinButton item={actions.roll}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.parry}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.poison}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.exhaust}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.flip}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.roll}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.parry}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.poison}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.exhaust}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.flip}/> </div>
                     </div>
                     <div className="flex-container-row">
-                        <div className="flex-element"> <ActionGinButton item={actions.block}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.regen}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.rage}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.trance}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.stun}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.block}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.regen}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.rage}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.trance}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.stun}/> </div>
                     </div>
                     <div className="flex-container-row">
-                        <div className="flex-element"> <ActionGinButton item={actions.heal}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.freeze}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.sword}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.iceshield}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.spear}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.heal}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.freeze}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.sword}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.iceshield}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.spear}/> </div>
                     </div>
                     <div className="flex-container-row">
-                        <div className="flex-element"> <ActionGinButton item={actions.blast}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.fire}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.blink}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.firestorm}/> </div>
-                        <div className="flex-element"> <ActionGinButton item={actions.name}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.blast}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.fire}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.blink}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.firestorm}/> </div>
+                        <div className="flex-element filament"> <ActionGinButton item={actions.name}/> </div>
                     </div>
                 </div>
             </div>;
@@ -325,6 +324,10 @@ class App extends Component {
             <div>
                 <div className="flex-container-row">
                     {player_subcomponent}
+                    <div className="flex-element panel">
+                        <h5>chat</h5>
+                        {chat_subcomponent}
+                    </div>
                     {target_subcomponent}
                 </div>
 
@@ -333,10 +336,6 @@ class App extends Component {
                 {state.in_fight === true ? mowement_subcomponent : ''}
 
                 <div className="flex-container-row">
-                    <div className="flex-element panel">
-                        <h5>chat</h5>
-                        {chat_subcomponent}
-                    </div>
                     {state.in_fight === true ? actions_subcomponent :
                         <div className="flex-element">
                             <GinButton item={{name: "Start Fight!", isLocked: (state) => state.in_fight,

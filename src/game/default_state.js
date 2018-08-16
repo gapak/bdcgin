@@ -43,6 +43,7 @@ export const getDefaultState = () => {
     let state = _.cloneDeep(default_state);
     state.player = checkUnitStats(genUnit(1));
     state.player.weapon = genWeapon(1);
+    state.player.money = 100;
     state.player.armor = genArmor(1);
     state.target = genTarget(1);
     return state;
