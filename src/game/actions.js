@@ -64,7 +64,7 @@ export const actions = {
                     attacker: attacker,
                     defender: defender,
                     onHit: (state, dmg) => {  state.chat.unshift({text: attacker + "  Hit! Damage: " + dmg}); return state; },
-                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + "  Miss! Hit chance: " + chance.toFixed(0) + '%'}); return state; },
+                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + "  Miss! Chance: " + chance.toFixed(0) + '%'}); return state; },
                 });
             return state;
         }},
@@ -83,7 +83,7 @@ export const actions = {
                         state.battleground[defender] = Math.min(100, state.battleground[defender] + state[attacker].stats.str);
                         state[defender].action_timer += _.random(1, 10 + state[attacker].stats.str);
                         return state; },
-                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + " Push Miss! Hit chance: " + chance.toFixed(0) + '%'}); return state; },
+                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + " Push Miss! Chance: " + chance.toFixed(0) + '%'}); return state; },
                 });
             return state;
         }},
@@ -126,14 +126,14 @@ export const actions = {
                     attacker: attacker,
                     defender: defender,
                     onHit: (state, dmg) => {  state.chat.unshift({text: attacker + "  Hit! Damage: " + dmg}); return state; },
-                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + "  Miss! Hit chance: " + chance.toFixed(0) + '%'}); return state; },
+                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + "  Miss! Chance: " + chance.toFixed(0) + '%'}); return state; },
                 });
             state = attack(state,
                 {
                     attacker: attacker,
                     defender: defender,
                     onHit: (state, dmg) => {  state.chat.unshift({text: attacker + "  Hit! Damage: " + dmg}); return state; },
-                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + "  Miss! Hit chance: " + chance.toFixed(0) + '%'}); return state; },
+                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + "  Miss! Chance: " + chance.toFixed(0) + '%'}); return state; },
                 });
             return state;
         }
@@ -174,7 +174,7 @@ export const actions = {
                         state[defender].effects.poison += dmg;
                         state.chat.unshift({text: attacker + " Poison: " + dmg});
                         return state; },
-                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + " Poison Miss! Hit chance: " + chance.toFixed(0) + '%'}); return state; },
+                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + " Poison Miss! Chance: " + chance.toFixed(0) + '%'}); return state; },
                 });
             return state;
         }},
@@ -193,7 +193,7 @@ export const actions = {
                         state[defender].sp -= ex_sp;
                         state.chat.unshift({text: attacker + " Exhaust " + ex_sp + " sp! Damage: " + dmg});
                         return state; },
-                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + " Exhaust Miss! Hit chance: " + chance.toFixed(0) + '%'}); return state; },
+                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + " Exhaust Miss! Chance: " + chance.toFixed(0) + '%'}); return state; },
                 });
             return state;
         }
@@ -209,7 +209,7 @@ export const actions = {
                     attacker: attacker,
                     defender: defender,
                     onHit: (state, dmg) => {  state.chat.unshift({text: attacker + "  Hit! Damage: " + dmg}); return state; },
-                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + "  Miss! Hit chance: " + chance.toFixed(0) + '%'}); return state; },
+                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + "  Miss! Chance: " + chance.toFixed(0) + '%'}); return state; },
                 });
             state.chat.unshift({text: attacker + "  name"});
             return state;
@@ -271,7 +271,7 @@ export const actions = {
                         state.chat.unshift({text: attacker + " Stun! Damage: " + dmg});
                         state[defender].action_timer += 10 * state[attacker].stats.con;
                         return state; },
-                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + " Stun Miss! Hit chance: " + chance.toFixed(0) + '%'}); return state; },
+                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + " Stun Miss! Chance: " + chance.toFixed(0) + '%'}); return state; },
                 });
             state.chat.unshift({text: attacker + "  name"});
             return state;
@@ -323,7 +323,7 @@ export const actions = {
                     attacker: 'player',
                     defender: 'target',
                     onHit: (state, dmg) => {  state.chat.unshift({text: attacker + "  " + soul_weapon.name + " Hit! Damage: " + dmg}); return state; },
-                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + "  Miss! Hit chance: " + chance.toFixed(0) + '%'}); return state; },
+                    onMiss: (state, chance) => { state.chat.unshift({text: attacker + "  Miss! Chance: " + chance.toFixed(0) + '%'}); return state; },
                 });
             state[attacker].weapon = tpm_weapon;
 
@@ -358,7 +358,7 @@ export const actions = {
                 attacker: 'player',
                 defender: 'target',
                 onHit: (state, dmg) => {  state.chat.unshift({text: attacker + "  " + soul_weapon.name + " Hit! Damage: " + dmg}); return state; },
-                onMiss: (state, chance) => { state.chat.unshift({text: attacker + "  Miss! Hit chance: " + chance.toFixed(0) + '%'}); return state; },
+                onMiss: (state, chance) => { state.chat.unshift({text: attacker + "  Miss! Chance: " + chance.toFixed(0) + '%'}); return state; },
             });
             state[attacker].weapon = tpm_weapon;
             return state;

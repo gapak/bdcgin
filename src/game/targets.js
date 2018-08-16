@@ -53,6 +53,8 @@ export const genTarget = (level = 1) => {
 
     let target = genUnit(level);
 
+    target.name = mod.name + ' ' + quality.name + ' ' + body.name;
+
     target.weapon = genWeapon(level);
     target.armor = genArmor(level);
 

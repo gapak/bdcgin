@@ -104,7 +104,7 @@ export const attack = (state, params) => {
                 attacker: params.defender,
                 defender: params.attacker,
                 onHit: (state, dmg) => {  state.chat.unshift({text: params.defender + " Counter Hit! Damage: " + dmg}); return state; },
-                onMiss: (state, chance) => { state.chat.unshift({text: params.defender + " Counter Miss! Hit chance: " + chance.toFixed(0) + '%'}); return state; },
+                onMiss: (state, chance) => { state.chat.unshift({text: params.defender + " Counter Miss! Chance: " + chance.toFixed(0) + '%'}); return state; },
             });
         return state;
     }
