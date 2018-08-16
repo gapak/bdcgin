@@ -1,6 +1,8 @@
 
 import _ from 'lodash';
 
+import {checkUnitStats} from './game_math';
+import {genUnit} from './unit';
 import {genWeapon} from './weapons';
 import {genArmor} from './armors';
 
@@ -47,28 +49,12 @@ export const genTarget = (level = 1) => {
     let quality = targets_quality[q];
     let mod = level === 1 ? targets_mods.flat : _.sample(targets_mods);
 
-    let target = {
-        name: mod.name + ' ' + quality.name + ' ' + body.name,
-        level: level,
-        hp: 10,
-        max_hp: 10,
-        sp: 10,
-        max_sp: 10,
-        mp: 10,
-        max_mp: 10,
-        stats: {
-            str: 1,
-            con: 1,
-            dex: 1,
-            wiz: 1,
-            int: 1
-        },
-        weapon: genWeapon(level),
-        armor: genArmor(level),
-        action_timer: 0,
-        action: null, // до конца action
-        effects: {buff: 0, rage: 0, fire: 0, freeze: 0}, // до конца боя
-    };
+    //console.log('Gen Target: ', level, body, quality, mod);
+
+    let target = genUnit(level);
+
+    target.weapon = genWeapon(level);
+    target.armor = genArmor(level);
 
     target.stats.str = Math.max(1, quality.stats.str + mod.stats.str + body.stats.str);
     target.stats.dex = Math.max(1, quality.stats.dex + mod.stats.dex + body.stats.dex);
@@ -92,7 +78,9 @@ export const genTarget = (level = 1) => {
     target.max_mp = mp;
     */
 
-    console.log('Gen Target: ', level, body, quality, mod, target);
+    target = checkUnitStats(target);
+
+    //console.log('New Target: ', level, body, quality, mod, target);
 
     return target;
 };

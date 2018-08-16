@@ -1,18 +1,19 @@
 
 import _ from 'lodash';
+
+import {effects_0} from './unit';
 import {genTarget} from './targets';
-import {checkStats} from './game_math';
+import {checkUnitStats, isTargetInRange, hit} from './game_math';
 import {AI} from './AI';
 
 
 const endBattleCleaner = (state) => {
     state.target = genTarget(_.random(Math.ceil(state.player.level/2), (2 * state.player.level) - 1));
-    state = checkStats(state, 'target');
     state.in_fight = false;
     state.battleground = {player: 0, target: 100};
     state.player.action = null;
     state.player.action_timer = 0;
-    state.player.effects = {buff: 0, rage: 0, fire: 0, freeze: 0};
+    state.player.effects = effects_0;
     return state;
 };
 
@@ -42,8 +43,51 @@ export const rules = {
     },
 
     effects_in_battle: { onTick: (state) => {
-        for (let ip = 0; ip < state.player.effects.fire; ip++) { if (_.random(1, 60) === 1) { state.player.hp--; state.chat.unshift({text: "You Burns"});} }
-        for (let it = 0; it < state.target.effects.fire; it++) { if (_.random(1, 60) === 1) { state.target.hp--; state.chat.unshift({text: "Enemy Burns"});} }
+        const effector = (state, attacker, defender) => {
+            if (state[attacker].action === 'trance') {
+                if (state.player.mp < state.player.max_mp && _.random(1, 5) === 1) {
+                    state.player.mp++;
+                }}
+
+            for (let ip = 0; ip < state[attacker].effects.regen; ip++) {
+                if (state.player.hp < state.player.max_hp && _.random(1, 60) === 1) {
+                    state.player.hp++;
+                    state.chat.unshift({text: attacker + " Regen"});
+                }
+            }
+            for (let ip = 0; ip < state[defender].effects.fire; ip++) {
+                if (_.random(1, 60) === 1) {
+                    let dmg = hit(state, attacker, defender, 1, 'fire');
+                    if (dmg > 0) {
+                        state[defender].hp -= dmg;
+                        state.chat.unshift({text: defender + " Burns"});
+                    }
+                }
+            }
+            for (let ip = 0; ip < state[defender].effects.poison; ip++) {
+                if (_.random(1, 60) === 1) {
+                    let dmg = hit(state, attacker, defender, 1, 'poison');
+                    if (dmg > 0) {
+                        state[defender].hp -= dmg;
+                        state.chat.unshift({text: defender + " poisoned"});
+                    }
+                }
+            }
+            for (let ip = 0; ip < state[attacker].effects.firestorm; ip++) {
+                if (_.random(1, 30) === 1 && isTargetInRange(state, 5)) {
+                    let dmg = hit(state, attacker, defender, 1, 'fire');
+                    if (dmg > 0) {
+                        state[defender].hp -= dmg;
+                        state.chat.unshift({text: defender + " Burns"});
+                    }
+                }
+            }
+            return state;
+        };
+
+        state = effector(state, 'player', 'target');
+        state = effector(state, 'target', 'player');
+
         return state;
     }},
 
@@ -104,7 +148,7 @@ export const rules = {
                 state.player.expr -= (100 * state.player.level);
                 state.player.bonus_points += 1;
                 state.player.level += 1;
-                state = checkStats(state, 'player');
+                state = checkUnitStats(state, 'player');
             }
             return state;
         }

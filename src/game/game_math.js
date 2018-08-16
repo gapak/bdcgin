@@ -2,25 +2,25 @@
 import _ from 'lodash';
 
 
-export const checkStats = (state, unit_key) => {
-    let level = state[unit_key].level;
+export const checkUnitStats = (unit) => {
+    let level = unit.level;
 
-    //let hp = level * (13 + (state[unit_key].stats.con * 2));
-    let hp = ((level + (state[unit_key].stats.con * 2)) * 5) + 35;
-    state[unit_key].max_hp = hp;
-    state[unit_key].hp = Math.min(hp, state[unit_key].max_hp);
+    //let hp = level * (13 + (unit.stats.con * 2));
+    let hp = ((level + (unit.stats.con * 2)) * 5) + 35;
+    unit.max_hp = hp;
+    unit.hp = Math.min(hp, unit.max_hp);
 
-    //let sp = level * (8 + state[unit_key].stats.str + state[unit_key].stats.dex);
-    let sp = ((level + (state[unit_key].stats.str + state[unit_key].stats.dex)) * 4) + 8;
-    state[unit_key].max_sp = sp;
-    state[unit_key].sp = Math.min(sp, state[unit_key].max_sp);
+    //let sp = level * (8 + unit.stats.str + unit.stats.dex);
+    let sp = ((level + (unit.stats.str + unit.stats.dex)) * 4) + 8;
+    unit.max_sp = sp;
+    unit.sp = Math.min(sp, unit.max_sp);
 
-    //let mp = level * (3 + state[unit_key].stats.wiz + state[unit_key].stats.int);
-    let mp = ((level + (state[unit_key].stats.wiz + state[unit_key].stats.int)) * 2) + 4;
-    state[unit_key].max_mp = mp;
-    state[unit_key].mp = Math.min(mp, state[unit_key].max_mp);
+    //let mp = level * (3 + unit.stats.wiz + unit.stats.int);
+    let mp = ((level + (unit.stats.wiz + unit.stats.int)) * 2) + 4;
+    unit.max_mp = mp;
+    unit.mp = Math.min(mp, unit.max_mp);
 
-    return state;
+    return unit;
 };
 
 export const getAttackChance = (source, target) => {
@@ -32,85 +32,69 @@ export const getAttackChance = (source, target) => {
 };
 
 
-/***
- *
- * Damage types:
- *     crushing
- *     cutting
- *     pierce
- *
- *     poison
- *
- *     fire
- *     cold
- *     light
- *     dark
- *
- *
- *
- *
- * @param state
- * @param params
- */
+export const hit = (state, attacker, defender, dmg, dmg_type) => {
 
+    const raw = (dmg) => {
+        return dmg;
+    };
 
-// TODO
-export const damageDeal = (state, params) => { // damage = 0, type = 'magic') => {
+    const physical = (dmg) => {
+        let atk = dmg + state[attacker].effects.rage - state[attacker].effects.fright;
+        let def = _.random(0, state[defender].armor.absorption);
+        return Math.max(1, atk - def);
+    };
 
+    const magical = (dmg) => {
+        let atk = dmg - state[attacker].effects.fright;
+        let def = _.random(0, state[defender].armor.resistance);
+        return Math.max(1, atk - def);
+    };
 
-
-    let atk = _.random(state[params.attacker].weapon.min_dmg, state[params.attacker].weapon.max_dmg) + _.random(0, state[params.attacker].stats[state[params.attacker].weapon.bonus_stat] + state[params.attacker].effects.rage);
-    let def = _.random(0, state[params.defender].armor.absorption + state[params.defender].effects.buff);
-    let dmg = Math.max(1, atk - def);
-
-};
-
-// TODO
-export const applyDamageToTarget = (state, params, damage, type) => { // damage = 0, type = 'magic') => {
-
-    switch (type) {
+    switch (dmg_type) {
         case 'crushing':
+            dmg = physical(dmg);
             break;
         case 'cutting':
+            dmg = physical(dmg);
             break;
         case 'pierce':
+            dmg = physical(dmg);
             break;
         case 'poison':
+            dmg = raw(dmg);
             break;
         case 'fire':
+            dmg = magical(dmg);
             break;
         case 'cold':
-            break;
-        case 'light':
+            dmg = magical(dmg);
             break;
         case 'dark':
+            dmg = magical(dmg);
+            break;
+        case 'light':
+            dmg = magical(dmg);
             break;
         default:
-            console.log('Unknown damage type!');
+            console.log('Unknown damage type: ' + dmg_type);
     }
 
-
-
-    let atk = _.random(state[params.attacker].weapon.min_dmg, state[params.attacker].weapon.max_dmg) + _.random(0, state[params.attacker].stats[state[params.attacker].weapon.bonus_stat] + state[params.attacker].effects.rage);
-    let def = _.random(0, state[params.defender].armor.absorption + state[params.defender].effects.buff);
-    let dmg = Math.max(1, atk - def);
-
+    return dmg;
 };
-
-
-
-
 
 
 export const attack = (state, params) => {
     state[params.attacker].action_timer += getActionDelay(state[params.attacker].weapon.speed, state[params.attacker]);
 
-    if (state.target.action === 'roll') {
+    if (state.target.action === 'roll' && state.target.action === 'flip') {
         state.chat.unshift({text: params.defender + " Roll against attack"});
         return state;
     }
     if (state.target.action === 'block') {
         state.chat.unshift({text: params.defender + " Block against attack"});
+        state[params.defender].action_timer = 0;
+        state[params.defender].action = null;
+        state[params.attacker].action_timer += 20;
         return state;
     }
     if (state.target.action === 'parry') {
@@ -123,17 +107,24 @@ export const attack = (state, params) => {
             });
         return state;
     }
+    if (state.target.effects.iceshield > 0) {
+        state.chat.unshift({text: params.defender + " Block by Ice"});
+        state.target.effects.iceshield--;
+        return state;
+    }
 
     let chance = getAttackChance(state[params.attacker], state[params.defender]);
     if (_.random(0, 100) < chance) {
         console.log();
-        let atk = _.random(state[params.attacker].weapon.min_dmg, state[params.attacker].weapon.max_dmg) + _.random(0, state[params.attacker].stats[state[params.attacker].weapon.bonus_stat] + state[params.attacker].effects.rage);
-        let def = _.random(0, state[params.defender].armor.absorption + state[params.defender].effects.buff);
-        let dmg = Math.max(1, atk - def);
-
+        let atk = _.random(state[params.attacker].weapon.min_dmg, state[params.attacker].weapon.max_dmg) + _.random(0, state[params.attacker].stats[state[params.attacker].weapon.bonus_stat]);
+        let dmg = hit(state, params.attacker, params.defender, atk, state[params.attacker].weapon.dmg_type);
 
         state[params.defender].hp -= dmg;
-        state[params.defender].action_timer += Math.max(0, state[params.attacker].weapon.stunning - (state[params.defender].armor.stability + state[params.defender].stats.con));
+
+        if (state.target.action === 'trance') {
+            state[params.defender].sp = Math.min(state[params.defender].max_sp, state[params.defender].sp + dmg);
+        }
+        state[params.defender].action_timer += Math.max(0, state[params.attacker].weapon.stunning - (_.random(0, state[params.defender].armor.stability) + state[params.defender].stats.con));
         state = params.onHit(state, dmg);
     }
     else {

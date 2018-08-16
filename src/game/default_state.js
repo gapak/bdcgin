@@ -1,12 +1,14 @@
 
+
 import _ from 'lodash';
+
+import {checkUnitStats} from './game_math';
+import {genUnit} from './unit';
 import {genTarget} from './targets';
 import {genWeapon} from './weapons';
 import {genArmor} from './armors';
-import {checkStats} from './game_math';
 
 export const default_state = {
-
 
     tab: 'arena',
     in_fight: false,
@@ -18,30 +20,7 @@ export const default_state = {
     belt: [],
     //belt: ['heal', 'stamina', 'manna'],
 
-    player: {
-        money: 100,
-        level: 1,
-        expr: 0,
-        bonus_points: 0,
-        hp: 10,
-        max_hp: 10,
-        sp: 10,
-        max_sp: 10,
-        mp: 10,
-        max_mp: 10,
-        stats: {
-            str: 1,
-            dex: 1,
-            con: 1,
-            wiz: 1,
-            int: 1
-        },
-        weapon: genWeapon(1),
-        armor: genArmor(1),
-        action_timer: 0,
-        action: null, // до конца action
-        effects: {buff: 0, rage: 0, fire: 0, freeze: 0}, // до конца боя
-    },
+    player: {},
 
     target: {},
 
@@ -62,10 +41,9 @@ export const default_state = {
 
 export const getDefaultState = () => {
     let state = _.cloneDeep(default_state);
-    state = checkStats(state, 'player');
-    state.weapon = genWeapon(1);
-    state.armor = genArmor(1);
+    state.player = checkUnitStats(genUnit(1));
+    state.player.weapon = genWeapon(1);
+    state.player.armor = genArmor(1);
     state.target = genTarget(1);
-    state = checkStats(state, 'target');
     return state;
 };

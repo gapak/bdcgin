@@ -2,22 +2,32 @@
 import _ from 'lodash';
 
 
-const armors_bodies = {
-    novice: {name: "Protection",          weight: 4, absorption: 3, resistance: 3, stability: 3, val1: 0, val2: 0},
-    robe:  {name: "Robe",                 weight: 0, absorption: 0, resistance: 1, stability: 0, val1: 0, val2: 0},
-    skin:  {name: "Skin",                 weight: 1, absorption: 1, resistance: 2, stability: 0, val1: 0, val2: 0},
-    jacket:  {name: "Jacket",             weight: 2, absorption: 1, resistance: 3, stability: 1, val1: 0, val2: 0},
-    gambeson:  {name: "Gambeson",         weight: 3, absorption: 2, resistance: 2, stability: 3, val1: 0, val2: 0},
-    leather:  {name: "Leather",           weight: 4, absorption: 2, resistance: 5, stability: 2, val1: 0, val2: 0},
-    chain:  {name: "Chain",               weight: 5, absorption: 5, resistance: 4, stability: 2, val1: 0, val2: 0},
-    brigand:  {name: "Brigand",           weight: 6, absorption: 4, resistance: 6, stability: 3, val1: 0, val2: 0},
-    chest:  {name: "Chest",               weight: 7, absorption: 5, resistance: 4, stability: 6, val1: 0, val2: 0},
-    plate:  {name: "Plate",               weight: 8, absorption: 6, resistance: 5, stability: 6, val1: 0, val2: 0},
-    full_plate:  {name: "Full Plate",     weight: 9, absorption: 6, resistance: 6, stability: 7, val1: 0, val2: 0},
-    turtle_plate:  {name: "Turtle Plate",weight: 10, absorption: 7, resistance: 6, stability: 8, val1: 0, val2: 0},
+export var armors_bodies = {
+    novice: {name: "Protection",          weight: 7, absorption: 3, resistance: 3, stability: 3, val1: 0, val2: 0},
+
+    robe:  {name: "Robe",                 weight: 1, absorption: 0, resistance: 4, stability: 0, val1: 0, val2: 0},
+    skin:  {name: "Skin",                 weight: 2, absorption: 1, resistance: 6, stability: 0, val1: 0, val2: 0},
+    jacket:  {name: "Jacket",             weight: 5, absorption: 2, resistance: 4, stability: 1, val1: 0, val2: 0},
+    leather:  {name: "Leather",           weight: 7, absorption: 3, resistance: 7, stability: 1, val1: 0, val2: 0},
+    chain:  {name: "Chain",               weight: 8, absorption: 6, resistance: 2, stability: 3, val1: 0, val2: 0},
+    gambeson:  {name: "Gambeson",         weight: 9, absorption: 4, resistance: 3, stability: 4, val1: 0, val2: 0},
+    chest:  {name: "Chest",               weight: 10, absorption: 9, resistance: 1, stability: 6, val1: 0, val2: 0},
+    brigand:  {name: "Brigand",           weight: 13, absorption: 6, resistance: 4, stability: 4, val1: 0, val2: 0},
+    plate:  {name: "Plate",               weight: 16, absorption: 10, resistance: 2, stability: 8, val1: 0, val2: 0},
+    full_plate:  {name: "Full Plate",     weight: 22, absorption: 12, resistance: 3, stability: 9, val1: 0, val2: 0},
+    turtle_plate: {name: "Turtle Plate",  weight: 30, absorption: 15, resistance: 4, stability: 10, val1: 0, val2: 0},
 };
 
-const armors_quality = {
+/*
+_.each(armors_bodies, (armor, key) => {
+    let weight = Math.round(armor.absorption * 0.2 + armor.resistance * 0.3 + armor.stability * 0.1 + Math.sqrt(armor.absorption * armor.resistance * armor.stability));
+    console.log(armors_bodies[key].weight === weight, armor.name, armors_bodies[key].weight, weight);
+} );
+
+//armors_bodies = _.sortBy(armors_bodies, (armor) => (armor.absorption + armor.resistance + armor.stability) / armor.weight );
+*/
+
+export const armors_quality = {
     1: {name: "Old",      weight: 0,  absorption: 0, resistance: 0, stability: 0, val1: 0, val2: 0},
     2: {name: "Rusty",    weight: 0,  absorption: 1, resistance: 1, stability: 1, val1: 1, val2: 1},
     3: {name: "Standard", weight: -0, absorption: 2, resistance: 2, stability: 2, val1: 2, val2: 2},
@@ -26,7 +36,7 @@ const armors_quality = {
     6: {name: "Godlike",  weight: -1, absorption: 5, resistance: 5, stability: 5, val1: 5, val2: 5},
 };
 
-const armors_mods = {
+export const armors_mods = {
     flat: {name: "Typical",       weight: 0, absorption: 0, resistance: 0, stability: 0, val1: 0, val2: 0},
     weight: {name: "Light",       weight: -3, absorption: -1, resistance: -1, stability: -1, val1: 0, val2: 0},
     absorption: {name: "Soft",    weight: 1, absorption: 3, resistance: -1, stability: -1, val1: 0, val2: 0},
@@ -46,8 +56,13 @@ export const genArmor = (level = 1) => {
     let quality = armors_quality[Math.floor(_.random(1, Math.sqrt(level)))];
     let mod = (level === 1) ? armors_mods.flat : _.sample(armors_mods);
 
+    //console.log('Gen Armor: ', level, body, quality, mod);
+
     let new_armor = {
-        name: mod.name + ' ' + quality.name + ' ' + body.name,
+        name:
+            mod.name + ' ' +
+            quality.name + ' ' +
+            body.name,
         weight: quality.weight + mod.weight + body.weight,// + level,
         absorption: quality.absorption + mod.absorption + body.absorption,// + level,
         resistance: quality.resistance + mod.resistance + body.resistance,// + level,
@@ -72,7 +87,7 @@ export const genArmor = (level = 1) => {
 
     new_armor.cost = Math.floor(Math.sqrt(((new_armor.weight + new_armor.val1 + new_armor.val2) * level * (new_armor.absorption + new_armor.resistance + new_armor.stability) * 100) / (new_armor.weight)));
 
-    console.log('Gen Armor: ', level, body, quality, mod, new_armor);
+    //console.log('New Armor: ', level, body, quality, mod, new_armor);
 
     return new_armor;
 };
