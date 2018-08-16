@@ -24,7 +24,7 @@ export const checkUnitStats = (unit) => {
 };
 
 export const getAttackChance = (source, target) => {
-    let attack = 5 + source.weapon.accuracy + source.stats.int;
+    let attack = 10 + source.weapon.accuracy + source.stats.int;
     let def = 10 + target.stats.dex;
     let ratio = (attack / def);
     //console.log(attack, def, ratio, 50 * ratio);
@@ -148,7 +148,7 @@ export const isTargetInRange = (state, range) => {
 };
 
 export const blink = (state, long) => {
-    console.log('blink attempt ', long);
+    //console.log('blink attempt ', long);
 
     let old_point = state.battleground.player;
     let new_point = null;
@@ -159,13 +159,13 @@ export const blink = (state, long) => {
 
     do {
         new_point = _.random(min, max);
-        console.log('point generation attempt', new_point);
+        //console.log('point generation attempt', new_point);
     }
     while(new_point === old_point || new_point === target_point);
 
     state.battleground.player = new_point;
 
-    console.log(old_point, min, max, new_point);
+    //console.log(old_point, min, max, new_point);
 
     return state;
 };
