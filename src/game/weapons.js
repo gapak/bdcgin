@@ -25,73 +25,76 @@ import _ from 'lodash';
  */
 
 export var weapons_bodies = {
-    sword:  {name: "Sword",    min_dmg: 2, max_dmg: 5, dmg_type: 'cutting', bonus_stat: 'str', stunning: 20, accuracy: 5, range: 3, speed: 32},
-    saber:  {name: "Saber",    min_dmg: 1, max_dmg: 6, dmg_type: 'cutting', bonus_stat: 'str', stunning: 16, accuracy: 4, range: 2, speed: 28},
-    machete:{name: "Machete",  min_dmg: 1, max_dmg: 4, dmg_type: 'cutting', bonus_stat: 'str', stunning: 16, accuracy: 3, range: 1, speed: 22},
+    sword:  {name: "Sword",    load: 6, min_dmg: 2, max_dmg: 5, dmg_type: 'cutting',   bonus_stat: 'str', stunning: 20, accuracy: 5, range: 3, speed: 32},
+    saber:  {name: "Saber",    load: 6, min_dmg: 1, max_dmg: 6, dmg_type: 'cutting',   bonus_stat: 'str', stunning: 16, accuracy: 4, range: 2, speed: 24},
+    machete:{name: "Machete",  load: 5, min_dmg: 1, max_dmg: 4, dmg_type: 'cutting',   bonus_stat: 'str', stunning: 16, accuracy: 3, range: 1, speed: 19},
 
-    bastard: {name:"Bastard",  min_dmg: 3, max_dmg: 6, dmg_type: 'cutting', bonus_stat: 'str', stunning: 22, accuracy: 4, range: 3, speed: 36},
-    flamberg:{name:"Flamberg", min_dmg: 4, max_dmg: 8, dmg_type: 'cutting', bonus_stat: 'str', stunning: 30, accuracy: 3, range: 4, speed: 46},
-    claymore:{name:"Claymore", min_dmg: 5, max_dmg: 10,dmg_type: 'cutting', bonus_stat: 'str', stunning: 42, accuracy: 3, range: 4, speed: 58},
-    greatsword:{name:"Greatsword",min_dmg:6,max_dmg:12,dmg_type: 'cutting', bonus_stat: 'str', stunning: 54, accuracy: 2, range: 5, speed: 70},
+    bastard: {name:"Bastard",  load: 8, min_dmg: 3, max_dmg: 6, dmg_type: 'cutting',   bonus_stat: 'str', stunning: 22, accuracy: 4, range: 3, speed: 35},
+    flamberg:{name:"Flamberg", load: 11, min_dmg: 4, max_dmg: 8, dmg_type: 'cutting',  bonus_stat: 'str', stunning: 30, accuracy: 3, range: 4, speed: 44},
+    claymore:{name:"Claymore", load: 14, min_dmg: 5, max_dmg: 10,dmg_type: 'cutting',  bonus_stat: 'str', stunning: 42, accuracy: 3, range: 4, speed: 57},
+    greatsword:{name:"Greatsword",load: 19, min_dmg:6,max_dmg:12,dmg_type: 'cutting',  bonus_stat: 'str', stunning: 54, accuracy: 2, range: 5, speed: 66},
 
-    axe:    {name: "Axe",      min_dmg: 3, max_dmg: 8, dmg_type: 'cutting', bonus_stat: 'str', stunning: 20, accuracy: 4, range: 2, speed: 38},
-    batleaxe:{name: "Batleaxe",min_dmg: 4, max_dmg: 10,dmg_type: 'cutting', bonus_stat: 'str', stunning: 30, accuracy: 3, range: 3, speed: 49},
-    grandaxe:{name: "Grandaxe",min_dmg: 5, max_dmg: 15,dmg_type: 'cutting', bonus_stat: 'str', stunning: 40, accuracy: 2, range: 4, speed: 66},
+    axe:    {name: "Axe",      load: 8, min_dmg: 3, max_dmg: 8, dmg_type: 'cutting',   bonus_stat: 'str', stunning: 20, accuracy: 4, range: 2, speed: 36},
+    batleaxe:{name: "Batleaxe",load: 12, min_dmg: 4, max_dmg: 10,dmg_type: 'cutting',  bonus_stat: 'str', stunning: 30, accuracy: 3, range: 3, speed: 46},
+    grandaxe:{name: "Grandaxe",load: 18, min_dmg: 5, max_dmg: 15,dmg_type: 'cutting',  bonus_stat: 'str', stunning: 40, accuracy: 2, range: 4, speed: 58},
 
-    foil:   {name: "Foil",     min_dmg: 1, max_dmg: 3, dmg_type: 'pierce', bonus_stat: 'dex', stunning: 2, accuracy: 8, range: 2, speed: 19},
-    epee:   {name: "Epee",     min_dmg: 1, max_dmg: 4, dmg_type: 'pierce', bonus_stat: 'dex', stunning: 4, accuracy: 7, range: 3, speed: 22},
-    rapier: {name: "Rapier",   min_dmg: 2, max_dmg: 5, dmg_type: 'pierce', bonus_stat: 'dex', stunning: 8, accuracy: 6, range: 3, speed: 27},
-    estoc:  {name: "Estoc",    min_dmg: 3, max_dmg: 6, dmg_type: 'pierce', bonus_stat: 'dex', stunning: 16, accuracy: 5, range: 3, speed: 34},
+    foil:   {name: "Foil",     load: 3, min_dmg: 1, max_dmg: 3, dmg_type: 'pierce',    bonus_stat: 'dex', stunning: 2, accuracy: 8, range: 2, speed: 13},
+    epee:   {name: "Epee",     load: 3, min_dmg: 1, max_dmg: 4, dmg_type: 'pierce',    bonus_stat: 'dex', stunning: 4, accuracy: 7, range: 3, speed: 17},
+    rapier: {name: "Rapier",   load: 5, min_dmg: 2, max_dmg: 5, dmg_type: 'pierce',    bonus_stat: 'dex', stunning: 8, accuracy: 6, range: 3, speed: 24},
+    estoc:  {name: "Estoc",    load: 7, min_dmg: 3, max_dmg: 6, dmg_type: 'pierce',    bonus_stat: 'dex', stunning: 16, accuracy: 5, range: 3, speed: 33},
 
-    spear:  {name: "Spear",    min_dmg: 1, max_dmg: 3, dmg_type: 'pierce', bonus_stat: 'dex', stunning: 8,  accuracy: 6, range: 6, speed: 24},
-    trident:{name: "Trident",  min_dmg: 2, max_dmg: 6, dmg_type: 'pierce', bonus_stat: 'str', stunning: 12, accuracy: 5, range: 6, speed: 33},
-    halberd:{name: "Halberd",  min_dmg: 3, max_dmg: 8, dmg_type: 'cutting', bonus_stat: 'str', stunning: 24, accuracy: 4, range: 6, speed: 44},
+    spear:  {name: "Spear",    load: 4, min_dmg: 1, max_dmg: 3, dmg_type: 'pierce',    bonus_stat: 'dex', stunning: 8,  accuracy: 6, range: 6, speed: 20},
+    trident:{name: "Trident",  load: 6, min_dmg: 2, max_dmg: 6, dmg_type: 'pierce',    bonus_stat: 'str', stunning: 12, accuracy: 5, range: 6, speed: 30},
+    halberd:{name: "Halberd",  load: 9, min_dmg: 3, max_dmg: 8, dmg_type: 'cutting',   bonus_stat: 'str', stunning: 24, accuracy: 4, range: 6, speed: 42},
 
-    whip:   {name: "Whip",     min_dmg: 1, max_dmg: 2, dmg_type: 'crushing', bonus_stat: 'str', stunning: 16, accuracy: 3, range: 10, speed: 27},
+    whip:   {name: "Whip",     load: 7, min_dmg: 1, max_dmg: 2, dmg_type: 'cutting',   bonus_stat: 'str', stunning: 16, accuracy: 3, range: 10, speed: 26},
+    chain:  {name: "Chain",    load: 10, min_dmg: 3, max_dmg: 4, dmg_type: 'crushing', bonus_stat: 'str', stunning: 24, accuracy: 2, range: 8, speed: 34},
 
-    staff:  {name: "Staff",    min_dmg: 1, max_dmg: 4, dmg_type: 'crushing', bonus_stat: 'str', stunning: 20, accuracy: 3, range: 3, speed: 26},
-    mace:   {name: "Mace",     min_dmg: 2, max_dmg: 6, dmg_type: 'crushing', bonus_stat: 'str', stunning: 30, accuracy: 2, range: 2, speed: 35},
-    hammer: {name: "Hammer",   min_dmg: 4, max_dmg: 8, dmg_type: 'crushing', bonus_stat: 'str', stunning: 40, accuracy: 1, range: 2, speed: 47},
-    club:   {name: "Сlub",     min_dmg: 6, max_dmg: 10,dmg_type: 'crushing', bonus_stat: 'str', stunning: 60, accuracy: 1, range: 3, speed: 66},
-    crasher:{name: "Crasher",  min_dmg: 8, max_dmg: 12,dmg_type: 'crushing', bonus_stat: 'str', stunning: 60, accuracy: 3, range: 5, speed: 78},
+    staff:  {name: "Staff",    load: 6, min_dmg: 1, max_dmg: 4, dmg_type: 'crushing',  bonus_stat: 'str', stunning: 20, accuracy: 3, range: 3, speed: 24},
+    mace:   {name: "Mace",     load: 10, min_dmg: 2, max_dmg: 6, dmg_type: 'crushing', bonus_stat: 'str', stunning: 30, accuracy: 2, range: 2, speed: 32},
+    hammer: {name: "Hammer",   load: 15, min_dmg: 4, max_dmg: 8, dmg_type: 'crushing', bonus_stat: 'str', stunning: 40, accuracy: 1, range: 2, speed: 42},
+    club:   {name: "Сlub",     load: 22, min_dmg: 6, max_dmg: 10,dmg_type: 'crushing', bonus_stat: 'str', stunning: 60, accuracy: 1, range: 3, speed: 60},
+    crasher:{name: "Crasher",  load: 19, min_dmg: 8, max_dmg: 12,dmg_type: 'crushing', bonus_stat: 'str', stunning: 60, accuracy: 3, range: 5, speed: 80},
 
-    sling:    {name: "Sling",  min_dmg: 1, max_dmg: 3, dmg_type: 'crushing', bonus_stat: 'dex', stunning: 16,  accuracy: 3, range: 16, speed: 35},
-    bow:    {name: "Bow",      min_dmg: 1, max_dmg: 4, dmg_type: 'pierce', bonus_stat: 'dex', stunning: 4,  accuracy: 4, range: 24, speed: 40},
-    cross:  {name: "Arbalest", min_dmg: 2, max_dmg: 5, dmg_type: 'pierce', bonus_stat: 'dex', stunning: 18, accuracy: 5, range: 28, speed: 56},
+    sling:    {name: "Sling",  load: 8, min_dmg: 1, max_dmg: 3, dmg_type: 'crushing',  bonus_stat: 'dex', stunning: 16,  accuracy: 3, range: 16, speed: 33},
+    bow:    {name: "Bow",      load: 7, min_dmg: 1, max_dmg: 4, dmg_type: 'pierce',    bonus_stat: 'dex', stunning: 4,  accuracy: 4, range: 24, speed: 35},
+    cross:  {name: "Arbalest", load: 10, min_dmg: 2, max_dmg: 5, dmg_type: 'pierce',   bonus_stat: 'dex', stunning: 18, accuracy: 5, range: 28, speed: 55},
 
-    wiz1:   {name: "Wand",     min_dmg: 1, max_dmg: 3, dmg_type: 'light', bonus_stat: 'wiz', stunning: 24, accuracy: 6, range: 25, speed: 51},
-    wiz2:   {name: "Rod",      min_dmg: 2, max_dmg: 4, dmg_type: 'light', bonus_stat: 'wiz', stunning: 32, accuracy: 5, range: 30, speed: 63},
-    mage1:  {name: "Familiar", min_dmg: 3, max_dmg: 5, dmg_type: 'dark', bonus_stat: 'int', stunning: 2,  accuracy: 6, range: 40, speed: 63},
-    mage2:  {name: "Grimoire", min_dmg: 4, max_dmg: 8, dmg_type: 'dark', bonus_stat: 'int', stunning: 12,  accuracy: 8, range: 35, speed: 73},
+    wiz1:   {name: "Wand",     load: 8, min_dmg: 1, max_dmg: 3, dmg_type: 'light',     bonus_stat: 'wiz', stunning: 24, accuracy: 6, range: 25, speed: 52},
+    wiz2:   {name: "Rod",      load: 11, min_dmg: 2, max_dmg: 4, dmg_type: 'light',    bonus_stat: 'wiz', stunning: 32, accuracy: 5, range: 30, speed: 66},
+    mage1:  {name: "Familiar", load: 9, min_dmg: 3, max_dmg: 5, dmg_type: 'dark',      bonus_stat: 'int', stunning: 2,  accuracy: 6, range: 40, speed: 59},
+    mage2:  {name: "Grimoire", load: 10, min_dmg: 4, max_dmg: 8, dmg_type: 'dark',     bonus_stat: 'int', stunning: 12,  accuracy: 8, range: 35, speed: 75},
 };
 
-/*
+  /*
 _.each(weapons_bodies, (weapon, key) => {
-    let speed = weapon.min_dmg * 2 + weapon.max_dmg * 2 + weapon.stunning / 2 + weapon.accuracy + weapon.range;
-    console.log(weapons_bodies[key].speed === speed, weapon.name, weapons_bodies[key].speed, speed);
+    let load = Math.round((((weapon.min_dmg * 5) + (weapon.max_dmg * 3) + (weapon.stunning)) / (5 + weapon.accuracy)) + Math.sqrt(weapon.range));
+    let speed = Math.round((weapon.min_dmg * 2 * (1 + 0.1 * weapon.accuracy)) + (weapon.max_dmg * (1 + 0.1 * weapon.accuracy)) + (weapon.stunning / 2 * (1 + 0.1 * weapon.accuracy)) + weapon.range);
+    console.log(weapons_bodies[key].speed === speed, weapon.name, 'speed', weapons_bodies[key].speed, speed);
+    console.log(weapons_bodies[key].load === load, weapon.name, 'load', weapons_bodies[key].load, load);
 } );
-*/
+  */
 
 weapons_bodies = _.sortBy(weapons_bodies, (weapon) => (weapon.min_dmg + weapon.max_dmg) / weapon.speed );
 
 export const weapons_quality = {
-    1: {name: "Old",      min_dmg: 0, max_dmg: 1, stunning: 1, accuracy: 1, range: 0, speed: 1},
-    2: {name: "Rusty",    min_dmg: 0, max_dmg: 2, stunning: 1, accuracy: 2, range: 0, speed: 2},
-    3: {name: "Standard", min_dmg: 1, max_dmg: 3, stunning: 1, accuracy: 3, range: 0, speed: 3},
-    4: {name: "Grete",    min_dmg: 1, max_dmg: 4, stunning: 1, accuracy: 4, range: 0, speed: 4},
-    5: {name: "Shiny",    min_dmg: 2, max_dmg: 5, stunning: 1, accuracy: 5, range: 0, speed: 5},
-    6: {name: "Godlike",  min_dmg: 2, max_dmg: 6, stunning: 1, accuracy: 6, range: 0, speed: 6},
+    1: {name: "Old",      load: 0, min_dmg: 0, max_dmg: 1, stunning: 1, accuracy: 1, range: 0, speed: 1},
+    2: {name: "Rusty",    load: 0, min_dmg: 0, max_dmg: 2, stunning: 1, accuracy: 2, range: 0, speed: 2},
+    3: {name: "Standard", load: 0, min_dmg: 1, max_dmg: 3, stunning: 1, accuracy: 3, range: 0, speed: 3},
+    4: {name: "Grete",    load: 0, min_dmg: 1, max_dmg: 4, stunning: 1, accuracy: 4, range: 0, speed: 4},
+    5: {name: "Shiny",    load: 0, min_dmg: 2, max_dmg: 5, stunning: 1, accuracy: 5, range: 0, speed: 5},
+    6: {name: "Godlike",  load: 0, min_dmg: 2, max_dmg: 6, stunning: 1, accuracy: 6, range: 0, speed: 6},
 };
 
 export const weapons_mods = {
-    flat: {name: "Typical",       min_dmg: 0, max_dmg: 0, stunning: 1, accuracy: 0, range: 0, speed: 0},
-    min_dmg: {name: "Tuned",      min_dmg: 3, max_dmg: 0, stunning: 1, accuracy: 0, range: 0, speed: 0},
-    max_dmg: {name: "Sharped",    min_dmg: 0, max_dmg: 3, stunning: 1, accuracy: 0, range: 0, speed: 0},
-    all_dmg: {name: "Powerful",   min_dmg: 1, max_dmg: 2, stunning: 1, accuracy: 0, range: 0, speed: 0},
-    accuracy: {name: "Accurate",  min_dmg: 0, max_dmg: 0, stunning: 1, accuracy: 3, range: 0, speed: 0},
-    range:    {name: "Longed",    min_dmg: 0, max_dmg: 0, stunning: 1, accuracy: 0, range: 3, speed: 0},
-    speed:    {name: "Lighted",   min_dmg: 0, max_dmg: 0, stunning: 1, accuracy: 0, range: 0, speed: -3},
-    application: {name: "Handle", min_dmg: 0, max_dmg: 0, stunning: 1, accuracy: 1, range: 1, speed: -1},
+    flat: {name: "Typical",       load: 0, min_dmg: 0, max_dmg: 0, stunning: 1, accuracy: 0, range: 0, speed: 0},
+    min_dmg: {name: "Tuned",      load: 0, min_dmg: 3, max_dmg: 0, stunning: 1, accuracy: 0, range: 0, speed: 0},
+    max_dmg: {name: "Sharped",    load: 0, min_dmg: 0, max_dmg: 3, stunning: 1, accuracy: 0, range: 0, speed: 0},
+    all_dmg: {name: "Powerful",   load: 0, min_dmg: 1, max_dmg: 2, stunning: 1, accuracy: 0, range: 0, speed: 0},
+    accuracy: {name: "Accurate",  load: 0, min_dmg: 0, max_dmg: 0, stunning: 1, accuracy: 3, range: 0, speed: 0},
+    range:    {name: "Longed",    load: 0, min_dmg: 0, max_dmg: 0, stunning: 1, accuracy: 0, range: 3, speed: 0},
+    speed:    {name: "Lighted",   load: 0, min_dmg: 0, max_dmg: 0, stunning: 1, accuracy: 0, range: 0, speed: -3},
+    application: {name: "Handle", load: 0, min_dmg: 0, max_dmg: 0, stunning: 1, accuracy: 1, range: 1, speed: -1},
 };
 
 
@@ -104,6 +107,10 @@ export const genWeapon = (level = 1) => {
 
     let new_weapon = {
         name: mod.name + ' ' + quality.name + ' ' + body.name,
+        mod_name: mod.name,
+        quality_name: quality.name,
+        body_name: body.name,
+        load: quality.load + mod.load + body.load,
         min_dmg: quality.min_dmg + mod.min_dmg + body.min_dmg,// + level,
         max_dmg: quality.max_dmg + mod.max_dmg + body.max_dmg,// + level,
         dmg_type:  body.dmg_type,
@@ -128,7 +135,7 @@ export const genWeapon = (level = 1) => {
         }
     });
 
-    new_weapon.cost = Math.floor(Math.sqrt(((new_weapon.min_dmg + new_weapon.max_dmg) * level * (new_weapon.accuracy + new_weapon.range) * 100) / (new_weapon.speed)));
+    new_weapon.cost = Math.floor(Math.sqrt(((new_weapon.min_dmg + new_weapon.max_dmg) * level * (new_weapon.accuracy + new_weapon.range) * 100) / (new_weapon.load)));
 
     //console.log('New Weapon: ', level, body, quality, mod, new_weapon);
 

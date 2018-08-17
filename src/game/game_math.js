@@ -1,6 +1,8 @@
 
 import _ from 'lodash';
 
+import {consumables} from './consumables';
+
 
 export const checkUnitStats = (unit) => {
     let level = unit.level;
@@ -134,8 +136,20 @@ export const attack = (state, params) => {
     return state;
 };
 
+export const getLoad = (unit) => {
+    let load = unit.weapon.load + unit.armor.load;
+
+    _.each(unit.belt, (item) => { load += consumables[item].load; });
+
+    return load;
+};
+
+export const getMaxLoad = (unit) => {
+    return 40 + (10 * unit.stats.str);
+};
+
 export const getActionDelay = (base, unit) => {
-    return Math.max(1, base + unit.armor.weight - unit.stats.dex + unit.effects.freeze);
+    return Math.max(1, base + unit.armor.delay - unit.stats.dex + unit.effects.freeze);
 };
 
 export const getRangeBetween = (state) => {

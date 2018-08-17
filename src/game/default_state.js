@@ -17,8 +17,7 @@ export const default_state = {
 
     chat: [],
     inventory: {armors: [], weapons: []},
-    belt: [],
-    //belt: ['heal', 'stamina', 'manna'],
+    //player.belt: ['heal', 'stamina', 'manna'],
 
     player: {},
 

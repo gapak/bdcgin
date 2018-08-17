@@ -26,6 +26,7 @@ export const default_unit = {
         wiz: 1,
         int: 1
     },
+    belt: [],
     weapon: null,
     armor: null,
     action_timer: 0,

@@ -7,7 +7,7 @@ import './css/App.css';
 
 import {game_name} from './game/app_config';
 import {getDefaultState} from './game/default_state';
-import {checkUnitStats, getAttackProb} from './game/game_math';
+import {checkUnitStats, getAttackProb, getLoad, getMaxLoad} from './game/game_math';
 import {actions} from './game/actions';
 import {consumables} from './game/consumables';
 import {armors_bodies} from './game/armors';
@@ -174,12 +174,14 @@ class App extends Component {
         </div>;
 
         const chat_subcomponent =
-            <div className="flex-element">
-                {_.map(state.chat, (item, key) =>
-                    <div className="small" key={key}>
-                        {item.text}
-                    </div>
-                )}
+            <div className="flex-element panel">
+                <div className="flex-element">
+                    {_.map(state.chat, (item, key) =>
+                        <div className="small" key={key}>
+                            {item.text}
+                        </div>
+                    )}
+                </div>
             </div>;
 
 
@@ -204,8 +206,8 @@ class App extends Component {
         const player_subcomponent =
             <div className="flex-element panel filament">
                 <div>Player</div>
-                <div> with {state.player.weapon.name} </div>
-                <div> in {state.player.armor.name} </div>
+                <div> with {state.in_fight === true ? state.player.weapon.body_name : state.player.weapon.name} </div>
+                <div> in {state.in_fight === true ? state.player.armor.body_name : state.player.armor.name} </div>
                 <div> LVL: {state.player.level} ({state.player.expr}/{100 * state.player.level}) </div>
                 <div> HP: {state.player.hp}/{state.player.max_hp} </div>
                 <div> SP: {state.player.sp}/{state.player.max_sp} </div>
@@ -229,16 +231,19 @@ class App extends Component {
                 <div>Accuracy: {state.player.weapon.accuracy}</div>
                 <div>Range: {state.player.weapon.range}</div>
                 <div>Speed: {state.player.weapon.speed}</div>
+                <div>Load: {state.player.weapon.load}</div>
                 <div>Cost: {state.player.weapon.cost}</div>
             </div>;
 
         const armor_subcomponent =
             <div className="flex-element panel">
                 <div>{state.player.armor.name}</div>
-                <div>Weight: {state.player.armor.weight}</div>
                 <div>Absorption: {state.player.armor.absorption}</div>
                 <div>Resistance: {state.player.armor.resistance}</div>
                 <div>Stability: {state.player.armor.stability}</div>
+                <div>Delay: {state.player.armor.delay}</div>
+                <div>Load: {state.player.armor.load}</div>
+                <div>Cost: {state.player.armor.cost}</div>
             </div>;
 
         const money_subcomponent =
@@ -246,15 +251,14 @@ class App extends Component {
                 <h6>Player</h6>
                 <h5>{state.player.name}</h5>
                 <h6>Money: {state.player.money}</h6>
-                <h6>Win: {state.wins}</h6>
-                <h6>Loose: {state.looses}</h6>
+                <h6>Load: {getLoad(state.player)} / {getMaxLoad(state.player)}</h6>
             </div>;
 
         const target_subcomponent =
             <div className="flex-element panel filament">
-                <div>{state.target.name}</div>
-                <div> with {state.target.weapon.name} </div>
-                <div> in {state.target.armor.name} </div>
+                <div>{state.in_fight === true ? state.target.body_name : state.target.name}</div>
+                <div> with {state.in_fight === true ? state.target.weapon.body_name : state.target.weapon.name} </div>
+                <div> in {state.in_fight === true ? state.target.armor.body_name : state.target.armor.name} </div>
                 <div> LVL: {state.target.level} ({Math.floor((50 + (50 * state.target.level)) * state.target.level / state.player.level)} expr) </div>
                 <div> HP: {state.target.hp}/{state.target.max_hp} </div>
                 <div> SP: {state.target.sp}/{state.target.max_sp} </div>
@@ -286,8 +290,8 @@ class App extends Component {
             </div>;
 
         const actions_subcomponent =
-            <div className="flex-element filament">
-                <div className="panel">
+            <div className="flex-element slim">
+                <div className="panel filament">
                     <div className="flex-container-row">
                         <div className="flex-element filament"> <ActionGinButton item={actions.hit}/> </div>
                         <div className="flex-element filament"> <ActionGinButton item={actions.push}/> </div>
@@ -330,12 +334,13 @@ class App extends Component {
             <div className="panel filament">
                 <h5 className="slim">Belt</h5>
                 <div className="flex-container-row">
-                    {_.map(state.belt, (item, key) =>
+                    {_.map(state.player.belt, (item, key) =>
                         <div className="flex-element panel slim" key={key}>
                             <ConsumableGinButton item={consumables[item]} index={key} />
                         </div>
                     )}
-                    {state.belt.length < 6 && state.tab !== 'shop' && state.in_fight !== true ? <GinButton item={{name: 'Buy More', onClick: (state) => { state.tab = 'shop'; return state;} }}/> : ''}
+                    {state.player.belt.length < 6 && state.tab !== 'shop' && state.in_fight !== true ?
+                        <GinButton item={{name: 'Buy More', onClick: (state) => { state.tab = 'shop'; return state;} }}/> : ''}
                 </div>
             </div>;
 
@@ -343,18 +348,20 @@ class App extends Component {
             <div>
                 <div className="flex-container-row">
                     {player_subcomponent}
-                    <div className="flex-element panel">
-                        <h5>chat</h5>
-                        {chat_subcomponent}
-                    </div>
+                    {state.in_fight === true ? chat_subcomponent : ''}
                     {target_subcomponent}
                 </div>
 
+
+                {state.in_fight !== true ? chat_subcomponent : ''}
+
                 {belt_subcomponent}
+
                 {state.in_fight === true ? battle_ground_subcomponent : ''}
+
                 {state.in_fight === true ? mowement_subcomponent : ''}
 
-                <div className="flex-container-row">
+                <div className="flex-container-row slim">
                     {state.in_fight === true ? actions_subcomponent :
                         <div className="flex-element">
                             <GinButton item={{name: "Start Fight!", isLocked: (state) => state.in_fight,
@@ -384,10 +391,16 @@ class App extends Component {
                 <div>
                     {analysis_subcomponent}
                 </div>
+                <div className="panel">
+                    <h5>Win: {state.wins} and Loose: {state.looses}</h5>
+                </div>
             </div>;
 
         const inventory_subcomponent =
             <div>
+                <div className="panel">
+                    <h3>Load: {getLoad(state.player)} / {getMaxLoad(state.player)}</h3>
+                </div>
                 <div className="flex-container-row">
                     {weapon_subcomponent}
                     {armor_subcomponent}
@@ -416,6 +429,7 @@ class App extends Component {
                                 <div className="flex-element">{item.speed}</div>
                                 <div className="flex-element">
                                     <GinButton item={{name: "equip", isLocked: (state) => state.in_fight,
+                                        isDisabled: (state) => getLoad(state.player) - state.player.weapon.load + item.load > getMaxLoad(state.player),
                                         onClick: (state) => {
                                             state.inventory.weapons[key] = state.player.weapon;
                                             state.player.weapon = item;
@@ -440,7 +454,7 @@ class App extends Component {
                         <div className="flex-element">Absorption</div>
                         <div className="flex-element">Resistance</div>
                         <div className="flex-element">Stability</div>
-                        <div className="flex-element">Weight</div>
+                        <div className="flex-element">Delay</div>
                         <div className="flex-element">Equip</div>
                         <div className="flex-element">Sell</div>
                     </div>
@@ -451,9 +465,10 @@ class App extends Component {
                                 <div className="flex-element">{item.absorption}</div>
                                 <div className="flex-element">{item.resistance}</div>
                                 <div className="flex-element">{item.stability}</div>
-                                <div className="flex-element">{item.weight}</div>
+                                <div className="flex-element">{item.delay}</div>
                                 <div className="flex-element">
                                     <GinButton item={{name: "equip", isLocked: (state) => state.in_fight,
+                                        isDisabled: (state) => getLoad(state.player) - state.player.armors.load + item.load > getMaxLoad(state.player),
                                         onClick: (state) => {
                                             state.inventory.armors[key] = state.player.armor;
                                             state.player.armor = item;
@@ -484,10 +499,13 @@ class App extends Component {
                 <div className="flex-container-col panel">
                     <h5 className="slim">Shop</h5>
                     {_.map(consumables, (item, key) =>
-                        <div className="flex-element panel slim" key={key}>
-                            {drawCost(item.cost)}
-                            <GinButton item={item} key={key} />
-                            {item.text}
+                        <div className="flex-element flex-container-row panel slim" key={key}>
+                            <div className="flex-element flex-container-col slim" key={key}>
+                                <div className="flex-element">{drawCost(item.cost)}</div>
+                                <div className="flex-element">{drawCost({load: item.load})}</div>
+                            </div>
+                            <div className="flex-element"><GinButton item={item} key={key} /></div>
+                            <div className="flex-element">{item.text}</div>
                         </div>
                     )}
                 </div>
@@ -521,7 +539,7 @@ class App extends Component {
                         <h3 className="slim">Stats</h3>
                         <div className="row">
                             <div className="col-xs-2">STR</div>
-                            <div className="col-xs-10">Adds SP and to attack of many melee weapons</div>
+                            <div className="col-xs-10">Adds SP and increase maximum load</div>
                         </div>
                         <div className="row">
                             <div className="col-xs-2">DEX</div>
@@ -529,15 +547,15 @@ class App extends Component {
                         </div>
                         <div className="row">
                             <div className="col-xs-2">CON</div>
-                            <div className="col-xs-10">Adds HP and stun resistance</div>
+                            <div className="col-xs-10">Adds HP and increase stun resistance</div>
                         </div>
                         <div className="row">
                             <div className="col-xs-2">WIZ</div>
-                            <div className="col-xs-10">Adds MP and magic resistance</div>
+                            <div className="col-xs-10">Adds MP and increase magic resistance</div>
                         </div>
                         <div className="row">
                             <div className="col-xs-2">INT</div>
-                            <div className="col-xs-10">Adds MP and attack accuracy</div>
+                            <div className="col-xs-10">Adds MP and increase attack accuracy</div>
                         </div>
                     </div>
                     <div className="panel slim">
@@ -646,12 +664,12 @@ class App extends Component {
 
                     <div style={{width: '100%', height: '60px'}}></div>
 
-                    <div className="footer row">
+                    {state.in_fight === true ? '' : <div className="footer row">
                         <span className="col-xs filament"><a onClick={() => { this.changeTab('arena'); }} title='Arena'>Arena</a></span>
                         <span className="col-xs filament"><a onClick={() => { this.changeTab('character'); }} title='Character'>Character</a></span>
                         <span className="col-xs filament"><a onClick={() => { this.changeTab('inventory'); }} title='Inventory'>Inventory</a></span>
                         <span className="col-xs filament"><a onClick={() => { this.changeTab('options'); }} title='Options'>Info</a></span>
-                    </div>
+                    </div>}
                 </div>
             </div>
         );

@@ -16,6 +16,7 @@ body {
 .panel {
   background-color: rgba(42, 42, 42, 0.666);
   border: 1px solid #807b6f;
+  margin-bottom: 0px;
 }
 
 button {

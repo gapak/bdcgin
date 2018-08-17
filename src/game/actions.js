@@ -286,7 +286,7 @@ export const actions = {
         onAction: (state, attacker, defender) => {
             state[attacker].action = 'heal';
             state[attacker].action_timer += getActionDelay(30, state[attacker]);
-            let hp = Math.min(state[attacker].max_hp - state[attacker].hp, _.random(state[attacker].stats.wiz, 2 + (state[attacker].level * _.random(1, state[attacker].stats.wiz))));
+            let hp = Math.min(state[attacker].max_hp - state[attacker].hp, _.random(1 + state[attacker].stats.wiz, 3 + state[attacker].level + state[attacker].stats.wiz));
             state[attacker].hp += hp;
             state[attacker].effects.poison = Math.max(0, state[attacker].effects.poison - hp);
             state.chat.unshift({text: attacker + "  Heal " + hp});
@@ -373,7 +373,7 @@ export const actions = {
         onAction: (state, attacker, defender) => {
             state[attacker].action = 'blast';
             state[attacker].action_timer += getActionDelay(25, state[attacker]);
-            let atk = _.random(state[attacker].stats.int, 1 + state[attacker].level + _.random(1, state[attacker].stats.int));
+            let atk = _.random(state[attacker].stats.int, 2 + state[attacker].level + state[attacker].stats.int);
             let fire = hit(state, attacker, defender, atk, 'dark');
             state[defender].hp -= fire;
             state.chat.unshift({text: attacker + "  Blast " + fire});
