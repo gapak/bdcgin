@@ -8,10 +8,10 @@ import './css/App.css';
 import {game_name} from './game/app_config';
 import {getDefaultState} from './game/default_state';
 import {checkUnitStats, getAttackProb, getLoad, getMaxLoad} from './game/game_math';
-import {actions} from './game/actions';
-import {consumables} from './game/consumables';
-import {armors_bodies} from './game/armors';
-import {weapons_bodies} from './game/weapons';
+import {actions} from './game/knowledge/actions';
+import {consumables} from './game/knowledge/consumables';
+import {armors_bodies} from './game/models/armors';
+import {weapons_bodies} from './game/models/weapons';
 
 //import {GinButton} from './core/GinButton';
 import {frame} from './core/frame';
@@ -138,15 +138,20 @@ class App extends Component {
 
         const ConsumableGinButton = (props) => <GinButton item={{
             name: props.item.name,
-            isDisabled: (state) => !props.item.consumableIf(state),
-            onClick: (state) => { state.belt.splice(props.index, 1); return props.item.onConsume(state); } }} />;
+            isDisabled: (state) => !props.item.consumableIf(state, {attacker: 'player',  defender: 'target'}),
+            onClick: (state) => { state.player.belt.splice(props.index, 1); return props.item.onConsume(state, {attacker: 'player',  defender: 'target'}); } }} />;
+
+        const ShopGinButton = (props) => <GinButton item={{
+            name: props.item.name,
+            isDisabled: (state) => props.item.isDisabled(state, {attacker: 'player',  defender: 'target'}),
+            onClick: (state) => props.item.onClick(state, {attacker: 'player',  defender: 'target'}) }} />;
 
         const ActionGinButton = (props) => <GinButton item={{
             name: props.item.name,
             cost: props.item.cost,
-            isLocked: (state) => props.item.isHidden ? props.item.isHidden(state, 'player', 'target') : false,
-            isDisabled: (state) => props.item.isNotAllowed(state, 'player', 'target'),
-            onClick: (state) => { return props.item.onAction(state, 'player', 'target'); } }} />;
+            isLocked: (state) => props.item.isHidden ? props.item.isHidden(state, {attacker: 'player',  defender: 'target'}) : false,
+            isDisabled: (state) => props.item.isNotAllowed(state, {attacker: 'player',  defender: 'target'}),
+            onClick: (state) => { return props.item.onAction(state, {attacker: 'player',  defender: 'target'}); } }} />;
 
         const time_panel =
             <div className="flex-element">
@@ -372,7 +377,7 @@ class App extends Component {
             </div>;
 
         const analysis_subcomponent =
-            <div className="panel">
+            <div className="flex-element panel">
                 <div>Player vs {state.target.name}:</div>
                 <div>Hit:   {getAttackProb(state.player, state.target).toFixed(2)}%</div>
                 <div>Dodge: {(100 - getAttackProb(state.target, state.player)).toFixed(2)}%</div>
@@ -382,17 +387,17 @@ class App extends Component {
             <div>
                 <div className="flex-container-row">
                     {player_subcomponent}
-                    {money_subcomponent}
+                    <div className="flex-element flex-container-col">
+                        {money_subcomponent}
+                        <div className="flex-element panel">
+                            <h5>Win: {state.wins} and Loose: {state.looses}</h5>
+                        </div>
+                        {analysis_subcomponent}
+                    </div>
                 </div>
                 <div className="flex-container-row">
                     {weapon_subcomponent}
                     {armor_subcomponent}
-                </div>
-                <div>
-                    {analysis_subcomponent}
-                </div>
-                <div className="panel">
-                    <h5>Win: {state.wins} and Loose: {state.looses}</h5>
                 </div>
             </div>;
 
@@ -468,7 +473,7 @@ class App extends Component {
                                 <div className="flex-element">{item.delay}</div>
                                 <div className="flex-element">
                                     <GinButton item={{name: "equip", isLocked: (state) => state.in_fight,
-                                        isDisabled: (state) => getLoad(state.player) - state.player.armors.load + item.load > getMaxLoad(state.player),
+                                        isDisabled: (state) => getLoad(state.player) - state.player.armor.load + item.load > getMaxLoad(state.player),
                                         onClick: (state) => {
                                             state.inventory.armors[key] = state.player.armor;
                                             state.player.armor = item;
@@ -491,10 +496,12 @@ class App extends Component {
             <div>
                 <div className="flex-container-row">
                     {money_subcomponent}
-                    {money_subcomponent}
                 </div>
 
                 {belt_subcomponent}
+
+                {state.player.belt.length >= 6 ? <div>Your belt is full</div> : ''}
+                {getLoad(state.player) >= getMaxLoad(state.player) ? <div>You are fully loaded</div> : ''}
 
                 <div className="flex-container-col panel">
                     <h5 className="slim">Shop</h5>
@@ -504,10 +511,11 @@ class App extends Component {
                                 <div className="flex-element">{drawCost(item.cost)}</div>
                                 <div className="flex-element">{drawCost({load: item.load})}</div>
                             </div>
-                            <div className="flex-element"><GinButton item={item} key={key} /></div>
+                            <div className="flex-element"><ShopGinButton item={item} key={key} /></div>
                             <div className="flex-element">{item.text}</div>
                         </div>
                     )}
+
                 </div>
             </div>;
 

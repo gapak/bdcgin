@@ -3,10 +3,10 @@
 import _ from 'lodash';
 
 import {checkUnitStats} from './game_math';
-import {genUnit} from './unit';
-import {genTarget} from './targets';
-import {genWeapon} from './weapons';
-import {genArmor} from './armors';
+import {genUnit} from './models/unit';
+import {genTarget} from './models/targets';
+import {genWeapon} from './models/weapons';
+import {genArmor} from './models/armors';
 
 export const default_state = {
 

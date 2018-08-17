@@ -1,7 +1,7 @@
 
 import _ from 'lodash';
 
-import {consumables} from './consumables';
+import {consumables} from './knowledge/consumables';
 
 
 export const checkUnitStats = (unit) => {
@@ -89,18 +89,18 @@ export const hit = (state, attacker, defender, dmg, dmg_type) => {
 export const attack = (state, params) => {
     state[params.attacker].action_timer += getActionDelay(state[params.attacker].weapon.speed, state[params.attacker]);
 
-    if (state.target.action === 'roll' && state.target.action === 'flip') {
+    if (state[params.defender].action === 'roll' || state[params.defender].action === 'flip') {
         state.chat.unshift({text: params.defender + " Roll against attack"});
         return state;
     }
-    if (state.target.action === 'block') {
+    if (state[params.defender].action === 'block') {
         state.chat.unshift({text: params.defender + " Block against attack"});
         state[params.defender].action_timer = 0;
         state[params.defender].action = null;
         state[params.attacker].action_timer += 20;
         return state;
     }
-    if (state.target.action === 'parry') {
+    if (state[params.defender].action === 'parry') {
         state = attack(state,
             {
                 attacker: params.defender,

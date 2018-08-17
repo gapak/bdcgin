@@ -1,10 +1,10 @@
 
 import _ from 'lodash';
 
-import {effects_0} from './unit';
-import {genTarget} from './targets';
+import {effects_0} from './models/unit';
+import {genTarget} from './models/targets';
 import {checkUnitStats, isTargetInRange, hit} from './game_math';
-import {AI} from './AI';
+import {AI} from './knowledge/AI';
 
 
 const endBattleCleaner = (state) => {
@@ -18,10 +18,10 @@ const endBattleCleaner = (state) => {
 };
 
 export const rules = {
-    matrix_show: {onFrame: (state) => { state.matrix_show = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15); return state; }},
+    matrix_show: {onFrame: (state, params = {}) => { state.matrix_show = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15); return state; }},
 
     flip: {
-        onFrame: (state) => {
+        onFrame: (state, params = {}) => {
             if (state.battleground.target < state.battleground.player) {
                 state.battleground = {player: 100 - state.battleground.player, target: 100 - state.battleground.target};
             }
@@ -29,20 +29,20 @@ export const rules = {
         }
     },
     AI: {
-        onTick: (state) => {
+        onTick: (state, params = {}) => {
             state = AI.enemy_turn.onTick(state);
             return state;
         }
     },
 
     optimize_chat: {
-        onTick: (state) => {
+        onTick: (state, params = {}) => {
             state.chat = _.slice(state.chat, 0, 9);
             return state;
         }
     },
 
-    effects_in_battle: { onTick: (state) => {
+    effects_in_battle: { onTick: (state, params = {}) => {
         const effector = (state, attacker, defender) => {
             if (state[attacker].action === 'trance') {
                 if (state.player.mp < state.player.max_mp && _.random(1, 5) === 1) {
@@ -92,7 +92,7 @@ export const rules = {
     }},
 
     loose_battle: {
-        onFrame: (state) => {
+        onFrame: (state, params = {}) => {
             if (state.player.hp < 1) {
                 state.looses++;
                 state.player.hp = 1;
@@ -106,7 +106,7 @@ export const rules = {
     },
 
     replace_target: {
-        onFrame: (state) => {
+        onFrame: (state, params = {}) => {
             if (state.target.hp < 1) {
                 state.wins++;
                 let expr = Math.floor((50 + (50 * state.target.level)) * state.target.level / state.player.level);
@@ -122,7 +122,7 @@ export const rules = {
     },
 
     actions_timing: {
-        onFrame: (state) => {
+        onFrame: (state, params = {}) => {
             const check = (unit) => {
                 //console.log(unit.action_timer);
 
@@ -143,7 +143,7 @@ export const rules = {
     },
 
     levelUp: {
-        onTick: (state) => {
+        onTick: (state, params = {}) => {
             if (state.player.expr >= (100 * state.player.level)) {
                 state.player.expr -= (100 * state.player.level);
                 state.player.bonus_points += 1;
@@ -155,19 +155,19 @@ export const rules = {
     },
 
     rest: {
-        onTick: (state) => {
+        onTick: (state, params = {}) => {
             if (!state.in_fight) {
                 if (state.player.hp < state.player.max_hp) state.player.hp++;
                 if (state.player.sp < state.player.max_sp) state.player.sp++;
                 if (state.player.mp < state.player.max_mp) state.player.mp++;
             }
-            state.player.hp = _.random(state.player.hp, 1000) > 950 && state.player.hp < state.player.max_hp ? state.player.hp + 1 : state.player.hp;
-            state.player.sp = _.random(state.player.sp, 200) > 180 && state.player.sp < state.player.max_sp ? state.player.sp + 1 : state.player.sp;
-            state.player.mp = _.random(state.player.mp, 100) > 99 && state.player.mp < state.player.max_mp ? state.player.mp + 1 : state.player.mp;
+            state.player.hp = _.random(state.player.hp, 500) > 450 && state.player.hp < state.player.max_hp ? state.player.hp + 1 : state.player.hp;
+            state.player.sp = _.random(state.player.sp, 250) > 225 && state.player.sp < state.player.max_sp ? state.player.sp + 1 : state.player.sp;
+            state.player.mp = _.random(state.player.mp, 100) > 95 && state.player.mp < state.player.max_mp ? state.player.mp + 1 : state.player.mp;
 
-            state.target.hp = _.random(state.target.hp, 1000) > 950 && state.target.hp < state.target.max_hp ? state.target.hp + 1 : state.target.hp;
-            state.target.sp = _.random(state.target.sp, 200) > 180 && state.target.sp < state.target.max_sp ? state.target.sp + 1 : state.target.sp;
-            state.target.mp = _.random(state.target.mp, 100) > 99 && state.target.mp < state.target.max_mp ? state.target.mp + 1 : state.target.mp;
+            state.target.hp = _.random(state.target.hp, 500) > 450 && state.target.hp < state.target.max_hp ? state.target.hp + 1 : state.target.hp;
+            state.target.sp = _.random(state.target.sp, 250) > 225 && state.target.sp < state.target.max_sp ? state.target.sp + 1 : state.target.sp;
+            state.target.mp = _.random(state.target.mp, 100) > 95 && state.target.mp < state.target.max_mp ? state.target.mp + 1 : state.target.mp;
             return state;
         }
     },

@@ -1,11 +1,11 @@
 
 import _ from 'lodash';
-import {getActionDelay, isTargetInRange} from './game_math';
+import {getActionDelay, isTargetInRange} from '../game_math';
 import {actions} from './actions';
 
 export const AI = {
     enemy_turn: {
-        onTick: (state) => {
+        onTick: (state, params = {}) => {
 
             if (!state.in_fight) return state;
 
@@ -90,7 +90,7 @@ export const AI = {
                     break;
                 case 'hit':
                     state.target.sp -= 1;
-                    state = actions.hit.onAction(state, 'target', 'player');
+                    state = actions.hit.onAction(state, {attacker: 'target', defender: 'player'});
                     /*
                     state.target.action = 'hit';
                     state.target.sp -= 1;
@@ -105,7 +105,7 @@ export const AI = {
                     break;
                 case 'heal':
                     state.target.mp -= 1;
-                    state = actions.heal.onAction(state, 'target', 'player');
+                    state = actions.heal.onAction(state, {attacker: 'target', defender: 'player'});
                     /*
                     state.target.action = 'heal';
                     state.target.action_timer += getActionDelay(30, state.target);
@@ -117,7 +117,7 @@ export const AI = {
                     break;
                 case 'blast':
                     state.target.mp -= 1;
-                    state = actions.blast.onAction(state, 'target', 'player');
+                    state = actions.blast.onAction(state, {attacker: 'target', defender: 'player'});
                     /*
                     state.target.action = 'blast';
                     state.target.action_timer += getActionDelay(30, state.target);

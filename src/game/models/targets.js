@@ -1,7 +1,7 @@
 
 import _ from 'lodash';
 
-import {checkUnitStats} from './game_math';
+import {checkUnitStats} from '../game_math';
 import {genUnit} from './unit';
 import {genWeapon} from './weapons';
 import {genArmor} from './armors';
