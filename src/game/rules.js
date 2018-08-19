@@ -112,8 +112,8 @@ export const rules = {
                 let expr = Math.floor((50 + (50 * state.target.level)) * state.target.level / state.player.level);
                 state.player.expr += expr;
                 state.inventory.armors.push(state.target.armor);
-                state.inventory.weapons.push(state.target.weapon);
-                let weapon_name = state.target.weapon.name;
+                state.inventory.weapons.push(state.target.right_hand);
+                let weapon_name = state.target.right_hand.name;
                 state = endBattleCleaner(state);
                 state.chat.unshift({text: "You win. +" + expr + 'expr and ' + weapon_name + '.'});
             }
