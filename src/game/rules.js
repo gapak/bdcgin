@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import {effects_0} from './models/unit';
 import {genTarget} from './models/targets';
-import {checkUnitStats, isTargetInRange, hit} from './game_math';
+import {checkUnitStats, isTargetInRange, hit, getMaxLoad, getLoad} from './game_math';
 import {AI} from './knowledge/AI';
 
 
@@ -161,13 +161,17 @@ export const rules = {
                 if (state.player.sp < state.player.max_sp) state.player.sp++;
                 if (state.player.mp < state.player.max_mp) state.player.mp++;
             }
-            state.player.hp = _.random(state.player.hp, 500) > 490 && state.player.hp < state.player.max_hp ? state.player.hp + 1 : state.player.hp;
-            state.player.sp = _.random(state.player.sp, 250) > 230 && state.player.sp < state.player.max_sp ? state.player.sp + 1 : state.player.sp;
-            state.player.mp = _.random(state.player.mp, 100) > 95 && state.player.mp < state.player.max_mp ? state.player.mp + 1 : state.player.mp;
 
-            state.target.hp = _.random(state.target.hp, 500) > 490 && state.target.hp < state.target.max_hp ? state.target.hp + 1 : state.target.hp;
-            state.target.sp = _.random(state.target.sp, 250) > 230 && state.target.sp < state.target.max_sp ? state.target.sp + 1 : state.target.sp;
-            state.target.mp = _.random(state.target.mp, 100) > 95 && state.target.mp < state.target.max_mp ? state.target.mp + 1 : state.target.mp;
+            const regen = (unit) => {
+                const load_factor = getMaxLoad(state[unit]) - getLoad(state[unit]);
+                state[unit].hp = _.random(state[unit].hp, 500) > 490 && state[unit].hp < state[unit].max_hp ? state[unit].hp + 1 : state[unit].hp;
+                state[unit].sp = _.random(state[unit].sp, 250) > (230 - load_factor) && state[unit].sp < state[unit].max_sp ? state[unit].sp + 1 : state[unit].sp;
+                state[unit].mp = _.random(state[unit].mp, 100) > 95 && state[unit].mp < state[unit].max_mp ? state[unit].mp + 1 : state[unit].mp;
+            };
+
+            regen('player');
+            regen('target');
+
             return state;
         }
     },

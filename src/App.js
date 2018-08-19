@@ -15,7 +15,7 @@ import {consumables} from './game/knowledge/consumables';
 import {armors_bodies} from './game/models/armors';
 import {weapons_bodies} from './game/models/weapons';
 import {shields_bodies} from './game/models/shields';
-import {getArmor, getBeltForRightHand, getBeltForLeftHand} from './game/equipment';
+import {getArmor, getWeapon, getBeltForRightHand, getBeltForLeftHand} from './game/equipment';
 
 //import {GinButton} from './core/GinButton';
 import {frame} from './core/frame';
@@ -230,20 +230,28 @@ class App extends Component {
             }
             if (weapons[0].name === 'Hand' || weapons[1].name === 'Hand') {
                 let weapon = _.filter(weapons, (item) => item.name !== 'Hand')[0];
-                return <div> with {state.in_fight === true ? weapon.body_name : weapon.name} in both hand </div>
+                return <div> with {state.in_fight === true ? weapon.body_name + 'in both hand' : weapon.name} </div>
             }
             return <div>
                 with {state.in_fight === true ? weapons[0].body_name : weapons[0].name} and {state.in_fight === true ? weapons[1].body_name : weapons[1].name}
             </div>
         };
 
+        const player_subcomponent = (() => {
+            let weapon = getWeapon(state, 'player');
+            let armor  = getArmor(state, 'player');
 
-        const player_subcomponent =
-            <div className="flex-element panel filament">
+            return <div className="flex-element panel filament">
                 <div>Player</div>
                 {drawEquipmentLabel('player')}
                 <div> in {state.in_fight === true ? getArmor(state, 'player').body_name : getArmor(state, 'player').name} </div>
                 <div> LVL: {state.player.level} ({state.player.expr}/{100 * state.player.level}) </div>
+                {state.in_fight !== true
+                    ? <div> DMG: {weapon.min_dmg} - {weapon.max_dmg + state.player.stats[weapon.bonus_stat]} dmg / [{weapon.stunning}] stun </div>
+                    : <div> DMG: {weapon.min_dmg} - {weapon.max_dmg + state.player.stats[weapon.bonus_stat]} / [{weapon.stunning}] </div> }
+                {state.in_fight !== true
+                    ? <div> DEF: {armor.absorption} abs / {armor.resistance + state.player.stats.wiz} res / [{armor.stability + state.player.stats.con}] stab </div>
+                    : <div> DEF: {armor.absorption} / {armor.resistance + state.player.stats.wiz} / [{armor.stability + state.player.stats.con}] </div> }
                 <div> HP: {state.player.hp}/{state.player.max_hp} </div>
                 <div> SP: {state.player.sp}/{state.player.max_sp} </div>
                 <div> MP: {state.player.mp}/{state.player.max_mp} </div>
@@ -254,7 +262,8 @@ class App extends Component {
                 {levelUp('int')}
                 <div> Action: {state.player.action ? actions[state.player.action].name : ''} {state.player.action_timer} </div>
                 {_.sum(_.values(state.player.effects)) > 0 ? <div>{_.map(state.player.effects, (val, key) => val > 0 ? <span key={key}>{key}: {val}</span> : '' )}</div> : ''}
-            </div>;
+            </div>
+        })();
 
         const Hand = (weapon) =>
             <div className="flex-element panel">
@@ -292,12 +301,21 @@ class App extends Component {
                 <h6>Load: {getLoad(state.player)} / {getMaxLoad(state.player)} kg</h6>
             </div>;
 
-        const target_subcomponent =
-            <div className="flex-element panel filament">
+        const target_subcomponent = (() => {
+            let weapon = getWeapon(state, 'target');
+            let armor  = getArmor(state, 'target');
+
+            return <div className="flex-element panel filament">
                 <div>{state.in_fight === true ? state.target.body_name : state.target.name}</div>
                 {drawEquipmentLabel('target')}
                 <div> in {state.in_fight === true ? state.target.armor.body_name : state.target.armor.name} </div>
                 <div> LVL: {state.target.level} ({Math.floor((50 + (50 * state.target.level)) * state.target.level / state.player.level)} expr) </div>
+                {state.in_fight !== true
+                    ? <div> DMG: {weapon.min_dmg} - {weapon.max_dmg + state.target.stats[weapon.bonus_stat]} dmg / [{weapon.stunning}] stun </div>
+                    : <div> DMG: {weapon.min_dmg} - {weapon.max_dmg + state.target.stats[weapon.bonus_stat]} / [{weapon.stunning}] </div> }
+                {state.in_fight !== true
+                    ? <div> DEF: {armor.absorption} abs / {armor.resistance + state.target.stats.wiz} res / [{armor.stability + state.target.stats.con}] stab </div>
+                    : <div> DEF: {armor.absorption} / {armor.resistance + state.target.stats.wiz} / [{armor.stability + state.target.stats.con}] </div> }
                 <div> HP: {state.target.hp}/{state.target.max_hp} </div>
                 <div> SP: {state.target.sp}/{state.target.max_sp} </div>
                 <div> MP: {state.target.mp}/{state.target.max_mp} </div>
@@ -308,7 +326,8 @@ class App extends Component {
                 {state.in_fight !== true ? <div> INT: {state.target.stats.int} </div> : ''}
                 <div> Action: {state.target.action ? actions[state.target.action].name : ''} {state.target.action_timer} </div>
                 {_.sum(_.values(state.target.effects)) > 0 ? <div>{_.map(state.target.effects, (val, key) => val > 0 ? <span key={key}>{key}: {val}</span> : '' )}</div> : ''}
-            </div>;
+            </div>
+        })();
 
         const battle_ground_subcomponent =
             <div className="flex-element panel filament">
@@ -522,7 +541,7 @@ class App extends Component {
                     <div className="flex-container-row">
                         <div className="flex-element">Name</div>
                         <div className="flex-element">Type</div>
-                        <div className="flex-element">Strip</div>
+                        <div className="flex-element">Unequip</div>
                     </div>
                     <div className="flex-container-column">
                         {_.map(state.player.equipment, (item, key) =>
@@ -530,7 +549,7 @@ class App extends Component {
                                 <div className="flex-element">{item.name}</div>
                                 <div className="flex-element">{item.type}</div>
                                 <div className="flex-element">
-                                    <GinButton item={{name: "strip", isLocked: (state) => state.in_fight,
+                                    <GinButton item={{name: "unequip", isLocked: (state) => state.in_fight,
                                         isDisabled: (state) => item.unsold,
                                         onClick: (state) => {
                                             if (item.type === 'weapon') { state.inventory.weapons.unshift(item); }

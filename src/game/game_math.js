@@ -122,7 +122,7 @@ export const attack = (state, params) => {
     let Prob = getAttackProb(state, params);
     if (_.random(0, 100) < Prob) {
         console.log();
-        let atk = _.random(attacker_weapon.min_dmg, attacker_weapon.max_dmg) + _.random(0, state[params.attacker].stats[attacker_weapon.bonus_stat]);
+        let atk = _.random(attacker_weapon.min_dmg, attacker_weapon.max_dmg + state[params.attacker].stats[attacker_weapon.bonus_stat]);
         let dmg = hit(state, params.attacker, params.defender, atk, attacker_weapon.dmg_type);
 
         state[params.defender].hp -= dmg;
