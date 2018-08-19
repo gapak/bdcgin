@@ -656,8 +656,10 @@ class App extends Component {
                                     <GinButton item={{name: "equip", isLocked: (state) => state.in_fight,
                                         isDisabled: (state) => getLoad(state.player) - state.player.armor.load + item.load > getMaxLoad(state.player),
                                         onClick: (state) => {
-                                            state.player.equipment.unshift(item);
-                                            state.inventory.armors.splice(key, 1);
+                                            state.inventory.armors[key] = state.player.armor;
+                                            state.player.armor = item;
+                                            //state.player.equipment.unshift(item);
+                                            //state.inventory.armors.splice(key, 1);
                                             return state; } }} />
                                 </div>
                                 <div className="flex-element">
