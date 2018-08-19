@@ -161,13 +161,13 @@ export const rules = {
                 if (state.player.sp < state.player.max_sp) state.player.sp++;
                 if (state.player.mp < state.player.max_mp) state.player.mp++;
             }
-            state.player.hp = _.random(state.player.hp, 500) > 475 && state.player.hp < state.player.max_hp ? state.player.hp + 1 : state.player.hp;
-            state.player.sp = _.random(state.player.sp, 250) > 235 && state.player.sp < state.player.max_sp ? state.player.sp + 1 : state.player.sp;
-            state.player.mp = _.random(state.player.mp, 100) > 97 && state.player.mp < state.player.max_mp ? state.player.mp + 1 : state.player.mp;
+            state.player.hp = _.random(state.player.hp, 500) > 490 && state.player.hp < state.player.max_hp ? state.player.hp + 1 : state.player.hp;
+            state.player.sp = _.random(state.player.sp, 250) > 230 && state.player.sp < state.player.max_sp ? state.player.sp + 1 : state.player.sp;
+            state.player.mp = _.random(state.player.mp, 100) > 95 && state.player.mp < state.player.max_mp ? state.player.mp + 1 : state.player.mp;
 
-            state.target.hp = _.random(state.target.hp, 500) > 475 && state.target.hp < state.target.max_hp ? state.target.hp + 1 : state.target.hp;
-            state.target.sp = _.random(state.target.sp, 250) > 235 && state.target.sp < state.target.max_sp ? state.target.sp + 1 : state.target.sp;
-            state.target.mp = _.random(state.target.mp, 100) > 97 && state.target.mp < state.target.max_mp ? state.target.mp + 1 : state.target.mp;
+            state.target.hp = _.random(state.target.hp, 500) > 490 && state.target.hp < state.target.max_hp ? state.target.hp + 1 : state.target.hp;
+            state.target.sp = _.random(state.target.sp, 250) > 230 && state.target.sp < state.target.max_sp ? state.target.sp + 1 : state.target.sp;
+            state.target.mp = _.random(state.target.mp, 100) > 95 && state.target.mp < state.target.max_mp ? state.target.mp + 1 : state.target.mp;
             return state;
         }
     },

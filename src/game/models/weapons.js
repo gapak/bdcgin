@@ -71,7 +71,7 @@ export var weapons_bodies = {
 
     wiz1:   {name: "Wand",     type: 'weapon', hands: 1, load: 4, min_dmg: 1, max_dmg: 3, dmg_type: 'light',     bonus_stat: 'wiz', stunning: 24, accuracy: 7, range: 25, speed: 60},
     wiz2:   {name: "Rod",      type: 'weapon', hands: 2, load: 7, min_dmg: 2, max_dmg: 4, dmg_type: 'light',    bonus_stat: 'wiz', stunning: 32, accuracy: 5, range: 30, speed: 67},
-    mage1:  {name: "Familiar", type: 'weapon', hands: 1, load: 6, min_dmg: 3, max_dmg: 5, dmg_type: 'dark',      bonus_stat: 'int', stunning: 2,  accuracy: 6, range: 40, speed: 43},
+    mage1:  {name: "Orb",      type: 'weapon', hands: 1, load: 6, min_dmg: 3, max_dmg: 5, dmg_type: 'dark',      bonus_stat: 'int', stunning: 2,  accuracy: 6, range: 40, speed: 43},
     mage2:  {name: "Grimoire", type: 'weapon', hands: 2, load: 7, min_dmg: 4, max_dmg: 8, dmg_type: 'dark',     bonus_stat: 'int', stunning: 12,  accuracy: 8, range: 35, speed: 76},
 };
   /*
