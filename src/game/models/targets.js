@@ -58,7 +58,8 @@ export const genTarget = (level = 1) => {
     target.quality_name = quality.name;
     target.body_name = body.name;
 
-    target.weapon = genWeapon(level);
+    target.right_hand = genWeapon(level);
+    //target.weapon = genWeapon(level);
     target.armor = genArmor(level);
 
     target.stats.str = Math.max(1, quality.stats.str + mod.stats.str + body.stats.str);

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
+import Select from 'react-select';
 import _ from 'lodash';
 
+import './css/weapon_selector.css';
 import './css/footer.css';
 import './css/App.css';
 
@@ -12,6 +14,8 @@ import {actions} from './game/knowledge/actions';
 import {consumables} from './game/knowledge/consumables';
 import {armors_bodies} from './game/models/armors';
 import {weapons_bodies} from './game/models/weapons';
+import {shields_bodies} from './game/models/shields';
+import {getWeapon, getWeapons, getArmor, getBeltForRightHand, getBeltForLeftHand} from './game/equipment';
 
 //import {GinButton} from './core/GinButton';
 import {frame} from './core/frame';
@@ -36,6 +40,17 @@ class App extends Component {
 
     }
 
+
+    componentDidCatch(error, info) {
+        console.log('componentDidCatch', error, info);
+        if (!localStorage.getItem(game_name+"_retry_flag")) { // production one-try-reloader
+            localStorage.setItem(game_name+"_retry_flag", true);
+            localStorage.setItem(game_name+"_app_state", null);
+            window.location.reload(true);
+            return true;
+        }
+        localStorage.setItem(game_name+"_retry_flag", false);
+    }
 
     componentDidMount() {
         console.log('App '+game_name+' componentDidMount');
@@ -207,12 +222,27 @@ class App extends Component {
                 : ''
         };
 
+        const drawEquipmentLabel = (unit) => {
+            let weapons = [state[unit].left_hand, state[unit].right_hand];
+
+            if (weapons[0].name === 'Hand' && weapons[1].name === 'Hand') {
+                return <div> with bare hands </div>
+            }
+            if (weapons[0].name === 'Hand' || weapons[1].name === 'Hand') {
+                let weapon = _.filter(weapons, (item) => item.name !== 'Hand')[0];
+                return <div> with {state.in_fight === true ? weapon.body_name : weapon.name} in both hand </div>
+            }
+            return <div>
+                with {state.in_fight === true ? weapons[0].body_name : weapons[0].name} and {state.in_fight === true ? weapons[1].body_name : weapons[1].name}
+            </div>
+        };
+
 
         const player_subcomponent =
             <div className="flex-element panel filament">
                 <div>Player</div>
-                <div> with {state.in_fight === true ? state.player.weapon.body_name : state.player.weapon.name} </div>
-                <div> in {state.in_fight === true ? state.player.armor.body_name : state.player.armor.name} </div>
+                {drawEquipmentLabel('player')}
+                <div> in {state.in_fight === true ? getArmor(state, 'player').body_name : getArmor(state, 'player').name} </div>
                 <div> LVL: {state.player.level} ({state.player.expr}/{100 * state.player.level}) </div>
                 <div> HP: {state.player.hp}/{state.player.max_hp} </div>
                 <div> SP: {state.player.sp}/{state.player.max_sp} </div>
@@ -226,43 +256,46 @@ class App extends Component {
                 {_.sum(_.values(state.player.effects)) > 0 ? <div>{_.map(state.player.effects, (val, key) => val > 0 ? <span key={key}>{key}: {val}</span> : '' )}</div> : ''}
             </div>;
 
-        const weapon_subcomponent =
+        const Hand = (weapon) =>
             <div className="flex-element panel">
-                <div>{state.player.weapon.name}</div>
-                <div>Damage: {state.player.weapon.min_dmg} - {state.player.weapon.max_dmg}</div>
-                <div>Type: {state.player.weapon.dmg_type}</div>
-                <div>Skill: {state.player.weapon.bonus_stat}</div>
-                <div>Stunning: {state.player.weapon.stunning}</div>
-                <div>Accuracy: {state.player.weapon.accuracy}</div>
-                <div>Range: {state.player.weapon.range}</div>
-                <div>Speed: {state.player.weapon.speed}</div>
-                <div>Load: {state.player.weapon.load}</div>
-                <div>Cost: {state.player.weapon.cost}</div>
+                <div>{weapon.name}</div>
+                <div>Damage: {weapon.min_dmg} - {weapon.max_dmg}</div>
+                <div>Type: {weapon.dmg_type}</div>
+                <div>Skill: {weapon.bonus_stat}</div>
+                <div>Stunning: {weapon.stunning}</div>
+                <div>Accuracy: {weapon.accuracy}</div>
+                <div>Range: {weapon.range}</div>
+                <div>Speed: {weapon.speed}</div>
+                <div>Load: {weapon.load} kg</div>
+                <div>Cost: {weapon.cost}</div>
             </div>;
+
+        const hand_left_subcomponent = Hand(state.player.left_hand);
+        const hand_right_subcomponent = Hand(state.player.right_hand);
 
         const armor_subcomponent =
             <div className="flex-element panel">
-                <div>{state.player.armor.name}</div>
-                <div>Absorption: {state.player.armor.absorption}</div>
-                <div>Resistance: {state.player.armor.resistance}</div>
-                <div>Stability: {state.player.armor.stability}</div>
-                <div>Delay: {state.player.armor.delay}</div>
-                <div>Load: {state.player.armor.load}</div>
-                <div>Cost: {state.player.armor.cost}</div>
+                <div>{getArmor(state, 'player').name}</div>
+                <div>Absorption: {getArmor(state, 'player').absorption}</div>
+                <div>Resistance: {getArmor(state, 'player').resistance}</div>
+                <div>Stability: {getArmor(state, 'player').stability}</div>
+                <div>Delay: {getArmor(state, 'player').delay}</div>
+                <div>Load: {getArmor(state, 'player').load} kg</div>
+                <div>Cost: {getArmor(state, 'player').cost}</div>
             </div>;
 
         const money_subcomponent =
             <div className="flex-element panel ">
                 <h6>Player</h6>
-                <h5>{state.player.name}</h5>
+                <h6>{state.player.name}</h6>
                 <h6>Money: {state.player.money}</h6>
-                <h6>Load: {getLoad(state.player)} / {getMaxLoad(state.player)}</h6>
+                <h6>Load: {getLoad(state.player)} / {getMaxLoad(state.player)} kg</h6>
             </div>;
 
         const target_subcomponent =
             <div className="flex-element panel filament">
                 <div>{state.in_fight === true ? state.target.body_name : state.target.name}</div>
-                <div> with {state.in_fight === true ? state.target.weapon.body_name : state.target.weapon.name} </div>
+                {drawEquipmentLabel('target')}
                 <div> in {state.in_fight === true ? state.target.armor.body_name : state.target.armor.name} </div>
                 <div> LVL: {state.target.level} ({Math.floor((50 + (50 * state.target.level)) * state.target.level / state.player.level)} expr) </div>
                 <div> HP: {state.target.hp}/{state.target.max_hp} </div>
@@ -279,7 +312,7 @@ class App extends Component {
 
         const battle_ground_subcomponent =
             <div className="flex-element panel filament">
-                <h5>Battle Ground</h5>
+                <h6>Battle Ground</h6>
                 <div className="flex-container-row">
                     <div className="flex-element"> Player: {state.battleground.player} </div>
                     <div className="flex-element"> Target: {state.battleground.target} </div>
@@ -335,9 +368,28 @@ class App extends Component {
                 </div>
             </div>;
 
+        const belt_style = {
+            control: (base, state) => ({
+                ...base,
+                color: 'white',
+                backgroundColor: 'rgba(0, 0, 0, 0)',
+            }),
+            option: (base, state) => ({
+                ...base,
+                borderBottom: '1px solid white',
+                color: 'white',
+                backgroundColor: 'black',
+            }),
+            singleValue: (base, state) => ({
+                ...base,
+                borderBottom: '1px solid white',
+                color: 'white',
+                backgroundColor: 'black',
+            }),
+        };
+
         const belt_subcomponent =
             <div className="panel filament">
-                <h5 className="slim">Belt</h5>
                 <div className="flex-container-row">
                     {_.map(state.player.belt, (item, key) =>
                         <div className="flex-element panel slim" key={key}>
@@ -345,7 +397,50 @@ class App extends Component {
                         </div>
                     )}
                     {state.player.belt.length < 6 && state.tab !== 'shop' && state.in_fight !== true ?
-                        <GinButton item={{name: 'Buy More', onClick: (state) => { state.tab = 'shop'; return state;} }}/> : ''}
+                        <GinButton item={{name: 'Buy Consumables', onClick: (state) => { state.tab = 'shop'; return state;} }}/> : ''}
+                </div>
+
+                <div className="flex-container-row">
+                    <div className="flex-element">
+                        Left Hand
+                        <Select
+                            styles={belt_style}
+                            isDisabled={state.player.action_timer || state.player.right_hand.hands === 2}
+                            value={{value: 0, label: state.player.left_hand.name}}
+                            onChange={(selectedOption) => this.onClickWrapper({
+                                onClick: (state) => {
+                                    console.log(state.player.equipment);
+                                    let tmp = state.player.left_hand;
+                                    let selected = getBeltForLeftHand(state, 'player')[selectedOption.value];
+                                    state.player.left_hand = selected;
+                                    _.pull(state.player.equipment, selected);
+                                    state.player.equipment.unshift(tmp);
+                                    return state; }})}
+                            options={_.map(getBeltForLeftHand(state, 'player'), (weapon, id) => {
+                                //console.log(weapon, id);
+                                return {value: id, label: weapon.name}; } )}
+                        />
+                    </div>
+                    <div className="flex-element">
+                        Right Hand
+                        <Select
+                            styles={belt_style}
+                            isDisabled={state.player.action_timer || state.player.left_hand.hands === 2}
+                            value={{value: 0, label: state.player.right_hand.name}}
+                            onChange={(selectedOption) => this.onClickWrapper({
+                                onClick: (state) => {
+                                    console.log(state.player.equipment);
+                                    let tmp = state.player.right_hand;
+                                    let selected = getBeltForRightHand(state, 'player')[selectedOption.value];
+                                    state.player.right_hand = selected;
+                                    _.pull(state.player.equipment, selected);
+                                    state.player.equipment.unshift(tmp);
+                                    return state; }})}
+                            options={_.map(getBeltForRightHand(state, 'player'), (weapon, id) => {
+                                //console.log(weapon, id);
+                                return {value: id, label: weapon.name}; } )}
+                        />
+                    </div>
                 </div>
             </div>;
 
@@ -379,48 +474,86 @@ class App extends Component {
         const analysis_subcomponent =
             <div className="flex-element panel">
                 <div>Player vs {state.target.name}:</div>
-                <div>Hit:   {getAttackProb(state.player, state.target).toFixed(2)}%</div>
-                <div>Dodge: {(100 - getAttackProb(state.target, state.player)).toFixed(2)}%</div>
+                <div>Hit:   {getAttackProb(state, {attacker: 'player',  defender: 'target'}).toFixed(2)}%</div>
+                <div>Dodge: {(100 - getAttackProb(state, {attacker: 'target',  defender: 'player'})).toFixed(2)}%</div>
             </div>;
+
+
+
+        const load_subcomponent =
+                <div className="panel">
+                    <h4>Load: {getLoad(state.player)} / {getMaxLoad(state.player)} kg</h4>
+                </div>
 
         const character_subcomponent =
             <div>
+                {load_subcomponent}
+                <div className="flex-container-row">
+                    {hand_left_subcomponent}
+                    {armor_subcomponent}
+                    {hand_right_subcomponent}
+                </div>
                 <div className="flex-container-row">
                     {player_subcomponent}
                     <div className="flex-element flex-container-col">
                         {money_subcomponent}
                         <div className="flex-element panel">
-                            <h5>Win: {state.wins} and Loose: {state.looses}</h5>
+                            <h6>Win: {state.wins} and Loose: {state.looses}</h6>
                         </div>
                         {analysis_subcomponent}
                     </div>
-                </div>
-                <div className="flex-container-row">
-                    {weapon_subcomponent}
-                    {armor_subcomponent}
                 </div>
             </div>;
 
         const inventory_subcomponent =
             <div>
-                <div className="panel">
-                    <h3>Load: {getLoad(state.player)} / {getMaxLoad(state.player)}</h3>
-                </div>
+                {load_subcomponent}
                 <div className="flex-container-row">
-                    {weapon_subcomponent}
+                    {hand_left_subcomponent}
                     {armor_subcomponent}
+                    {hand_right_subcomponent}
                 </div>
 
                 {belt_subcomponent}
 
+                { state.player.equipment.length > 0 ?
+                <div className="panel">
+                    <h6>Equipment</h6>
+                    <div className="flex-container-row">
+                        <div className="flex-element">Name</div>
+                        <div className="flex-element">Type</div>
+                        <div className="flex-element">Strip</div>
+                    </div>
+                    <div className="flex-container-column">
+                        {_.map(state.player.equipment, (item, key) =>
+                            <div className="flex-element flex-container-row" key={key}>
+                                <div className="flex-element">{item.name}</div>
+                                <div className="flex-element">{item.type}</div>
+                                <div className="flex-element">
+                                    <GinButton item={{name: "strip", isLocked: (state) => state.in_fight,
+                                        isDisabled: (state) => item.unsold,
+                                        onClick: (state) => {
+                                            if (item.type === 'weapon') { state.inventory.weapons.unshift(item); }
+                                            else if (item.type === 'shield') { state.inventory.shields.unshift(item); }
+                                            else { console.log('WRONG ITEM TYPE'); return false; }
+                                            state.player.equipment.splice(key, 1);
+                                            return state; } }} />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div> : ""}
+
                 { state.inventory.weapons.length > 0 ?
                 <div className="panel">
+                    <h6>Weaponry</h6>
                     <div className="flex-container-row">
                         <div className="flex-element">Name</div>
                         <div className="flex-element">Damage</div>
                         <div className="flex-element">Accuracy</div>
                         <div className="flex-element">Range</div>
                         <div className="flex-element">Speed</div>
+                        <div className="flex-element">Load</div>
                         <div className="flex-element">Equip</div>
                         <div className="flex-element">Sell</div>
                     </div>
@@ -432,16 +565,18 @@ class App extends Component {
                                 <div className="flex-element">{item.accuracy}</div>
                                 <div className="flex-element">{item.range}</div>
                                 <div className="flex-element">{item.speed}</div>
+                                <div className="flex-element">{item.load} kg</div>
                                 <div className="flex-element">
                                     <GinButton item={{name: "equip", isLocked: (state) => state.in_fight,
-                                        isDisabled: (state) => getLoad(state.player) - state.player.weapon.load + item.load > getMaxLoad(state.player),
+                                        isDisabled: (state) => getLoad(state.player) + item.load > getMaxLoad(state.player),
                                         onClick: (state) => {
-                                            state.inventory.weapons[key] = state.player.weapon;
-                                            state.player.weapon = item;
+                                            state.player.equipment.unshift(item);
+                                            state.inventory.weapons.splice(key, 1);
                                             return state; } }} />
                                 </div>
                                 <div className="flex-element">
                                     <GinButton item={{name: "sell $"+item.cost, isLocked: (state) => state.in_fight,
+                                        isDisabled: (state) => item.unsold,
                                         onClick: (state) => {
                                             state.player.money += item.cost;
                                             state.inventory.weapons.splice(key, 1);
@@ -452,14 +587,59 @@ class App extends Component {
                     </div>
                 </div> : ""}
 
-                { state.inventory.armors.length > 0 ?
+                { state.inventory.shields.length > 0 ?
                 <div className="panel">
+                    <h6>Shields</h6>
                     <div className="flex-container-row">
                         <div className="flex-element">Name</div>
                         <div className="flex-element">Absorption</div>
                         <div className="flex-element">Resistance</div>
                         <div className="flex-element">Stability</div>
                         <div className="flex-element">Delay</div>
+                        <div className="flex-element">Load</div>
+                        <div className="flex-element">Equip</div>
+                        <div className="flex-element">Sell</div>
+                    </div>
+                    <div className="flex-container-column">
+                        {_.map(state.inventory.shields, (item, key) =>
+                            <div className="flex-element flex-container-row" key={key}>
+                                <div className="flex-element">{item.name}</div>
+                                <div className="flex-element">{item.absorption}</div>
+                                <div className="flex-element">{item.resistance}</div>
+                                <div className="flex-element">{item.stability}</div>
+                                <div className="flex-element">{item.delay}</div>
+                                <div className="flex-element">{item.load} kg</div>
+                                <div className="flex-element">
+                                    <GinButton item={{name: "equip", isLocked: (state) => state.in_fight,
+                                        isDisabled: (state) => getLoad(state.player) + item.load > getMaxLoad(state.player),
+                                        onClick: (state) => {
+                                            state.player.equipment.unshift(item);
+                                            state.inventory.shields.splice(key, 1);
+                                            return state; } }} />
+                                </div>
+                                <div className="flex-element">
+                                    <GinButton item={{name: "sell $"+item.cost, isLocked: (state) => state.in_fight,
+                                        isDisabled: (state) => item.unsold,
+                                        onClick: (state) => {
+                                            state.player.money += item.cost;
+                                            state.inventory.shields.splice(key, 1);
+                                            return state; } }} />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div> : ""}
+
+                { state.inventory.armors.length > 0 ?
+                <div className="panel">
+                    <h6>Armory</h6>
+                    <div className="flex-container-row">
+                        <div className="flex-element">Name</div>
+                        <div className="flex-element">Absorption</div>
+                        <div className="flex-element">Resistance</div>
+                        <div className="flex-element">Stability</div>
+                        <div className="flex-element">Delay</div>
+                        <div className="flex-element">Load</div>
                         <div className="flex-element">Equip</div>
                         <div className="flex-element">Sell</div>
                     </div>
@@ -471,16 +651,18 @@ class App extends Component {
                                 <div className="flex-element">{item.resistance}</div>
                                 <div className="flex-element">{item.stability}</div>
                                 <div className="flex-element">{item.delay}</div>
+                                <div className="flex-element">{item.load} kg</div>
                                 <div className="flex-element">
                                     <GinButton item={{name: "equip", isLocked: (state) => state.in_fight,
                                         isDisabled: (state) => getLoad(state.player) - state.player.armor.load + item.load > getMaxLoad(state.player),
                                         onClick: (state) => {
-                                            state.inventory.armors[key] = state.player.armor;
-                                            state.player.armor = item;
+                                            state.player.equipment.unshift(item);
+                                            state.inventory.armors.splice(key, 1);
                                             return state; } }} />
                                 </div>
                                 <div className="flex-element">
                                     <GinButton item={{name: "sell $"+item.cost, isLocked: (state) => state.in_fight,
+                                        isDisabled: (state) => item.unsold,
                                         onClick: (state) => {
                                             state.player.money += item.cost;
                                             state.inventory.armors.splice(key, 1);
@@ -504,12 +686,12 @@ class App extends Component {
                 {getLoad(state.player) >= getMaxLoad(state.player) ? <div>You are fully loaded</div> : ''}
 
                 <div className="flex-container-col panel">
-                    <h5 className="slim">Shop</h5>
+                    <h6 className="slim">Shop</h6>
                     {_.map(consumables, (item, key) =>
                         <div className="flex-element flex-container-row panel slim" key={key}>
                             <div className="flex-element flex-container-col slim" key={key}>
                                 <div className="flex-element">{drawCost(item.cost)}</div>
-                                <div className="flex-element">{drawCost({load: item.load})}</div>
+                                <div className="flex-element">{drawCost({load: item.load})} kg</div>
                             </div>
                             <div className="flex-element"><ShopGinButton item={item} key={key} /></div>
                             <div className="flex-element">{item.text}</div>
@@ -521,7 +703,7 @@ class App extends Component {
 
         const smith_subcomponent =
             <div className="flex-container-column panel">
-                <h5 className="slim">Smith</h5>
+                <h6 className="slim">Smith</h6>
                 <div className="flex-element">
 
                 </div>
@@ -534,17 +716,17 @@ class App extends Component {
                 </div>
                 <div className="flex-element flex-container-column">
                     <div className="flex-element">
-                        <h4>Round: {this.state.tick} Turn: {this.state.frame} </h4>
+                        <h5>Round: {this.state.tick} Turn: {this.state.frame} </h5>
                     </div>
                     {time_panel}
                 </div>
                 <div>
-                    <h2>Wiki</h2>
+                    <h3>Wiki</h3>
                     <div className="panel slim container">
                         From this Arena there are two ways out: victory over all or death. Improve your skills, select equipment and use consumables to defeat your opponents!
                     </div>
                     <div className="panel slim container">
-                        <h3 className="slim">Stats</h3>
+                        <h4 className="slim">Stats</h4>
                         <div className="row">
                             <div className="col-xs-2">STR</div>
                             <div className="col-xs-10">Adds SP and increase maximum load</div>
@@ -567,14 +749,14 @@ class App extends Component {
                         </div>
                     </div>
                     <div className="panel slim">
-                        <h3 className="slim">Weapons</h3>
+                        <h4 className="slim">Weapons</h4>
                         <div className="slim flex-container-row">
                             <div className="flex-element">Name</div>
                             <div className="flex-element">Type</div>
                             <div className="flex-element">Damage</div>
                             <div className="flex-element">Stunning</div>
                             <div className="flex-element">Accur/Range</div>
-                            <div className="flex-element">Speed</div>
+                            <div className="flex-element">Speed/Load</div>
                         </div>
                         {_.map(weapons_bodies, (item, key) =>
                             <div className="slim flex-container-row" key={key}>
@@ -583,18 +765,40 @@ class App extends Component {
                                 <div className="flex-element">{item.min_dmg}–{item.max_dmg} + {item.bonus_stat}</div>
                                 <div className="flex-element">{item.stunning}</div>
                                 <div className="flex-element">{item.accuracy} / {item.range} ft</div>
-                                <div className="flex-element">{item.speed}</div>
+                                <div className="flex-element">{item.speed} / {item.load} kg</div>
                             </div>)
                         }
                     </div>
                     <div className="panel slim">
-                        <h3 className="slim">Armors</h3>
+                        <h4 className="slim">Shields</h4>
                         <div className="slim flex-container-row">
                             <div className="flex-element">Name</div>
                             <div className="flex-element">Absorption</div>
                             <div className="flex-element">Resistance</div>
                             <div className="flex-element">Stability</div>
-                            <div className="flex-element">Weight</div>
+                            <div className="flex-element">Delay</div>
+                            <div className="flex-element">Load</div>
+                        </div>
+                        {_.map(shields_bodies, (item, key) =>
+                            <div className="slim flex-container-row" key={key}>
+                                <div className="flex-element">{item.name}</div>
+                                <div className="flex-element">{item.absorption}</div>
+                                <div className="flex-element">{item.resistance}</div>
+                                <div className="flex-element">{item.stability}</div>
+                                <div className="flex-element">{item.delay}</div>
+                                <div className="flex-element">{item.load} kg</div>
+                            </div>)
+                        }
+                    </div>
+                    <div className="panel slim">
+                        <h4 className="slim">Armors</h4>
+                        <div className="slim flex-container-row">
+                            <div className="flex-element">Name</div>
+                            <div className="flex-element">Absorption</div>
+                            <div className="flex-element">Resistance</div>
+                            <div className="flex-element">Stability</div>
+                            <div className="flex-element">Delay</div>
+                            <div className="flex-element">Load</div>
                         </div>
                         {_.map(armors_bodies, (item, key) =>
                             <div className="slim flex-container-row" key={key}>
@@ -602,30 +806,31 @@ class App extends Component {
                                 <div className="flex-element">{item.absorption}</div>
                                 <div className="flex-element">{item.resistance}</div>
                                 <div className="flex-element">{item.stability}</div>
-                                <div className="flex-element">{item.weight}</div>
+                                <div className="flex-element">{item.delay}</div>
+                                <div className="flex-element">{item.load} kg</div>
                             </div>)
                         }
                     </div>
                     <div className="panel slim">
-                        <h3 className="slim">Consumables</h3>
+                        <h4 className="slim">Consumables</h4>
                         {_.map(consumables, (action, key) =>
                             <div className="panel filament flex-container-row" key={key}>
-                                <h5 className="flex-element slim flex-container-row">
+                                <h6 className="flex-element slim flex-container-row">
                                     <div className="flex-element">{_.values(action.cost)[0]}</div>
                                     <div className="flex-element">{action.name}</div>
-                                </h5>
+                                </h6>
                                 <p className="flex-element slim">{action.text}</p>
                             </div>)
                         }
                     </div>
                     <div className="panel slim">
-                        <h3 className="slim">Action</h3>
+                        <h4 className="slim">Action</h4>
                         {_.map(actions, (action, key) =>
                             <div className="panel filament flex-container-row" key={key}>
-                                <h5 className="flex-element slim flex-container-row">
+                                <h6 className="flex-element slim flex-container-row">
                                     <div className="flex-element">{_.values(action.cost)[0]}</div>
                                     <div className="flex-element">{action.name}</div>
-                                </h5>
+                                </h6>
                                 <p className="flex-element slim">{action.text}</p>
                             </div>)
                         }
@@ -643,22 +848,11 @@ class App extends Component {
 
                     {this.state.tab === 'end' ?
                         <div className="col-xs-10 col">
-                            <h2>Game End! Score: {this.state.game_end_score}</h2>
-                            <h3><a className="btn btn-warning" onClick={this.newGame} title='Try One More Time'> New Game </a></h3>
+                            <h3>Game End! Score: {this.state.game_end_score}</h3>
+                            <h4><a className="btn btn-warning" onClick={this.newGame} title='Try One More Time'> New Game </a></h4>
                         </div>
                         : ''}
 
-                    {this.state.tab === 'arena' ?
-                        <div>{arena_subcomponent}</div>
-                        : ''}
-
-                    {this.state.tab === 'character' ?
-                        <div>{character_subcomponent}</div>
-                        : ''}
-
-                    {this.state.tab === 'inventory' ?
-                        <div> {inventory_subcomponent}</div>
-                        : ''}
                     {this.state.tab === 'shop' ?
                         <div> {shop_subcomponent}</div>
                         : ''}
@@ -666,16 +860,25 @@ class App extends Component {
                         <div> {smith_subcomponent}</div>
                         : ''}
 
+                    {this.state.tab === 'arena' ?
+                        <div>{arena_subcomponent}</div>
+                        : ''}
+                    {this.state.tab === 'inventory' ?
+                        <div> {inventory_subcomponent}</div>
+                        : ''}
+                    {this.state.tab === 'character' ?
+                        <div>{character_subcomponent}</div>
+                        : ''}
                     {this.state.tab === 'options' ?
                         <div> {options_subcomponent}</div>
                         : ''}
 
-                    <div style={{width: '100%', height: '60px'}}></div>
+                    <div style={{width: '100%', height: '100px'}}></div>
 
                     {state.in_fight === true ? '' : <div className="footer row">
                         <span className="col-xs filament"><a onClick={() => { this.changeTab('arena'); }} title='Arena'>Arena</a></span>
-                        <span className="col-xs filament"><a onClick={() => { this.changeTab('character'); }} title='Character'>Character</a></span>
                         <span className="col-xs filament"><a onClick={() => { this.changeTab('inventory'); }} title='Inventory'>Inventory</a></span>
+                        <span className="col-xs filament"><a onClick={() => { this.changeTab('character'); }} title='Character'>Character</a></span>
                         <span className="col-xs filament"><a onClick={() => { this.changeTab('options'); }} title='Options'>Info</a></span>
                     </div>}
                 </div>

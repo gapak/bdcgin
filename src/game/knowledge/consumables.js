@@ -10,12 +10,30 @@ const buy = (state, item_key) => {
 };
 
 export const consumables = {
+    shuriken: { name: 'Ninja Star', cost: {'player.money': 1}, text: 'A light throwing weapon that distracts rather than damages the target', load: 1,
+        isDisabled: (state, params = {}) => state[params.attacker].belt.length >= 6 || getLoad(state[params.attacker]) + consumables.shuriken.load > getMaxLoad(state[params.attacker]),
+        onClick: (state, params = {}) => buy(state, 'shuriken'),
+        consumableIf: (state, params = {}) => !state[params.attacker].action_timer && state.in_fight && isTargetInRange(state, 15),
+        onConsume: (state, params = {}) => {
+            let soul_weapon = {name: "Shuriken",    min_dmg: 1, max_dmg: 3, dmg_type: 'cutting', bonus_stat: 'str', stunning: 25, accuracy: 3, range: 10, speed: 10};
+            let tpm_weapon = state[params.attacker].weapon;
+            state[params.attacker].weapon = soul_weapon;
+            state = attack(state, {
+                attacker: 'player',
+                defender: 'target',
+                onHit: (state, dmg) => {  state.chat.unshift({text: "player " + soul_weapon.name + " Hit! Damage: " + dmg}); return state; },
+                onMiss: (state, Prob) => { state.chat.unshift({text: "player  Miss! Prob: " + Prob.toFixed(0) + '%'}); return state; },
+            });
+            state[params.attacker].weapon = tpm_weapon;
+            state.chat.unshift({text: "Consume " + consumables.dart.name});
+            return state;
+        }},
     heal: { name: 'HP Pot', cost: {'player.money': 10}, text: 'Restore HP and cure poison', load: 3,
         isDisabled: (state, params = {}) => state[params.attacker].belt.length >= 6 || getLoad(state[params.attacker]) + consumables.heal.load > getMaxLoad(state[params.attacker]),
         onClick: (state, params = {}) => buy(state, 'heal'),
         consumableIf: (state, params = {}) => state[params.attacker].hp < state[params.attacker].max_hp && !state[params.attacker].action_timer && state.in_fight,
         onConsume: (state, params = {}) => {
-            state[params.attacker].action_timer += getActionDelay(10, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 10);
             state[params.attacker].effects.poison = Math.max(0, state[params.attacker].effects.poison - 20);
             state[params.attacker].hp = Math.min(state[params.attacker].hp + 20, state[params.attacker].max_hp);
             state.chat.unshift({text: "Consume " + consumables.heal.name});
@@ -26,7 +44,7 @@ export const consumables = {
         onClick: (state, params = {}) => buy(state, 'stamina'),
         consumableIf: (state, params = {}) => state[params.attacker].sp < state[params.attacker].max_sp && !state[params.attacker].action_timer && state.in_fight,
         onConsume: (state, params = {}) => {
-            state[params.attacker].action_timer += getActionDelay(10, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 10);
             state[params.attacker].effects.freeze = Math.max(0, state[params.attacker].effects.freeze - 10);
             state[params.attacker].sp = Math.min(state[params.attacker].sp + 10, state[params.attacker].max_sp);
             state.chat.unshift({text: "Consume " + consumables.stamina.name});
@@ -37,7 +55,7 @@ export const consumables = {
         onClick: (state, params = {}) => buy(state, 'manna'),
         consumableIf: (state, params = {}) => state[params.attacker].mp < state[params.attacker].max_mp && !state[params.attacker].action_timer && state.in_fight,
         onConsume: (state, params = {}) => {
-            state[params.attacker].action_timer += getActionDelay(10, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 10);
             state[params.attacker].effects.fire = Math.max(0, state[params.attacker].effects.fire - 5);
             state[params.attacker].mp = Math.min(state[params.attacker].mp + 5, state[params.attacker].max_mp);
             state.chat.unshift({text: "Consume " + consumables.manna.name});
@@ -60,7 +78,7 @@ export const consumables = {
             state.battleground.target = Math.min(100, state.battleground.target + 10);
             state[params.defender].action_timer += 30;
             state[params.defender].effects.freeze += 10;
-            state[params.attacker].action_timer += getActionDelay(10, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 10);
             state.chat.unshift({text: "Consume " + consumables.wave.name});
             return state;
         }},
@@ -73,7 +91,7 @@ export const consumables = {
             let fire = hit(state, 'player', 'target', atk, 'fire');
             state[params.defender].hp -= fire;
             state[params.defender].effects.fire += 5;
-            state[params.attacker].action_timer += getActionDelay(10, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 10);
             state.chat.unshift({text: "Consume " + consumables.fire.name});
             return state;
         }},
@@ -103,7 +121,7 @@ export const consumables = {
         onConsume: (state, params = {}) => {
             state[params.defender].effects.poison += 25;// -= _.random(1, 10) + _.random(1, getRangeBetween(state));
             state[params.attacker].effects.poison += 20 - getRangeBetween(state);//_.random(1, 19 - getRangeBetween(state));
-            state[params.attacker].action_timer += getActionDelay(20, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 20);
             state.chat.unshift({text: "Consume " + consumables.bomb.name});
             return state;
         }},
@@ -112,8 +130,8 @@ export const consumables = {
         onClick: (state, params = {}) => buy(state, 'web'),
         consumableIf: (state, params = {}) => !state[params.attacker].action_timer && state.in_fight && isTargetInRange(state, 25),
         onConsume: (state, params = {}) => {
-            state[params.attacker].action_timer += getActionDelay(20, state[params.attacker]);
-            state[params.defender].action_timer += 100;
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 20);
+            state[params.defender].action_timer += 120;
             state.chat.unshift({text: "Consume " + consumables.web.name});
             return state;
         }},

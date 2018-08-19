@@ -4,6 +4,9 @@ import _ from 'lodash';
 
 import {checkUnitStats} from '../game_math';
 
+import {free_armor} from './armors';
+import {free_hand} from './weapons';
+
 
 export const effects_0 = {poison: 0, regen: 0, rage: 0, fire: 0, freeze: 0, fright: 0, iceshield: 0, firestorm: 0};
 
@@ -27,8 +30,11 @@ export const default_unit = {
         int: 1
     },
     belt: [],
-    weapon: null,
-    armor: null,
+    equipment: [],
+    right_hand: free_hand,
+    left_hand: free_hand,
+    //weapon: null,
+    armor: free_armor,
     action_timer: 0,
     action: null, // до конца action
     effects: effects_0

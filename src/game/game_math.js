@@ -2,6 +2,7 @@
 import _ from 'lodash';
 
 import {consumables} from './knowledge/consumables';
+import {getWeapon, getArmor} from './equipment';
 
 
 export const checkUnitStats = (unit) => {
@@ -25,9 +26,9 @@ export const checkUnitStats = (unit) => {
     return unit;
 };
 
-export const getAttackProb = (source, target) => {
-    let attack = 10 + source.weapon.accuracy + source.stats.int;
-    let def = 10 + target.stats.dex;
+export const getAttackProb = (state, params) => {
+    let attack = 10 + getWeapon(state, params.attacker).accuracy + state[params.attacker].stats.int;
+    let def = 10 + state[params.defender].stats.dex;
     let ratio = (attack / def);
     //console.log(attack, def, ratio, 50 * ratio);
     return 50 * ratio;
@@ -87,7 +88,9 @@ export const hit = (state, attacker, defender, dmg, dmg_type) => {
 
 
 export const attack = (state, params) => {
-    state[params.attacker].action_timer += getActionDelay(state[params.attacker].weapon.speed, state[params.attacker]);
+    let attacker_weapon = getWeapon(state, params.attacker);
+    
+    state[params.attacker].action_timer += getActionDelay(state, params.attacker, attacker_weapon.speed);
 
     if (state[params.defender].action === 'roll' || state[params.defender].action === 'flip') {
         state.chat.unshift({text: params.defender + " Roll against attack"});
@@ -116,18 +119,18 @@ export const attack = (state, params) => {
         return state;
     }
 
-    let Prob = getAttackProb(state[params.attacker], state[params.defender]);
+    let Prob = getAttackProb(state, params);
     if (_.random(0, 100) < Prob) {
         console.log();
-        let atk = _.random(state[params.attacker].weapon.min_dmg, state[params.attacker].weapon.max_dmg) + _.random(0, state[params.attacker].stats[state[params.attacker].weapon.bonus_stat]);
-        let dmg = hit(state, params.attacker, params.defender, atk, state[params.attacker].weapon.dmg_type);
+        let atk = _.random(attacker_weapon.min_dmg, attacker_weapon.max_dmg) + _.random(0, state[params.attacker].stats[attacker_weapon.bonus_stat]);
+        let dmg = hit(state, params.attacker, params.defender, atk, attacker_weapon.dmg_type);
 
         state[params.defender].hp -= dmg;
 
         if (state.target.action === 'trance') {
             state[params.defender].sp = Math.min(state[params.defender].max_sp, state[params.defender].sp + dmg);
         }
-        state[params.defender].action_timer += Math.max(0, state[params.attacker].weapon.stunning - (_.random(0, state[params.defender].armor.stability) + state[params.defender].stats.con));
+        state[params.defender].action_timer += Math.max(0, attacker_weapon.stunning - (_.random(0, getArmor(state, params.defender).stability + (10 * state[params.defender].stats.con))));
         state = params.onHit(state, dmg);
     }
     else {
@@ -137,19 +140,20 @@ export const attack = (state, params) => {
 };
 
 export const getLoad = (unit) => {
-    let load = unit.weapon.load + unit.armor.load;
+    let load = unit.left_hand.load + unit.right_hand.load + unit.armor.load;
 
     _.each(unit.belt, (item) => { load += consumables[item].load; });
+    _.each(unit.equipment, (item) => { load += item.load; });
 
     return load;
 };
 
 export const getMaxLoad = (unit) => {
-    return 40 + (10 * unit.stats.str);
+    return 50 + (10 * unit.stats.str);
 };
 
-export const getActionDelay = (base, unit) => {
-    return Math.max(1, base + unit.armor.delay - unit.stats.dex + unit.effects.freeze);
+export const getActionDelay = (state, unit_key, base) => {
+    return Math.max(1, base + getArmor(state, unit_key).delay - state[unit_key].stats.dex + state[unit_key].effects.freeze);
 };
 
 export const getRangeBetween = (state) => {
@@ -183,5 +187,8 @@ export const blink = (state, long) => {
 
     return state;
 };
+
+
+
 
 

@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 import {getActionDelay, isTargetInRange, blink, attack, hit} from '../game_math';
 import {effects_0} from '../models/unit';
+import {getWeapon, getArmor} from '../equipment';
 
 
 export const actions = {
@@ -13,7 +14,7 @@ export const actions = {
         isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || state.battleground[params.attacker] === 0,
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'move_left';
-            state[params.attacker].action_timer += getActionDelay(10, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 10);
             state.battleground[params.attacker] = Math.max(0, state.battleground[params.attacker] - 1);
             state.chat.unshift({text: params.attacker + "  Go < "});
             return state;
@@ -24,7 +25,7 @@ export const actions = {
         isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || state.battleground[params.attacker] === state.battleground[params.defender] - 1,
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'move_right';
-            state[params.attacker].action_timer += getActionDelay(10, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 10);
             state.battleground[params.attacker] = Math.min(state.battleground[params.defender] - 1, state.battleground[params.attacker] + 1);
             state.chat.unshift({text: params.attacker + "  Go > "});
             return state;
@@ -35,7 +36,7 @@ export const actions = {
         isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || state.battleground[params.attacker] === 0,
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'run_left';
-            state[params.attacker].action_timer += getActionDelay(20, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 20);
             state.battleground[params.attacker] = Math.max(0, state.battleground[params.attacker] - 4 - state[params.attacker].stats.dex);
             state.chat.unshift({text: params.attacker + "  Run < "});
             return state;
@@ -46,7 +47,7 @@ export const actions = {
         isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || state.battleground[params.attacker] >= (state.battleground[params.defender] - 4 + state[params.attacker].stats.dex),
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'run_right';
-            state[params.attacker].action_timer += getActionDelay(20, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 20);
             state.battleground[params.attacker] = Math.min(state.battleground[params.defender] - 1, state.battleground[params.attacker] + 4 + state[params.attacker].stats.dex);
             state.chat.unshift({text: params.attacker + "  Run > "});
             return state;
@@ -56,7 +57,7 @@ export const actions = {
     hit:  {name: "Hit!", cost: {'player.sp': 1},  
         text: "Damages the params.defender by weapon if the params.defender did not block or dodge",
         isHidden: (state, params = {}) => state[params.attacker].stats.str < 1,
-        isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || !isTargetInRange(state, state[params.attacker].weapon.range),
+        isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || !isTargetInRange(state, getWeapon(state, params.attacker).range),
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'hit';
             state = attack(state,
@@ -93,7 +94,7 @@ export const actions = {
         isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || state.battleground[params.attacker] >= (state.battleground[params.defender] - 9 + state[params.attacker].stats.dex + state[params.attacker].stats.str),
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'sprint';
-            state[params.attacker].action_timer += getActionDelay(15, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 15);
             let long = 9 + state[params.attacker].stats.dex + state[params.attacker].stats.str;
             let new_point = Math.min(99, state.battleground[params.attacker] + long);
             state.battleground[params.attacker] = new_point;
@@ -108,7 +109,7 @@ export const actions = {
         isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer),
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'roar';
-            state[params.attacker].action_timer += getActionDelay(40, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 40);
             state[params.defender].action_timer += 10 * state[params.attacker].stats.str;
             state[params.defender].effects.fright++;
             state.chat.unshift({text: params.attacker + " Roar"});
@@ -118,7 +119,7 @@ export const actions = {
     double: {name: "Double", cost: {'player.sp': 5},  
         text: "Two attacks in a row",
         isHidden: (state, params = {}) => state[params.attacker].stats.str < 5,
-        isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || !isTargetInRange(state, state[params.attacker].weapon.range),
+        isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || !isTargetInRange(state, getWeapon(state, params.attacker).range),
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'double';
             state = attack(state,
@@ -145,7 +146,7 @@ export const actions = {
         isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || state.battleground[params.attacker] === 0,
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'roll';
-            state[params.attacker].action_timer += getActionDelay(10, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 10);
             state.battleground[params.attacker] = Math.max(0, state.battleground[params.attacker] - state[params.attacker].stats.dex);
             state.chat.unshift({text: params.attacker + "  Roll"});
             return state;
@@ -153,10 +154,10 @@ export const actions = {
     parry: {name: "Parry", cost: {'player.sp': 2},  
         text: "Stance which blocks next attack of the params.defender and turns it into counterattack",
         isHidden: (state, params = {}) => state[params.attacker].stats.dex < 2,
-        isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || !isTargetInRange(state, state[params.attacker].weapon.range),
+        isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || !isTargetInRange(state, getWeapon(state, params.attacker).range),
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'parry';
-            state[params.attacker].action_timer += getActionDelay(50, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 50);
             return state;
         }},
     poison: {name: "Poison", cost: {'player.sp': 3},  
@@ -181,7 +182,7 @@ export const actions = {
     exhaust: {name: "Exhaust", cost: {'player.sp': 4},  
         text: "Attack that decreases SP of the params.defender",
         isHidden: (state, params = {}) => state[params.attacker].stats.dex < 4,
-        isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || !isTargetInRange(state, state[params.attacker].weapon.range),
+        isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || !isTargetInRange(state, getWeapon(state, params.attacker).range),
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'exhaust';
             state = attack(state,
@@ -201,7 +202,7 @@ export const actions = {
     flip: {name: "Flip", cost: {'player.sp': 5},  
         text: "Hit with Roll!",
         isHidden: (state, params = {}) => state[params.attacker].stats.dex < 5,
-        isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || !isTargetInRange(state, state[params.attacker].weapon.range),
+        isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || !isTargetInRange(state, getWeapon(state, params.attacker).range),
         onAction: (state, params = {}) => {            
             state[params.attacker].action = 'flip';
             state = attack(state,
@@ -222,7 +223,7 @@ export const actions = {
         isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || state.battleground[params.attacker] === 0,
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'block';
-            state[params.attacker].action_timer += getActionDelay(50, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 50);
             return state;
         }},
     regen: {name: "Regen", cost: {'player.sp': 2},  
@@ -231,7 +232,7 @@ export const actions = {
         isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || state.battleground[params.attacker] === 0,
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'regen';
-            state[params.attacker].action_timer += getActionDelay(10, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 10);
             state[params.attacker].effects.regen++;
             return state;
         }},
@@ -241,7 +242,7 @@ export const actions = {
         isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || state.battleground[params.attacker] === 0,
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'rage';
-            state[params.attacker].action_timer += getActionDelay(10, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 10);
             state[params.attacker].hp--;
             state[params.attacker].effects.rage++;
             return state;
@@ -252,7 +253,7 @@ export const actions = {
         isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer),
         onAction: (state, params = {}) => {            
             state[params.attacker].action = 'trance';
-            state[params.attacker].action_timer += getActionDelay(100, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 100);
             state.chat.unshift({text: params.attacker + " in Trance"});
             return state;
         }
@@ -260,7 +261,7 @@ export const actions = {
     stun: {name: "Stun", cost: {'player.sp': 5},  
         text: "Attack which heavy stuns the params.defender",
         isHidden: (state, params = {}) => state[params.attacker].stats.con < 5,
-        isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || !isTargetInRange(state, state[params.attacker].weapon.range),
+        isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || !isTargetInRange(state, getWeapon(state, params.attacker).range),
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'stunning';
             state = attack(state,
@@ -285,7 +286,7 @@ export const actions = {
         isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || state[params.attacker].hp >= state[params.attacker].max_hp,
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'heal';
-            state[params.attacker].action_timer += getActionDelay(30, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 30);
             let hp = Math.min(state[params.attacker].max_hp - state[params.attacker].hp, _.random(1 + state[params.attacker].stats.wiz, 3 + state[params.attacker].level + state[params.attacker].stats.wiz));
             state[params.attacker].hp += hp;
             state[params.attacker].effects.poison = Math.max(0, state[params.attacker].effects.poison - hp);
@@ -299,7 +300,7 @@ export const actions = {
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'freeze';
             state[params.attacker].effects.fire = Math.max(0, state[params.attacker].effects.fire - 1);
-            state[params.attacker].action_timer += getActionDelay(30, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 30);
             let atk = _.random(state[params.attacker].stats.wiz, state[params.attacker].level + state[params.attacker].stats.wiz);
             let fire = hit(state, params.attacker, params.defender, atk, 'cold');
             state[params.defender].hp -= fire;
@@ -335,7 +336,7 @@ export const actions = {
         isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer),
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'iceshield';
-            state[params.attacker].action_timer += getActionDelay(40, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 40);
             state[params.attacker].effects.firestorm = 0;
             state[params.attacker].effects = effects_0;
             state[params.attacker].effects.iceshield++;
@@ -372,7 +373,7 @@ export const actions = {
         isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || !isTargetInRange(state, 50),
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'blast';
-            state[params.attacker].action_timer += getActionDelay(25, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 25);
             let atk = _.random(state[params.attacker].stats.int, 2 + state[params.attacker].level + state[params.attacker].stats.int);
             let fire = hit(state, params.attacker, params.defender, atk, 'dark');
             state[params.defender].hp -= fire;
@@ -386,7 +387,7 @@ export const actions = {
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'fire';
             state[params.attacker].effects.freeze = Math.max(0, state[params.attacker].effects.freeze - 1);
-            state[params.attacker].action_timer += getActionDelay(30, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 30);
             let atk = _.random(state[params.attacker].stats.int, state[params.attacker].level * state[params.attacker].stats.int);
             let fire = hit(state, params.attacker, params.defender, atk, 'fire');
             state[params.defender].hp -= fire;
@@ -405,7 +406,7 @@ export const actions = {
         isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer),
         onAction: (state, params = {}) => {            
             state[params.attacker].action = 'firestorm';
-            state[params.attacker].action_timer += getActionDelay(40, state[params.attacker]);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 40);
             state[params.attacker].effects.iceshield = 0;
             state[params.attacker].effects.freeze = Math.max(0, state[params.attacker].effects.freeze - 5);
             state[params.attacker].effects.fright = Math.max(0, state[params.attacker].effects.fright - 5);
