@@ -3,7 +3,7 @@
 import _ from 'lodash';
 
 
-import {zero_weapon} from './models/weapons';
+import {free_hand, zero_weapon} from './models/weapons';
 
 
 export const getWeapon = (state, unit_key) => {
@@ -11,7 +11,7 @@ export const getWeapon = (state, unit_key) => {
 
     //console.log(state[unit_key].left_hand, state[unit_key].right_hand);
 
-    if (weapons.length === 0) return zero_weapon;
+    if (weapons.length === 0) return free_hand; //zero_weapon;
     if (weapons.length === 1) return weapons[0];
 
     let total_weapon = _.clone(zero_weapon);

@@ -230,7 +230,7 @@ class App extends Component {
             }
             if (weapons[0].name === 'Hand' || weapons[1].name === 'Hand') {
                 let weapon = _.filter(weapons, (item) => item.name !== 'Hand')[0];
-                return <div> with {state.in_fight === true ? weapon.body_name + 'in both hand' : weapon.name} </div>
+                return <div> with {state.in_fight === true ? weapon.body_name : weapon.name + ' in both hand'} </div>
             }
             return <div>
                 with {state.in_fight === true ? weapons[0].body_name : weapons[0].name} and {state.in_fight === true ? weapons[1].body_name : weapons[1].name}
@@ -543,6 +543,7 @@ class App extends Component {
                     <div className="flex-container-row">
                         <div className="flex-element">Name</div>
                         <div className="flex-element">Type</div>
+                        <div className="flex-element">Load</div>
                         <div className="flex-element">Load</div>
                         <div className="flex-element">Unequip</div>
                     </div>

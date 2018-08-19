@@ -164,9 +164,9 @@ export const rules = {
 
             const regen = (unit) => {
                 const load_factor = getMaxLoad(state[unit]) - getLoad(state[unit]);
-                state[unit].hp = _.random(state[unit].hp, 500) > 490 && state[unit].hp < state[unit].max_hp ? state[unit].hp + 1 : state[unit].hp;
-                state[unit].sp = _.random(state[unit].sp, 250) > (230 - load_factor) && state[unit].sp < state[unit].max_sp ? state[unit].sp + 1 : state[unit].sp;
-                state[unit].mp = _.random(state[unit].mp, 100) > 95 && state[unit].mp < state[unit].max_mp ? state[unit].mp + 1 : state[unit].mp;
+                state[unit].hp = _.random(state[unit].max_hp, 500) > 490 && state[unit].hp < state[unit].max_hp ? state[unit].hp + 1 : state[unit].hp;
+                state[unit].sp = _.random(state[unit].max_sp + load_factor, 250) > (230) && state[unit].sp < state[unit].max_sp ? state[unit].sp + 1 : state[unit].sp;
+                state[unit].mp = _.random(state[unit].max_mp, 100) > 95 && state[unit].mp < state[unit].max_mp ? state[unit].mp + 1 : state[unit].mp;
             };
 
             regen('player');

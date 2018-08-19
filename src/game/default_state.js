@@ -52,7 +52,7 @@ export const getDefaultState = () => {
     state.player.equipment.push(combineShield(1, shields_bodies.heater, shields_quality[1], shields_mods.flat));
     state.player.equipment.push(combineWeapon(1, weapons_bodies.trident, weapons_quality[1], weapons_mods.flat));
     state.player.equipment.push(combineWeapon(1, weapons_bodies.bow, weapons_quality[1], weapons_mods.flat));
-    state.player.equipment.push(combineWeapon(1, weapons_bodies.wiz1, weapons_quality[1], weapons_mods.flat));
+    //state.player.equipment.push(combineWeapon(1, weapons_bodies.wiz1, weapons_quality[1], weapons_mods.flat));
 
     //state.player.equipment = _.times(_.random(3, 5), () => _.random(0, 1) === 0 ? genShield(1) : genWeapon(1) );
     //state.player.left_hand = genWeapon(1);

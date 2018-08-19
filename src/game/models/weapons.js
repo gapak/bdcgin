@@ -27,9 +27,6 @@ import _ from 'lodash';
 
 
 export var weapons_bodies = {
-    hand: {name: "Hand", type: 'weapon', hands: 1, load: 0, min_dmg: 1, max_dmg: 2, dmg_type: 'crushing',   bonus_stat: 'str', stunning: 14, accuracy: 3, range: 1, speed: 20},
-
-
     knife:  {name: "Knife",    type: 'weapon', hands: 1, load: 2, min_dmg: 1, max_dmg: 3, dmg_type: 'cutting',   bonus_stat: 'str', stunning: 6, accuracy: 3, range: 1, speed: 17},
     machete:{name: "Machete",  type: 'weapon', hands: 1, load: 4, min_dmg: 1, max_dmg: 4, dmg_type: 'cutting',   bonus_stat: 'str', stunning: 16, accuracy: 3, range: 1, speed: 20},
     saber:  {name: "Saber",    type: 'weapon', hands: 1, load: 5, min_dmg: 2, max_dmg: 6, dmg_type: 'cutting',   bonus_stat: 'str', stunning: 14, accuracy: 4, range: 2, speed: 32},
