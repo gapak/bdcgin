@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import {getActionDelay, isTargetInRange, blink, attack, hit} from '../game_math';
 import {effects_0} from '../models/unit';
-import {getWeapon, getArmor} from '../equipment';
+import {getWeapon} from '../equipment';
 
 
 export const actions = {

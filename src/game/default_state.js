@@ -5,9 +5,9 @@ import _ from 'lodash';
 import {checkUnitStats} from './game_math';
 import {genUnit} from './models/unit';
 import {genTarget} from './models/targets';
-import {combineWeapon, weapons_bodies, weapons_quality, weapons_mods, genWeapon} from './models/weapons';
-import {combineShield, shields_bodies, shields_quality, shields_mods, genShield} from './models/shields';
-import {combineArmor, armors_bodies, armors_quality, armors_mods, genArmor, free_armor} from './models/armors';
+import {combineWeapon, weapons_bodies, weapons_quality, weapons_mods} from './models/weapons';
+import {combineShield, shields_bodies, shields_quality, shields_mods} from './models/shields';
+import {combineArmor, armors_bodies, armors_quality, armors_mods, free_armor} from './models/armors';
 
 export const default_state = {
 
@@ -46,7 +46,7 @@ export const getDefaultState = () => {
     state.player.belt = ['heal', 'stamina', 'manna', 'blink', 'dart', 'web'];
     state.player.armor =     combineArmor(1, armors_bodies.novice, armors_quality[1], armors_mods.flat);
 
-    console.log(weapons_bodies.sword, weapons_bodies);
+    //console.log(weapons_bodies.sword, weapons_bodies);
 
     state.player.equipment.push(combineWeapon(1, weapons_bodies.sword, weapons_quality[1], weapons_mods.flat));
     state.player.equipment.push(combineShield(1, shields_bodies.heater, shields_quality[1], shields_mods.flat));

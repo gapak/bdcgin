@@ -15,7 +15,7 @@ import {consumables} from './game/knowledge/consumables';
 import {armors_bodies} from './game/models/armors';
 import {weapons_bodies} from './game/models/weapons';
 import {shields_bodies} from './game/models/shields';
-import {getWeapon, getWeapons, getArmor, getBeltForRightHand, getBeltForLeftHand} from './game/equipment';
+import {getArmor, getBeltForRightHand, getBeltForLeftHand} from './game/equipment';
 
 //import {GinButton} from './core/GinButton';
 import {frame} from './core/frame';
@@ -409,7 +409,7 @@ class App extends Component {
                             value={{value: 0, label: state.player.left_hand.name}}
                             onChange={(selectedOption) => this.onClickWrapper({
                                 onClick: (state) => {
-                                    console.log(state.player.equipment);
+                                    //console.log(state.player.equipment);
                                     let tmp = state.player.left_hand;
                                     let selected = getBeltForLeftHand(state, 'player')[selectedOption.value];
                                     state.player.left_hand = selected;
@@ -429,7 +429,7 @@ class App extends Component {
                             value={{value: 0, label: state.player.right_hand.name}}
                             onChange={(selectedOption) => this.onClickWrapper({
                                 onClick: (state) => {
-                                    console.log(state.player.equipment);
+                                    //console.log(state.player.equipment);
                                     let tmp = state.player.right_hand;
                                     let selected = getBeltForRightHand(state, 'player')[selectedOption.value];
                                     state.player.right_hand = selected;

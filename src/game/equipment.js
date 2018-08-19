@@ -21,13 +21,13 @@ export const getWeapon = (state, unit_key) => {
     total_weapon.accuracy = Math.min(weapons[0].accuracy, weapons[1].accuracy);
     total_weapon.range = Math.min(weapons[0].range, weapons[1].range);
 
-    console.log('getWeapon', unit_key, weapons, total_weapon);
+    //console.log('getWeapon', unit_key, weapons, total_weapon);
 
     _.each(weapons, (weapon) => {
         _.each(['load', 'min_dmg', 'max_dmg', 'stunning', 'speed', 'cost'], (stat) => { total_weapon[stat] += weapon[stat]; });
     });
 
-    console.log('total_weapon', unit_key, weapons, total_weapon);
+    //console.log('total_weapon', unit_key, weapons, total_weapon);
 
     return total_weapon;
 };

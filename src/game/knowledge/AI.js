@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import {getActionDelay, isTargetInRange} from '../game_math';
 import {actions} from './actions';
-import {getWeapon, getArmor} from '../equipment';
+import {getWeapon} from '../equipment';
 
 export const AI = {
     enemy_turn: {
