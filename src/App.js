@@ -252,6 +252,7 @@ class App extends Component {
                 {state.in_fight !== true
                     ? <div> DEF: {armor.absorption} abs / {armor.resistance + state.player.stats.wiz} res / [{armor.stability + state.player.stats.con}] stab </div>
                     : <div> DEF: {armor.absorption} / {armor.resistance + state.player.stats.wiz} / [{armor.stability + state.player.stats.con}] </div> }
+                <div>Load: {getLoad(state.player)} / {getMaxLoad(state.player)} kg</div>
                 <div> HP: {state.player.hp}/{state.player.max_hp} </div>
                 <div> SP: {state.player.sp}/{state.player.max_sp} </div>
                 <div> MP: {state.player.mp}/{state.player.max_mp} </div>
@@ -316,6 +317,7 @@ class App extends Component {
                 {state.in_fight !== true
                     ? <div> DEF: {armor.absorption} abs / {armor.resistance + state.target.stats.wiz} res / [{armor.stability + state.target.stats.con}] stab </div>
                     : <div> DEF: {armor.absorption} / {armor.resistance + state.target.stats.wiz} / [{armor.stability + state.target.stats.con}] </div> }
+                <div>Load: {getLoad(state.target)} / {getMaxLoad(state.target)} kg</div>
                 <div> HP: {state.target.hp}/{state.target.max_hp} </div>
                 <div> SP: {state.target.sp}/{state.target.max_sp} </div>
                 <div> MP: {state.target.mp}/{state.target.max_mp} </div>
@@ -502,7 +504,7 @@ class App extends Component {
         const load_subcomponent =
                 <div className="panel">
                     <h4>Load: {getLoad(state.player)} / {getMaxLoad(state.player)} kg</h4>
-                </div>
+                </div>;
 
         const character_subcomponent =
             <div>
@@ -541,6 +543,7 @@ class App extends Component {
                     <div className="flex-container-row">
                         <div className="flex-element">Name</div>
                         <div className="flex-element">Type</div>
+                        <div className="flex-element">Load</div>
                         <div className="flex-element">Unequip</div>
                     </div>
                     <div className="flex-container-column">
@@ -548,6 +551,7 @@ class App extends Component {
                             <div className="flex-element flex-container-row" key={key}>
                                 <div className="flex-element">{item.name}</div>
                                 <div className="flex-element">{item.type}</div>
+                                <div className="flex-element">{item.load}</div>
                                 <div className="flex-element">
                                     <GinButton item={{name: "unequip", isLocked: (state) => state.in_fight,
                                         isDisabled: (state) => item.unsold,
