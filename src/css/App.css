@@ -1,5 +1,8 @@
 .App {
   text-align: center;
+  background: url('/background.png') no-repeat center top #0b0b1b;
+  background-size: cover;
+  overflow: auto;
 }
 
 body {
@@ -11,6 +14,10 @@ body {
   background: url('/background.png') no-repeat center top #0b0b1b;
   background-size: cover;
   overflow: auto;
+}
+
+.fullscreen-enabled {
+  background-color: transparent;
 }
 
 .panel {

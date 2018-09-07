@@ -10,8 +10,9 @@ import {combineShield, shields_bodies, shields_quality, shields_mods} from './mo
 import {combineArmor, armors_bodies, armors_quality, armors_mods, free_armor} from './models/armors';
 
 export const default_state = {
+    isFull: false,
 
-    tab: 'arena',
+    tab: 'start',
     in_fight: false,
     wins: 0,
     looses: 0,

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import Select from 'react-select';
+import Fullscreen from "react-full-screen";
 import _ from 'lodash';
 
 import './css/weapon_selector.css';
@@ -544,7 +545,6 @@ class App extends Component {
                         <div className="flex-element">Name</div>
                         <div className="flex-element">Type</div>
                         <div className="flex-element">Load</div>
-                        <div className="flex-element">Load</div>
                         <div className="flex-element">Unequip</div>
                     </div>
                     <div className="flex-container-column">
@@ -866,49 +866,66 @@ class App extends Component {
 
 
         return (
-            <div className="App">
-                <div className="filament content_container" role="main">
-                    {this.state.tab === 'start' ?
-                        <div>START</div>
-                        : ''}
+            <Fullscreen
+                enabled={this.state.isFull}
+                onChange={isFull => this.setState({isFull})}
+            >
+                <div className="App">
+                    <div className="filament content_container" role="main">
+                        {this.state.tab === 'start' ?
+                            <div>
+                                <div className="panel">
+                                    <h5>You do not remember how you got here. The only thing you understood from what the overseer explained was that it would be your turn to fight in the arena now.</h5>
+                                    <h5>He looked at you with contempt - not because he was an overseer, and you are a fighter, but because you were wearing brand new armor, behind you are a trident, a shield and a bow, and a sword behind your belt. Medicinal potions rang in the pockets of the belt.</h5>
+                                    <h5>He knew that a few fights would knock arrogance you out.</h5>
+                                </div>
+                                <div className="panel">
+                                    <button className="btn btn-lg" onClick={() => { this.setState({isFull: true}); this.changeTab('arena'); }} title='Arena'>Start Fight</button>
+                                </div>
+                                <h4 className="panel">
+                                    Disclaimer: the game on the early stages of development, bugs are possible! Developers will be grateful if in case of any problem you write to the Support.
+                                </h4>
+                            </div>
+                            : ''}
 
-                    {this.state.tab === 'end' ?
-                        <div className="col-xs-10 col">
-                            <h3>Game End! Score: {this.state.game_end_score}</h3>
-                            <h4><a className="btn btn-warning" onClick={this.newGame} title='Try One More Time'> New Game </a></h4>
-                        </div>
-                        : ''}
+                        {this.state.tab === 'end' ?
+                            <div className="col-xs-10 col">
+                                <h3>Game End! Score: {this.state.game_end_score}</h3>
+                                <h4><a className="btn btn-warning" onClick={this.newGame} title='Try One More Time'> New Game </a></h4>
+                            </div>
+                            : ''}
 
-                    {this.state.tab === 'shop' ?
-                        <div> {shop_subcomponent}</div>
-                        : ''}
-                    {this.state.tab === 'smith' ?
-                        <div> {smith_subcomponent}</div>
-                        : ''}
+                        {this.state.tab === 'shop' ?
+                            <div> {shop_subcomponent}</div>
+                            : ''}
+                        {this.state.tab === 'smith' ?
+                            <div> {smith_subcomponent}</div>
+                            : ''}
 
-                    {this.state.tab === 'arena' ?
-                        <div>{arena_subcomponent}</div>
-                        : ''}
-                    {this.state.tab === 'inventory' ?
-                        <div> {inventory_subcomponent}</div>
-                        : ''}
-                    {this.state.tab === 'character' ?
-                        <div>{character_subcomponent}</div>
-                        : ''}
-                    {this.state.tab === 'options' ?
-                        <div> {options_subcomponent}</div>
-                        : ''}
+                        {this.state.tab === 'arena' ?
+                            <div>{arena_subcomponent}</div>
+                            : ''}
+                        {this.state.tab === 'inventory' ?
+                            <div> {inventory_subcomponent}</div>
+                            : ''}
+                        {this.state.tab === 'character' ?
+                            <div>{character_subcomponent}</div>
+                            : ''}
+                        {this.state.tab === 'options' ?
+                            <div> {options_subcomponent}</div>
+                            : ''}
 
-                    <div style={{width: '100%', height: '100px'}}></div>
+                        <div style={{width: '100%', height: '100px'}}></div>
 
-                    {state.in_fight === true ? '' : <div className="footer row">
-                        <span className="col-xs filament"><a onClick={() => { this.changeTab('arena'); }} title='Arena'>Arena</a></span>
-                        <span className="col-xs filament"><a onClick={() => { this.changeTab('inventory'); }} title='Inventory'>Inventory</a></span>
-                        <span className="col-xs filament"><a onClick={() => { this.changeTab('character'); }} title='Character'>Character</a></span>
-                        <span className="col-xs filament"><a onClick={() => { this.changeTab('options'); }} title='Options'>Info</a></span>
-                    </div>}
+                        {(state.in_fight === true || state.tab === 'start' || state.tab === 'end') ? '' : <div className="footer row">
+                            <span className="col-xs filament"><a onClick={() => { this.changeTab('arena'); }} title='Arena'>Arena</a></span>
+                            <span className="col-xs filament"><a onClick={() => { this.changeTab('inventory'); }} title='Inventory'>Inventory</a></span>
+                            <span className="col-xs filament"><a onClick={() => { this.changeTab('character'); }} title='Character'>Character</a></span>
+                            <span className="col-xs filament"><a onClick={() => { this.changeTab('options'); }} title='Options'>Info</a></span>
+                        </div>}
+                    </div>
                 </div>
-            </div>
+            </Fullscreen>
         );
     }
 }
