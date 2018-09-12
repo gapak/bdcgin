@@ -287,7 +287,7 @@ export const actions = {
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'heal';
             state[params.attacker].action_timer += getActionDelay(state, params.attacker, 30);
-            let hp = Math.min(state[params.attacker].max_hp - state[params.attacker].hp, _.random(1 + state[params.attacker].stats.wiz, 3 + state[params.attacker].level + state[params.attacker].stats.wiz));
+            let hp = Math.min(state[params.attacker].max_hp - state[params.attacker].hp, _.random(state[params.attacker].stats.wiz, 1 + state[params.attacker].level + state[params.attacker].stats.wiz));
             state[params.attacker].hp += hp;
             state[params.attacker].effects.poison = Math.max(0, state[params.attacker].effects.poison - hp);
             state.chat.unshift({text: params.attacker + "  Heal " + hp});
@@ -373,8 +373,8 @@ export const actions = {
         isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer) || !isTargetInRange(state, 50),
         onAction: (state, params = {}) => {
             state[params.attacker].action = 'blast';
-            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 25);
-            let atk = _.random(state[params.attacker].stats.int, 2 + state[params.attacker].level + state[params.attacker].stats.int);
+            state[params.attacker].action_timer += getActionDelay(state, params.attacker, 10);
+            let atk = _.random(state[params.attacker].stats.int, 1 + state[params.attacker].level + state[params.attacker].stats.int);
             let fire = hit(state, params.attacker, params.defender, atk, 'dark');
             state[params.defender].hp -= fire;
             state.chat.unshift({text: params.attacker + "  Blast " + fire});
@@ -417,11 +417,12 @@ export const actions = {
         }
     },
     banish: {name: "Banish", cost: {'player.mp': 5},
-        text: "Cuts half ot HP of params.defender, rounded down",
+        text: "Cuts half of both fighters HP, rounded down",
         isHidden: (state, params = {}) => state[params.attacker].stats.int < 5,
         isNotAllowed: (state, params = {}) => (state[params.attacker].action_timer),
         onAction: (state, params = {}) => {            
             state[params.attacker].action = 'banish';
+            state[params.attacker].hp = Math.ceil(state[params.attacker].hp / 2);
             state[params.defender].hp = Math.ceil(state[params.defender].hp / 2);
             state.chat.unshift({text: params.defender + " Banished"});
             return state;

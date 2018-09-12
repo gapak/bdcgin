@@ -24,7 +24,8 @@ export function chargeCost(state, cost) {
 
 export function gainCost(state, cost) {
     _.each(cost, (value, resource_key) => {
-        state[resource_key] += value;
+        let result = _.get(state, resource_key) + value;
+        _.set(state, resource_key, result);
     });
     return state;
 }

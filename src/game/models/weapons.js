@@ -175,7 +175,7 @@ export const combineWeapon = (level, body, quality, mod) => {
 };
 
 export const free_hand = combineWeapon(0,
-    {name: "Hand", unsold: true, type: 'weapon', hands: 1, load: 0, min_dmg: 1, max_dmg: 2, dmg_type: 'crushing',   bonus_stat: 'str', stunning: 16, accuracy: 5, range: 1, speed: 20},
+    {name: "Fist", unsold: true, type: 'weapon', hands: 1, load: 0, min_dmg: 1, max_dmg: 2, dmg_type: 'crushing',   bonus_stat: 'str', stunning: 16, accuracy: 5, range: 1, speed: 20},
     {name: "",       load: 0, min_dmg: 0, max_dmg: 0, stunning: 0, accuracy: 0, range: 0, speed: 0},
     {name: "",       load: 0, min_dmg: 0, max_dmg: 0, stunning: 0, accuracy: 0, range: 0, speed: 0},
 );

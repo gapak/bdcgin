@@ -7,7 +7,7 @@ import {free_hand, zero_weapon} from './models/weapons';
 
 
 export const getWeapon = (state, unit_key) => {
-    let weapons = _.filter([state[unit_key].left_hand, state[unit_key].right_hand], (item) => item.type !== 'shield' && item.name !== 'Hand');
+    let weapons = _.filter([state[unit_key].left_hand, state[unit_key].right_hand], (item) => item.type !== 'shield' && item.name !== 'Fist');
 
     //console.log(state[unit_key].left_hand, state[unit_key].right_hand);
 
@@ -53,7 +53,7 @@ export const getArmor = (state, unit_key) => {
 };
 
 export const getBeltForRightHand = (state, unit_key) => {
-    let fit = state[unit_key].left_hand.name === 'Hand'
+    let fit = state[unit_key].left_hand.name === 'Fist'
                 ? state[unit_key].equipment
                 : _.filter(state[unit_key].equipment, (item) => item.hands === 1);
     //console.log(state, unit_key, state[unit_key].equipment);
@@ -61,7 +61,7 @@ export const getBeltForRightHand = (state, unit_key) => {
 };
 export const getBeltForLeftHand = (state, unit_key) => {
     //console.log(unit_key, state[unit_key]);
-    let fit = state[unit_key].right_hand.name === 'Hand'
+    let fit = state[unit_key].right_hand.name === 'Fist'
         ? state[unit_key].equipment
         : _.filter(state[unit_key].equipment, (item) => item.hands === 1);
     //console.log(unit_key, state[unit_key].equipment, state[unit_key].left_hand, _.concat([state[unit_key].left_hand], state[unit_key].equipment));

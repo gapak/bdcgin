@@ -427,6 +427,8 @@ class App extends Component {
                         Left Hand
                         <Select
                             styles={belt_style}
+                            blurInputOnSelect = {true}
+                            captureMenuScrollboolean = {true}
                             isDisabled={state.player.action_timer || state.player.right_hand.hands === 2}
                             value={{value: 0, label: state.player.left_hand.name}}
                             onChange={(selectedOption) => this.onClickWrapper({
@@ -447,6 +449,8 @@ class App extends Component {
                         Right Hand
                         <Select
                             styles={belt_style}
+                            blurInputOnSelect = {true}
+                            captureMenuScrollboolean = {true}
                             isDisabled={state.player.action_timer || state.player.left_hand.hands === 2}
                             value={{value: 0, label: state.player.right_hand.name}}
                             onChange={(selectedOption) => this.onClickWrapper({
